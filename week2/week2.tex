@@ -1,0 +1,477 @@
+\documentclass{article}
+
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{natbib}
+\usepackage{xcolor}
+\usepackage{mathpartir}
+\usepackage{url}
+
+% Theorems
+\newtheorem{thm}{Theorem}
+\newtheorem{cor}[thm]{Corollary}
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{remark}[thm]{Remark}
+\newtheorem{claim}[thm]{Attempt}
+\newtheorem{defn}[thm]{Definition}
+\newtheorem*{lemm}{Lemma}
+
+
+\newenvironment{proofattempt}{\paragraph{\emph{Proof Attempt}.}}{\hfill\color{red}{X}\par}
+
+\newcommand{\redprl}{{\color{red}\textbf{Red}}\textbf{PRL}}
+
+\newcommand{\eeq}{\ensuremath{\doteq}}
+
+\newcommand{\hasTF}[2]{\ensuremath{#1 \vdash #2\ \mathsf{type}}}
+\newcommand{\hasEF}[3]{\ensuremath{#1 \vdash #2 : #3}}
+\newcommand{\hasTEF}[3]{\ensuremath{#1 \vdash #2 \equiv #3\ \mathsf{type}}}
+\newcommand{\hasEEF}[4]{\ensuremath{#1 \vdash #2 \equiv #3 : #4}}
+
+\newcommand{\hasTC}[2]{\ensuremath{#1 \gg #2\ \mathsf{type}}}
+\newcommand{\hasEC}[3]{\ensuremath{#1 \gg #2 \in #3}}
+\newcommand{\hasTEC}[3]{\ensuremath{#1 \gg #2 \eeq #3\ \mathsf{type}}}
+\newcommand{\hasEEC}[4]{\ensuremath{#1 \gg #2 \eeq #3 : #4}}
+
+\newcommand{\hterm}[2]{\ensuremath{\mathsf{HT}_{#1}(#2)}}
+\newcommand{\htermp}[2]{\ensuremath{\mathsf{HT}^+_{#1}(#2)}}
+\newcommand{\termb}[1]{\ensuremath{{#1} \; \mathsf{term}_{\beta}}}
+\newcommand{\hcbn}[2]{\ensuremath{\mathsf{HT}^{\mathsf{cbn}}_{#1}(#2)}}
+\newcommand{\hcbv}[2]{\ensuremath{\mathsf{HT}^{\mathsf{cbv}}_{#1}(#2)}}
+
+\newcommand{\contrb}[2]{#1 \mathrel{\text{contr}_\beta} #2}
+\newcommand{\bnf}[1]{#1 \mathrel{\text{nf}_\beta}}
+\newcommand{\bnorm}[1]{#1 \mathrel{\text{norm}_\beta}}
+\newcommand{\stepb}[2]{\ensuremath{#1 \mapsto_{\beta} #2}}
+\newcommand{\stepbs}[2]{\ensuremath{#1 \mapsto_{\beta}^* #2}}
+
+\newcommand{\hnorm}[3]{\ensuremath{\mathsf{HN}^{#1}_{#2}(#3)}}
+\newcommand{\id}[1]{\ensuremath{\mathsf{id}(#1)}}
+
+\newcommand{\AND}{\mathrel{\wedge}}
+\newcommand{\OR}{\mathrel{\vee}}
+
+\newcommand{\step}[2]{\ensuremath{#1 \mapsto #2}}
+\newcommand{\steps}[2]{\ensuremath{#1 \mapsto^* #2}}
+\newcommand{\eval}[2]{\ensuremath{#1 \mathrel{\Downarrow} #2}}
+\newcommand{\valueJ}[1]{\ensuremath{#1\ \mathsf{value}}}
+\newcommand{\fillin}[2]{\ensuremath{#1\{#2\}}}
+
+\newcommand{\fn}[2]{\ensuremath{#1 \to #2}}
+\newcommand{\nat}{\ensuremath{\mathsf{nat}}}
+\newcommand{\bool}{\ensuremath{\mathsf{bool}}}
+\newcommand{\tp}{\ensuremath{\mathsf{T}}}
+\newcommand{\ap}[2]{\ensuremath{#1\ #2}}
+\newcommand{\lam}[3]{\ensuremath{\lambda #1 {:} #2.\, #3}}
+
+% Page layout
+\usepackage[paper=letterpaper,top=1in,bottom=1in,left=0.8in,right=0.8in,]{geometry}
+\setlength{\parindent}{0mm}
+\setlength{\parskip}{1.5mm}
+
+\usepackage{fancyhdr}
+\fancyhead[RO,LE]{\scshape 15-819: Computational Higher Type Theory}
+\fancyhead[LO,RE]{\scshape Lecture Notes Week 1}
+\pagestyle{fancy}
+
+\usepackage{hyperref}
+
+% titles
+\usepackage{titlesec}
+\titleformat*{\section}{\large\bfseries}
+\titleformat*{\subsection}{\normalsize\bfseries}
+\titleformat*{\subsubsection}{\bfseries}
+\titleformat*{\paragraph}{\bfseries}
+
+% package to customize three basic list environments: enumerate, itemize and description.
+\usepackage{enumitem}
+\setitemize{noitemsep, topsep=0pt, leftmargin=*}
+\setenumerate{noitemsep, topsep=0pt, leftmargin=*}
+\setdescription{noitemsep, topsep=0pt, leftmargin=*}
+
+\begin{document}
+
+\begin{center}
+\Large{\scshape Computational Higher Type Theory (CHTT)}\\[2pt]
+\large{\scshape Robert Harper}\\[4pt]
+\large\bfseries{Lecture Notes of Week 2 by Stephanie Balzer and Yue Niu}
+\end{center}
+
+\bigskip
+
+\section{Notation \& Historical Notes}
+The following proof method is attributed to William Tait, who first proved normalization for the STLC. Below are some 
+notations you might find in the literature:
+
+\begin{enumerate}
+\item hereditarily \dots\\
+\item logical relations (Statman)\\
+\item Tait's Method (W. Tait)\\
+\item Girard's Method (J-Y Girard)\\
+\item Computability (Tait's Method)\\
+\item Reducibility Method (Girard)
+\end{enumerate}
+
+\section{Fundamental Theorem Cont'd}
+
+\subsubsection{Head expansion}
+
+To complete the proof from last time (that well-typed terms are hereditarily terminating under substitution by 
+hereditarily terminating maps), we need to prove a lemma known as ``head expansion'' or ``reverse execution'':
+
+\begin{lem}[Head expansion]
+  If $\hterm{A}{M'}$ and $\step{M}{M'}$ then $\hterm{A}{M}$.
+\end{lem}
+\begin{proof}
+  Induction on $A$.
+  \begin{itemize}
+  \setlength\itemsep{1em}
+  \item $A = b$\\
+    Suppose $\hterm{b}{M'}$ and $\step{M}{M'}$. We need to show $\hterm{b}{M}$. By definition, it suffices to show that $M \Downarrow$. 
+    This is clear since $M' \Downarrow$ and $\step{M}{M'}$.
+  \item $A = \fn{A_1}{A_2}$\\
+    Suppose $\hterm{\fn{A_1}{A_2}}{M'}$ and $\step{M}{M'}$. We need to show $\hterm{\fn{A_1}{A_2}}{M}$.
+    Now suppose $\hterm{A_1}{N}$, and we need to show $\hterm{A_2}{\ap{M}{N}}$. 
+    By the definition of HT and our assumption, we have $\hterm{A_2}{\ap{M'}{N}}$. 
+    Note that $\step{\ap{M}{N}}{\ap{M'}{N}}$ by our assumption and the compuation rule.
+    Now applying the IH, we have $\hterm{A_2}{\ap{M}{N}}$.
+    \footnote{Terms in the hereditary termination predicate get bigger, but types get smaller. Since the induction 
+    is on $A$, we are okay.}
+    \qedhere
+  \end{itemize}
+\end{proof}
+
+\subsubsection{Termination of STLC}
+
+Now we need to show that hereditary termination implies termination of terms in the STLC:
+\begin{thm}
+  If $\hterm{A}{M}$ then $\termb{M}$.
+\end{thm}
+\begin{proof}
+  Induction on $A$.
+   \begin{itemize}
+  \setlength\itemsep{1em}
+  \item $A = b$\\
+    Suppose $\hterm{b}{M}$. Done by definition of hereditary termination.  
+  \item $A = \fn{A_1}{A_2}$\\
+    Suppose $\hterm{\fn{A_1}{A_2}}{M}$. We need to show $\termb{M}$. We are stuck here; and there are a couple of
+    options to consider.
+  \end{itemize}
+\end{proof}
+
+\begin{enumerate}
+\item Weaken the theorem so that we can only conclude termination for observables (terms in the base type).
+\item Add $\termb{M}$ to the definition of $\hterm{A}{M}$; while this comes off as a hack, everything so far will 
+still work out.
+\end{enumerate}
+
+\subsection{Another Hereditary Termination (Positive Formulation)}
+
+Notice in the definition of hereditary termination above, we take a ``negative'' approach with respect to the 
+function type, in that we consider everything that can happen in the elimination form for functions. Dually, we can 
+also formulate hereditary termination ``positively''. 
+
+\begin{align*}
+  \htermp{b}{M} &\triangleq \steps{M}{c}\\
+  \htermp{\fn{A}{B}}{M} &\triangleq \steps{M}{\lam{x}{A}{M_2}} \; \text{and}\;
+  \forall M_1.\ \htermp{A}{M_1} \implies \htermp{A_2}{[M_1/x]M_2}
+\end{align*}
+
+This is also known as the ``method of canonical forms'', and we can define hereditary termination in terms of 
+``hereditary values'', whose definition will depend on whether we are working ``call by value'' or ``call by name''. 
+
+\subsection{C.B.V vs. C.B.N}
+
+In both C.B.V and C.B.N, a hereditary value at base type is simply a value. 
+At the function type for C.B.N, we have
+\[
+\hcbn{\fn{A_1}{A_2}}{V} \triangleq V = \lam{x}{A}{M_2} \; \text{and} \; \forall M_1. \hterm{A_1}{M_1} \implies
+\hterm{A_2}{[M_1/x]M_2}
+\]
+For C.B.V:
+\[
+\hcbv{\fn{A_1}{A_2}}{V} \triangleq V = \lam{x}{A}{M_2} \; \text{and} \; \forall V_1. \hcbv{A_1}{V_1} \implies
+\hterm{A_2}{[V_1/x]M_2}
+\]
+
+TODO: fill in explanation for distinction. 
+
+\subsection{Summary}
+
+We we have shown so far can be summarized as a relationship between syntax and semantics: well-typed terms 
+terminate according to the semantics (the computation rules). We can make this more apparent by introducing 
+some new notation: 
+
+\begin{align}
+&\hasTC{\Gamma}{A} && \\
+&M \in A && \hterm{A}{M}\\
+&\hasEC{\Gamma}{M}{A} && \gamma \in \Gamma \implies \hat\gamma(M) \in A &\\
+\end{align}
+
+Notice that the ``membership'' relation has a computation flavor; it is a behavorial condition on $M$: which says 
+that $M$ satisfy the specification $A$. \\
+
+Now, we can state our theorem as follows: 
+
+\begin{thm}
+If $\hasEF{\Gamma}{M}{A}$, then $\hasEC{\Gamma}{M}{A}$.
+\end{thm}
+
+This is in some sense a soundness theorem (in the language of formal logics), which means that the formally derivable
+terms are actually true (according to the computational specification). Therefore, we can think of formal systems as a 
+way of \emph{accessing} the \emph{truth}. Note that we make no claims that $\hasEC{\Gamma}{M}{A}$ be decidable, 
+as it is fruitless to expect the truth to be decidable in general. \footnote{see dreyer's Milner lectures for 
+further discussion.}
+
+\section{Normalization}
+
+We can also interpret variables in a different sense, where they stand for open terms - they are indeterminates. 
+Then the judgment $\hasEF{\Gamma}{M}{A}$ could be interpreted as a mapping $M$ from open terms to the type $A$.\\
+
+Recall the beta-contraction relation, $\contrb{P}{P'}$:
+\[
+\contrb{\ap{(\lam{x}{A}{M})}{N}}{[N/x]M}
+\]
+
+With this, we formulate beta-reduction: 
+
+\begin{mathpar}
+\inferrule{
+  \contrb{M}{N}
+}{
+  \stepb{M}{N}
+} \and
+\inferrule{
+  \stepb{M}{M'}
+}{
+  \stepb{\ap{M}{N}}{\ap{M'}{N}}
+} \and
+\inferrule{
+  \stepb{N}{N'}
+}{
+  \stepb{\ap{M}{N}}{\ap{M}{N'}}
+} \and
+\inferrule{
+  \stepb{M}{M'}
+}{
+  \stepb{\lam{x}{A}{M}}{\lam{x}{A}{M'}}
+} 
+\end{mathpar}
+
+Further, we define beta-normal form, $\bnf{N}$:
+\[
+\bnf{N} \triangleq N \not\mapsto_{\beta}
+\]
+
+Where $N \not\mapsto_{\beta}$ means that no beta-reduction rule applies to $N$. This informal notation can be formalized.
+
+Finally, we can define when a term is beta-normalizing, $\bnorm{M}$: 
+\[
+\bnorm{M} \triangleq \exists N. \stepbs{M}{N} \;\text{and}\; \bnf{N}
+\]
+
+Now we can state the fundamental theorem for normalization: 
+\begin{thm}
+If $\hasEF{\Gamma}{M}{A}$ then $\bnorm{M}$.
+\end{thm}
+
+Following the proof for termination, we introduce a stronger notion for normalization, \emph{hereditary normalization}:
+
+\begin{align*}
+  \hnorm{\Delta}{b}{M} &\triangleq \bnorm{M}\\
+  \hnorm{\Delta}{\fn{A}{B}}{M} &\triangleq
+  \forall N.\ \hnorm{\Delta}{A}{N} \implies \hnorm{\Delta}{B}{\ap{M}{N}}
+\end{align*}
+As before, we define $\hnorm{\Delta}{\Gamma}{\gamma}$ to be $\forall x : A \in \Gamma.\ \hnorm{\Delta}{A}{\gamma(x)}$
+
+Some notes about this definition:
+\begin{itemize}
+\setlength\itemsep{1em}
+\item This predicate is defined on terms $M$ s.t. $\hasEF{\Delta}{M}{A}$. The extra argument to the hereditary normalization (compared to termination) $\Delta$ reflects this fact, since normalization is defined on open terms. \\
+\item We formulate hereditary normalization in the negative way; turns out this is the only way\\
+\item What can we say about positive types (sums)?
+\end{itemize}
+
+The proof can be divided into three lemmas: 
+\begin{lem}\label{l1}
+If $\hasEF{\Gamma}{M}{A}$ and $\hnorm{\Delta}{\Gamma}{\gamma}$, then $\hnorm{\Delta}{A}{\hat\gamma(M)}$.
+\end{lem}
+
+\begin{lem}\label{l2}
+If $\hnorm{\Delta}{A}{M}$ then $\bnorm{M}$.
+\end{lem}
+
+\begin{lem}\label{l3}
+$\hnorm{\Gamma}{\Gamma}{\id{\Gamma}}$.
+\end{lem}
+
+\subsection{Lemma \ref{l1}}
+
+\begin{lemm}
+If $\hasEF{\Gamma}{M}{A}$ and $\hnorm{\Delta}{\Gamma}{\gamma}$, then $\hnorm{\Delta}{A}{\hat\gamma(M)}$.
+\end{lemm}
+
+\begin{proof}
+Induction on typing. 
+\begin{itemize}
+  \setlength\itemsep{1em}
+  \item $\hasEF{\Gamma', x : A}{x}{A}$\\
+    Suppose $\hnorm{\Delta}{\Gamma}{\gamma}$. 
+    We need to  show $\hnorm{\Delta}{A}{\hat{\gamma}(x)}$, which follows directly by our assumption.
+  \item $\hasEF{\Gamma}{c}{b}$\\
+    Suppose $\hnorm{\Delta}{\Gamma}{\gamma}$. We need to show that $\hnorm{\Delta}{b}{c}$, which is to 
+    show that $\bnorm{c}$. Since $\bnf{c}$, we have $c$ normalizing in 0 steps. 
+  \item $\inferrule{
+      \hasEF{\Gamma}{M}{\fn{A}{B}}\\
+      \hasEF{\Gamma}{N}{A}
+    }{\hasEF{\Gamma}{\ap{M}{N}}{B}}$\\
+    Applying the IH, we have $\hnorm{\Delta}{\fn{A}{B}}{\hat{\gamma}(M)}$
+    and $\hnorm{\Delta}{A}{\hat{\gamma}(N)}$. By definition of hereditary normalization, we have
+    $\hnorm{\Delta}{B}{\ap{\hat{\gamma}(M)}{\hat{\gamma}(N)}}$. Since $\hat{\gamma}(\ap{M}{N}) = 
+    \ap{\hat{\gamma}(M)}{\hat{\gamma}(N)}$, we have
+    $\hnorm{\Delta}{B}{\hat{\gamma}(\ap{M}{N})}$.
+  \item
+    $\inferrule{
+      \hasEF{\Gamma, x : A}{M}{B}\\
+    }{\hasEF{\Gamma}{\lam{x}{A}{M}}{\fn{A}{B}}}$\\
+    Suppose $\hnorm{\Delta}{\Gamma}{\gamma}$. We need to show that 
+    $\hnorm{\Delta}{\fn{A}{B}}{\hat{\gamma}(\lam{x}{A}{M})}$. 
+    Thus, suppose $\hnorm{\Delta}{A}{N}$. It suffices to show that 
+    $\hnorm{\Delta}{B}{\ap{\hat{\gamma}(\lam{x}{A}{M})}{N}}$. Notice that with $N$, we can extend $\gamma$ to be
+    $\gamma' = \gamma[x \mapsto N]$, and since $N$ is hereditarily normalizing in $A$, it follows that 
+    $\hnorm{\Delta}{\Gamma,x : A}{\gamma'}$. Applying the IH, we have that $\hnorm{\Delta}{B}{\hat{\gamma'}(M)}$. 
+    Since substitution is commutative, $\hat{\gamma'}(M) = [N/x]\hat{\gamma}(M)$, and 
+    $\ap{\hat{\gamma}(\lam{x}{A}{M})}{N} = \ap{\lam{x}{A}{\hat{\gamma}(M)}}{N}$. Further, 
+    $\step{\ap{\lam{x}{A}{\hat{\gamma}(M)}}{N}}{[N/x]\hat{\gamma}(M)}$ by the computation rule. The result then follows
+    from head expansion. 
+   \qedhere
+\end{itemize}
+\end{proof}
+
+The proof for the next 2 lemmas will be mutual induction. However, this is not enough. We will need to further
+strengthen Lemma \ref{l3}, but let's see where we fail.
+
+\subsection{Lemma \ref{l2}}
+
+\begin{lemm}
+If $\hnorm{\Delta}{A}{M}$ then $\bnorm{M}$.
+\end{lemm}
+
+\begin{proofattempt}
+Induction on $A$.
+\begin{itemize}
+  \setlength\itemsep{1em}
+  \item $A = b$\\
+  Immediate from definition of hereditary normalization.
+  \item $A = \fn{A_1}{A_2}$\\
+  Suppose $\hnorm{\Delta}{A}{M}$. We need to show $\bnorm{M}$. Now we are in a bind. If we can somehow use 
+  Lemma \ref{l3} to obtain a hereditarily normalizing input of type $A_1$, then we can proceed with induction 
+  to obtain the result. For now, we will assume (*) that gives us a $\Gamma'$ such that $x : A_1 \in \Gamma'$.
+  By Lemma (\ref{l3}) we have $\hnorm{\Gamma'}{\Gamma'}{\id{\Gamma'}}$, in particular, $\hnorm{\Gamma'}{A_1}{x}$. By 
+  the definition of hereditary normalization, we further have that $\hnorm{\Gamma'}{A_2}{\ap{M}{x}}$. Now applying the 
+  IH, we see that $\bnorm{\ap{M}{x}}$, and by Lemma \ref{l5} we have $\bnorm{M}$. 
+  \qedhere
+\end{itemize}
+\end{proofattempt}
+
+Postponing the issues with this proof, we will move on to proving Lemma \ref{l3}, and resolve everything after
+presenting the two proofs.
+
+\subsection{Lemma \ref{l3}}
+
+\begin{lemm}
+$\hnorm{\Gamma}{\Gamma}{\id{\Gamma}}$.
+\end{lemm}
+
+\begin{proofattempt}
+Let $x : A \in \Gamma$ be arbitrary. Proceed with induction on $A$.
+\begin{itemize}
+  \setlength\itemsep{1em}
+  \item $A = b$\\
+  We need to show $\hnorm{\Gamma}{b}{x}$, which holds since $\bnf{x}$.
+  \item $A = \fn{A_1}{A_2}$\\
+  We need to show $\hnorm{\Gamma}{\fn{A_1}{A_2}}{x}$. Suppose $\hnorm{\Gamma}{A_1}{M_1}$, and it suffices to show
+  that $\hnorm{\Gamma}{A_2}{\ap{x}{M_1}}$. Now it would be nice to apply the IH to complete the proof, but which
+  is not strong enough.
+\end{itemize}
+\end{proofattempt}
+
+Notice that for every variable of function type, we want them to be hereditarily normalizing when applied to 
+beta-normal terms. We will add this to the lemma:
+
+\begin{lem}\label{l4}
+For all $k$, if $x : A_1 \to \dots \to A_k \to A \in \Gamma$ and for each $i \le k$, $\hasEF{\Gamma}{M_i}{A_i}$ and $\bnorm{M_i}$, then $\hnorm{\Gamma}{A}{\ap{\ap{x}{M_1}}{\dots M_k}}$.
+\end{lem}
+
+Note that we need each argument to be \emph{normalizing} instead of merely \emph{hereditarily normalizing}. 
+Before proving \ref{l4}, we shall see how to fix \ref{l2}. The crucial fact is the (*) that gave us a context $\Gamma'$
+out of thin air, which allowed us to supply the argument to the function term. To do this, we will make a change to 
+the definition of hereditary normalization, which will involve the notion of Kripke semantics.
+
+\subsection{Kripke semantics}
+
+Kripke semantics, or presheafs, are related to/gives the solution to the following:
+\begin{itemize}
+\item allocating a ``fresh variable'' in a context
+\item why should hereditary normalization be stable under context extensions? (In other words, why should context
+extensions be admissible for hereditary normalization?)
+\end{itemize}
+
+If we think of the typing context as a model of the ``world'', then Kripke semantics suggests that we can stipulate
+hereditary normalization to hold in all context extensions, or ``future words''. Viewed logically, this would be the
+admissibility of weakening with respect to hereditary normalization.\\
+
+Thus for our definition, we change the higher order terms to expect ``world extensions'':
+
+\[
+\hnorm{\Delta}{\fn{A_1}{A_2}}{M} \triangleq \;\text{if}\; \Delta' \ge \Delta \;\text{and}\; \hnorm{\Delta'}{A_1}{M_1}
+\;\text{then}\; \hnorm{\Delta'}{A_2}{\ap{M}{M_1}}
+\]
+
+Note that $\ge$ is a pre-order on contexts $\Delta$, and is reflexive and transitive. Now we can fix both lemmas. 
+
+\subsection{Fix Lemmas}
+
+\begin{lemm}
+If $\hnorm{\Delta}{A}{M}$ then $\bnorm{M}$.
+\end{lemm}
+
+\begin{proof}
+Induction on $A$.
+\begin{itemize}
+  \setlength\itemsep{1em}
+  \item $A = b$\\
+  Immediate from definition of hereditary normalization.
+  \item $A = \fn{A_1}{A_2}$\\
+  Suppose $\hnorm{\Delta}{A}{M}$. We need to show $\bnorm{M}$. Let $\Delta' = \Delta, x : A_1$. By IH on Lemma \ref{l4} 
+  (with $k = 0$), we have $\hnorm{\Delta'}{A_1}{x}$. By the definition of hereditary termination, we have 
+  $\hnorm{\Delta'}{A_2}{\ap{M}{x}}$. Applying the IH, we have $\bnorm{\ap{M}{x}}$, and by Lemma \ref{l5} we have 
+  $\bnorm{M}$. 
+  \qedhere
+\end{itemize}
+\end{proof}
+
+\begin{lem}\label{l4}
+For all $k$, if $x : A_1 \to \dots \to A_k \to A \in \Gamma$ and for each $i \le k$, $\hasEF{\Gamma}{M_i}{A_i}$ and $\bnorm{M_i}$, then $\hnorm{\Gamma}{A}{\ap{\ap{x}{M_1}}{\dots M_k}}$.
+\end{lem}
+
+\begin{proof}
+Proceed with induction on $A$.
+\begin{itemize}
+  \setlength\itemsep{1em}
+  \item $A = b$\\
+  We need to show $\bnorm{\ap{\ap{x}{M_1}}{\dots M_k}}$, which holds since each $M_i$ normalizing, and thus the 
+  term does not beta-reduce.
+  \item $A = \fn{A_i}{A_j}$\\
+  We need to show $\hnorm{\Gamma}{A}{\ap{\ap{x}{M_1}}{\dots M_k}}$. Let $\Gamma' \ge \Gamma$ and 
+  $\hnorm{\Gamma'}{A_i}{M_i}$. It suffices to show that $\hnorm{\Gamma'}{A_j}{\ap{\ap{\ap{x}{M_1}}{\dots M_k}}{M_i}}$.
+  By IH on Lemma \ref{l2}, we have that $\bnorm{M_i}$, and we obtain the result by applying the IH with $k + 1$.
+\end{itemize}
+\end{proof}
+
+\section{Strong Normalization}
+\bibliographystyle{plainnat}
+\bibliography{ctt}
+
+\end{document}
