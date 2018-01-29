@@ -370,8 +370,6 @@ Our fundamental theorem uses a negative formulation of hereditary normalization,
 only possible choice in the presence of indeterminates.  This raises the question what how to
 accommodate positive types, such as sums.
 
-\todo[inline]{Please check above paragraph.}
-
 To prove normalization for the simply typed lambda calculus, we additionally need the following
 two lemmas, whose proofs mutually rely on each other:
 
@@ -387,7 +385,9 @@ In the following, we develop the proof of our fundamental Theorem~\ref{thm:hnorm
 lemmas above.  As usual, we develop the proof step-by-step, starting with failed attempts that
 lead us to refine what we have already stated.
 
-\subsection{Proof of Theorem~\ref{thm:hnorm}, Hereditary Normalization}
+\subsection{Proving Normalization}
+
+\subsubsection{Proof of Fundamental Theorem}
 
 \begin{proof}[\textbf{Proof of Theorem~\ref{thm:hnorm}}]
 By induction on typing. 
@@ -426,7 +426,7 @@ By induction on typing.
 \end{itemize}
 \end{proof}
 
-\subsection{Attempting to Prove Lemmas \ref{l2} and \ref{l3}}
+\subsubsection{Attempts at Proving Lemmas \ref{l2} and \ref{l3}}
 
 The proof of Lemmas \ref{l2} and \ref{l3} goes by simultaneous induction.  It will turn out that
 we will need to further strengthen Lemma \ref{l3} in order to get the induction go through, but
@@ -443,7 +443,7 @@ By induction on the structure of $A$.
   somehow use Lemma \ref{l3} to obtain a hereditarily normalizing input of type $A_1$, then we
   could apply the inductive hypothesis to possibly obtain the result. For now, we will
   assume that there is a way to create a context $\Gamma'$ such that $x : A_1 \in \Gamma'$ (see
-  Section~\ref{subsec:kripke_sem} for solution).  By Lemma \ref{l3} we have
+  Section~\ref{sec:kripke_sem} for solution).  By Lemma \ref{l3} we have
   $\hnorm{\Gamma'}{\Gamma'}{\id{\Gamma'}}$, in particular, $\hnorm{\Gamma'}{A_1}{x}$. By the
   definition of hereditary normalization, we further have that
   $\hnorm{\Gamma'}{A_2}{\ap{M}{x}}$. Now applying the IH, we see that $\bnorm{\ap{M}{x}}$, and
@@ -462,54 +462,58 @@ Let $x : A \in \Gamma$ be arbitrary. Proceed by induction on the structure of $A
   We need to show $\hnorm{\Gamma}{b}{x}$, which holds since $\bnf{x}$.
   \item $A = \fn{A_1}{A_2}$\\
   We need to show $\hnorm{\Gamma}{\fn{A_1}{A_2}}{x}$. Suppose $\hnorm{\Gamma}{A_1}{M_1}$, and it suffices to show
-  that $\hnorm{\Gamma}{A_2}{\ap{x}{M_1}}$. Now it would be nice to apply the IH to complete the proof, but which
-  is not strong enough.
+  that $\hnorm{\Gamma}{A_2}{\ap{x}{M_1}}$. Now it would be nice to apply the IH to complete the proof, which
+  is unfortunately not strong enough.
 \end{itemize}
 \end{prfattemptref}
 
-Notice that for every variable of function type, we want them to be hereditarily normalizing when applied to 
-beta-normal terms. We will add this to the lemma:
+If we knew that a variable of a function type is hereditarily normalizing when applied to a
+beta-normal term, we could complete the above proof.  So, let's refine Lemma~\ref{l3} with
+this idea, resulting in Lemma~\ref{l4}:
 
 \begin{lem}\label{l4}
 For all $k$, if $x : A_1 \to \dots \to A_k \to A \in \Gamma$ and for each $i \le k$, $\hasEF{\Gamma}{M_i}{A_i}$ and $\bnorm{M_i}$, then $\hnorm{\Gamma}{A}{\ap{\ap{x}{M_1}}{\dots M_k}}$.
 \end{lem}
 
-Note that we need each argument to be \emph{normalizing} instead of merely \emph{hereditarily normalizing}. 
-Before proving Lemma \ref{l4}, we shall see how to fix Lemma \ref{l2}. The crucial fact is the (*) that gave us a
-context $\Gamma'$
-out of thin air, which allowed us to supply the argument to the function term. To do this, we will make a change to 
-the definition of hereditary normalization, which will involve the notion of Kripke semantics.
+Note that we need each argument to be \emph{normalizing} instead of merely \emph{hereditarily
+  normalizing}.  Before proving Lemma \ref{l4}, we first return to the issue raised in the
+proof of Lemma~\ref{l2}.
 
-\subsection{Kripke semantics}\label{subsec:kripke_sem}
+\subsubsection{Resolving Issues with Kripke Semantics}\label{sec:kripke_sem}
 
-Kripke semantics, or presheafs, are related to/gives the solution to the following:
-\begin{itemize}
-\item allocating a ``fresh variable'' in a context
-\item why should hereditary normalization be stable under context extensions? (In other words, why should context
-extensions be admissible for hereditary normalization?)
-\end{itemize}
+In the proof of Lemma~\ref{l2}, we have assumed that we can create a context $\Gamma'$ out of
+thin air, which allowed us to supply the argument to the function term.  For this to be indeed
+the case, we need a mechanism to \emph{allocate} a fresh variable.  Once we have such a
+mechanism, however, the question comes up whether hereditary normalization is \emph{stable}
+under such context extensions.  To guarantee that this is indeed the case, we change the
+definition of hereditary normalization to make use of the notion of a \emph{Kripke} semantics.
+If we think of the typing context as a model of the ``world'', then Kripke semantics suggests
+that we can stipulate hereditary normalization to hold in all context extensions, or ``future
+worlds''. Viewed logically, this would be the admissibility of weakening with respect to
+hereditary normalization.
 
-If we think of the typing context as a model of the ``world'', then Kripke semantics suggests that we can stipulate
-hereditary normalization to hold in all context extensions, or ``future words''. Viewed logically, this would be the
-admissibility of weakening with respect to hereditary normalization.\\
-
-Thus for our definition, we change the higher order terms to expect ``world extensions'':
+Thus for our definition of hereditary normalization, we change the higher order terms to expect
+``world extensions'':
 
 \[
 \hnorm{\Delta}{\fn{A_1}{A_2}}{M} \triangleq \;\text{if}\; \Delta' \ge \Delta \;\text{and}\; \hnorm{\Delta'}{A_1}{M_1}
 \;\text{then}\; \hnorm{\Delta'}{A_2}{\ap{M}{M_1}}
 \]
 
-Note that $\ge$ is a pre-order on contexts $\Delta$, and is reflexive and transitive. Now we can fix both lemmas. 
+Note that $\ge$ is a pre-order on contexts $\Delta$, and thus is reflexive and transitive.  In
+general, we get the following \emph{monotonicity} guarantee:
 
-\subsection{Fix Lemmas}
+\begin{remark}[Monotonicity]
+If $\hnorm{\Delta}{A}{M}$ and $\Delta' \ge \Delta$, then $\hnorm{\Delta'}{A}{M}$.
+\end{remark}
 
-\begin{lemm}
-If $\hnorm{\Delta}{A}{M}$ then $\bnorm{M}$.
-\end{lemm}
+We now return to proving our lemmas, accounting for the new definition of hereditary
+normalization.  The proof of our main fundamental theorem remains valid.
 
-\begin{proof}
-Induction on $A$.
+\subsubsection{Proofs of Lemmas \ref{l2} and \ref{l4}}
+
+\begin{proof}[Proof of Lemma~\ref{l2}]
+By induction on the structure of $A$, simultaneously with the proof of Lemma~\ref{l4}.
 \begin{itemize}
   \setlength\itemsep{1em}
   \item $A = b$\\
@@ -523,16 +527,12 @@ Induction on $A$.
 \end{itemize}
 \end{proof}
 
-\begin{lemm}
-For all $k$, if $x : A_1 \to \dots \to A_k \to A \in \Gamma$ and for each $i \le k$, $\hasEF{\Gamma}{M_i}{A_i}$ and $\bnorm{M_i}$, then $\hnorm{\Gamma}{A}{\ap{\ap{x}{M_1}}{\dots M_k}}$.
-\end{lemm}
-
-\begin{proof}
-Proceed with induction on $A$.
+\begin{proof}[Proof of Lemma~\ref{l4}]
+By induction on the structure of $A$, simultaneously with the proof of Lemma~\ref{l2}.
 \begin{itemize}
   \setlength\itemsep{1em}
   \item $A = b$\\
-  We need to show $\bnorm{\ap{\ap{x}{M_1}}{\dots M_k}}$, which holds since each $M_i$ normalizing, and thus the 
+  We need to show $\bnorm{\ap{\ap{x}{M_1}}{\dots M_k}}$, which holds since each $M_i$ is normalizing, and thus the 
   term does not beta-reduce.
   \item $A = \fn{A_{k+1}}{A_{k+2}}$\\
   We need to show $\hnorm{\Gamma}{A}{\ap{\ap{x}{M_1}}{\dots M_k}}$. Let $\Gamma' \ge \Gamma$ and 
@@ -542,7 +542,43 @@ Proceed with induction on $A$.
 \end{itemize}
 \end{proof}
 
-\subsection{Lemma \ref{l4} with evaluation context}
+Finally, we have to state and prove Lemma~\ref{l6}, which we relied upon in the proofs of
+Lemmas \ref{l2} and \ref{l4}:
+
+\begin{lem}\label{l6}
+If \bnorm{\ap{M}{x}}, then \bnorm{M}.
+\end{lem}
+
+\begin{proof}
+Let $\stepbs{\ap{M}{x}}{N}$ and $\bnf{N}$.
+Proceed with induction on the length of the sequence to beta-normal form.
+\begin{itemize}
+  \setlength\itemsep{1em}
+  \item $\stepbk{\ap{M}{x}}{0}{N}$\\
+  Then $\bnf{\ap{M}{x}}$, and $\bnf{M}$, and $M$ also beta-normalizes in 0 steps. 
+  \item $\stepbk{\ap{M}{x}}{k+1}{N}$\\
+  Proceed by cases on the first step.
+  \begin{itemize}
+  \setlength\itemsep{1em}
+  \item \stepb{\ap{\lam{x}{a}{M'}}{x}}{M'}\\
+  Then $M'$ beta-normalizes in $k$ steps. The same $k$ steps will also normalize $M$ performed under the lambda.
+  \item \stepb{\ap{M}{x}}{\ap{M'}{x}}\\
+  By IH, \bnorm{M'}, and it follows that $\bnorm{M}$.
+  \item \stepb{\ap{M}{x}}{\ap{M'}{N}}\\
+  Impossible.
+  \item \stepb{\lam{x}{A}{M'}}{\lam{x}{A}{M''}}\\
+  Impossible.
+  \end{itemize}
+  
+\end{itemize}
+\end{proof}
+
+\subsection{Remarks}
+
+We conclude these notes with providing a restatement of Lemma~\ref{l4} using evaluation
+contexts and a note on strong normalization.
+
+\subsubsection{Lemma \ref{l4} with evaluation context}
 
 Recall the definition of evaluation contexts: 
 
@@ -550,8 +586,8 @@ Recall the definition of evaluation contexts:
   \E ::= \cdot \mid \ap{\E}{M}
 \]
 
-We now further characterize evaluation contexts as mappings between types\footnote{more details to be found in chapter
-46 of PFPL}: 
+We now further characterize evaluation contexts as mappings between types, as detailed in
+Chapter~46 of~\cite{HarperBook2016}: 
 \begin{mathpar}
 \inferrule{
 }{
@@ -592,7 +628,7 @@ then \hnorm{\Gamma, x : C}{A}{\fillin{\E}{x}}
 \end{lem}
 
 \begin{proof}
-Proceed with induction on the structure of $A$.
+Proceed by induction on the structure of $A$.
 \begin{itemize}
   \setlength\itemsep{1em}
   \item $A = b$\\
@@ -621,36 +657,13 @@ Note that the proof is an induction over the lexicographical ordering on the str
 $(A,\; \hasC{\E}{\Gamma}{C}{\Gamma}{C},\; \bnorm{\E})$. In particular, when appealing to the inductive hypothesis,
 the size of structurese relating to $\E$ increases in some cases, but only when $A$ is correspondingly decreasing. We can recover Lemma \ref{l4} by instantiating Lemma \ref{l5} with the empty evaluation context.
 
-We have one last lemma to prove, namely:
+\subsubsection{Strong Normalization}
 
-\begin{lem}\label{l6}
-If \bnorm{\ap{M}{x}}, then \bnorm{M}.
-\end{lem}
+In these notes, we have proved normalization for the simply typed lambda calculus.
+Occasionally, \emph{strong normalization} is shown to hold for a calculus, which guarantees
+that there are no infinite reduction sequences.  The value of asserting strong normalization
+for a calculus is that it enables reasoning by transfinite induction on reductions.
 
-\begin{proof}
-Let $\stepbs{\ap{M}{x}}{N}$ and $\bnf{N}$.
-Proceed with induction on the length of the sequence to beta-normal form.
-\begin{itemize}
-  \setlength\itemsep{1em}
-  \item $\stepbk{\ap{M}{x}}{0}{N}$\\
-  Then $\bnf{\ap{M}{x}}$, and $\bnf{M}$, and $M$ also beta-normalizes in 0 steps. 
-  \item $\stepbk{\ap{M}{x}}{k+1}{N}$\\
-  Proceed by cases on the first step.
-  \begin{itemize}
-  \setlength\itemsep{1em}
-  \item \stepb{\ap{\lam{x}{a}{M'}}{x}}{M'}\\
-  Then $M'$ beta-normalizes in $k$ steps. The same $k$ steps will also normalize $M$ performed under the lambda.
-  \item \stepb{\ap{M}{x}}{\ap{M'}{x}}\\
-  By IH, \bnorm{M'}, and it follows that $\bnorm{M}$.
-  \item \stepb{\ap{M}{x}}{\ap{M'}{N}}\\
-  Impossible.
-  \item \stepb{\lam{x}{A}{M'}}{\lam{x}{A}{M''}}\\
-  Impossible.
-  \end{itemize}
-  
-\end{itemize}
-\end{proof}
-\section{Strong Normalization}
 \bibliographystyle{plainnat}
 \bibliography{ctt}
 
