@@ -34,6 +34,8 @@
 \newcommand{\hasTEC}[3]{\ensuremath{#1 \gg #2 \eeq #3\ \mathsf{type}}}
 \newcommand{\hasEEC}[4]{\ensuremath{#1 \gg #2 \eeq #3 : #4}}
 
+\newcommand{\hasC}[5]{\ensuremath{#1 : (#2 \rhd #3) \leadsto (#4 \rhd #5)}}
+
 \newcommand{\hterm}[2]{\ensuremath{\mathsf{HT}_{#1}(#2)}}
 \newcommand{\htermp}[2]{\ensuremath{\mathsf{HT}^+_{#1}(#2)}}
 \newcommand{\termb}[1]{\ensuremath{{#1} \; \mathsf{term}_{\beta}}}
@@ -42,9 +44,10 @@
 
 \newcommand{\contrb}[2]{#1 \mathrel{\text{contr}_\beta} #2}
 \newcommand{\bnf}[1]{#1 \mathrel{\text{nf}_\beta}}
-\newcommand{\bnorm}[1]{#1 \mathrel{\text{norm}_\beta}}
+\newcommand{\bnorm}[1]{\ensuremath{#1 \mathrel{\text{norm}_\beta}}}
 \newcommand{\stepb}[2]{\ensuremath{#1 \mapsto_{\beta} #2}}
 \newcommand{\stepbs}[2]{\ensuremath{#1 \mapsto_{\beta}^* #2}}
+\newcommand{\stepbk}[3]{\ensuremath{#1 \mapsto_{\beta}^{(#2)} #3}}
 
 \newcommand{\hnorm}[3]{\ensuremath{\mathsf{HN}^{#1}_{#2}(#3)}}
 \newcommand{\id}[1]{\ensuremath{\mathsf{id}(#1)}}
@@ -64,6 +67,8 @@
 \newcommand{\tp}{\ensuremath{\mathsf{T}}}
 \newcommand{\ap}[2]{\ensuremath{#1\ #2}}
 \newcommand{\lam}[3]{\ensuremath{\lambda #1 {:} #2.\, #3}}
+
+\newcommand{\E}{\mathcal{E}}
 
 % Page layout
 \usepackage[paper=letterpaper,top=1in,bottom=1in,left=0.8in,right=0.8in,]{geometry}
@@ -288,8 +293,8 @@ As before, we define $\hnorm{\Delta}{\Gamma}{\gamma}$ to be $\forall x : A \in \
 Some notes about this definition:
 \begin{itemize}
 \setlength\itemsep{1em}
-\item This predicate is defined on terms $M$ s.t. $\hasEF{\Delta}{M}{A}$. The extra argument to the hereditary normalization (compared to termination) $\Delta$ reflects this fact, since normalization is defined on open terms. \\
-\item We formulate hereditary normalization in the negative way; turns out this is the only way\\
+\item This predicate is defined on terms $M$ s.t. $\hasEF{\Delta}{M}{A}$. The extra argument to the hereditary normalization (compared to termination) $\Delta$ reflects this fact, since normalization is defined on open terms.
+\item We formulate hereditary normalization in the negative way; turns out this is the only way
 \item What can we say about positive types (sums)?
 \end{itemize}
 
@@ -368,7 +373,7 @@ Induction on $A$.
   Suppose $\hnorm{\Delta}{A}{M}$. We need to show $\bnorm{M}$. Now we are in a bind. If we can somehow use 
   Lemma \ref{l3} to obtain a hereditarily normalizing input of type $A_1$, then we can proceed with induction 
   to obtain the result. For now, we will assume (*) that gives us a $\Gamma'$ such that $x : A_1 \in \Gamma'$.
-  By Lemma (\ref{l3}) we have $\hnorm{\Gamma'}{\Gamma'}{\id{\Gamma'}}$, in particular, $\hnorm{\Gamma'}{A_1}{x}$. By 
+  By Lemma \ref{l3} we have $\hnorm{\Gamma'}{\Gamma'}{\id{\Gamma'}}$, in particular, $\hnorm{\Gamma'}{A_1}{x}$. By 
   the definition of hereditary normalization, we further have that $\hnorm{\Gamma'}{A_2}{\ap{M}{x}}$. Now applying the 
   IH, we see that $\bnorm{\ap{M}{x}}$, and by Lemma \ref{l5} we have $\bnorm{M}$. 
   \qedhere
@@ -405,7 +410,8 @@ For all $k$, if $x : A_1 \to \dots \to A_k \to A \in \Gamma$ and for each $i \le
 \end{lem}
 
 Note that we need each argument to be \emph{normalizing} instead of merely \emph{hereditarily normalizing}. 
-Before proving \ref{l4}, we shall see how to fix \ref{l2}. The crucial fact is the (*) that gave us a context $\Gamma'$
+Before proving Lemma \ref{l4}, we shall see how to fix Lemma \ref{l2}. The crucial fact is the (*) that gave us a
+context $\Gamma'$
 out of thin air, which allowed us to supply the argument to the function term. To do this, we will make a change to 
 the definition of hereditary normalization, which will involve the notion of Kripke semantics.
 
@@ -446,15 +452,15 @@ Induction on $A$.
   \item $A = \fn{A_1}{A_2}$\\
   Suppose $\hnorm{\Delta}{A}{M}$. We need to show $\bnorm{M}$. Let $\Delta' = \Delta, x : A_1$. By IH on Lemma \ref{l4} 
   (with $k = 0$), we have $\hnorm{\Delta'}{A_1}{x}$. By the definition of hereditary termination, we have 
-  $\hnorm{\Delta'}{A_2}{\ap{M}{x}}$. Applying the IH, we have $\bnorm{\ap{M}{x}}$, and by Lemma \ref{l5} we have 
+  $\hnorm{\Delta'}{A_2}{\ap{M}{x}}$. Applying the IH, we have $\bnorm{\ap{M}{x}}$, and by Lemma \ref{l6} we have 
   $\bnorm{M}$. 
   \qedhere
 \end{itemize}
 \end{proof}
 
-\begin{lem}\label{l4}
+\begin{lemm}
 For all $k$, if $x : A_1 \to \dots \to A_k \to A \in \Gamma$ and for each $i \le k$, $\hasEF{\Gamma}{M_i}{A_i}$ and $\bnorm{M_i}$, then $\hnorm{\Gamma}{A}{\ap{\ap{x}{M_1}}{\dots M_k}}$.
-\end{lem}
+\end{lemm}
 
 \begin{proof}
 Proceed with induction on $A$.
@@ -463,13 +469,122 @@ Proceed with induction on $A$.
   \item $A = b$\\
   We need to show $\bnorm{\ap{\ap{x}{M_1}}{\dots M_k}}$, which holds since each $M_i$ normalizing, and thus the 
   term does not beta-reduce.
-  \item $A = \fn{A_i}{A_j}$\\
+  \item $A = \fn{A_{k+1}}{A_{k+2}}$\\
   We need to show $\hnorm{\Gamma}{A}{\ap{\ap{x}{M_1}}{\dots M_k}}$. Let $\Gamma' \ge \Gamma$ and 
-  $\hnorm{\Gamma'}{A_i}{M_i}$. It suffices to show that $\hnorm{\Gamma'}{A_j}{\ap{\ap{\ap{x}{M_1}}{\dots M_k}}{M_i}}$.
-  By IH on Lemma \ref{l2}, we have that $\bnorm{M_i}$, and we obtain the result by applying the IH with $k + 1$.
+  $\hnorm{\Gamma'}{A_{k+1}}{M_{k+1}}$. It suffices to show that 
+  $\hnorm{\Gamma'}{A_{k+2}}{\ap{\ap{\ap{x}{M_1}}{\dots M_k}}{M_{k+1}}}$.
+  By IH on Lemma \ref{l2}, we have that $\bnorm{M_{k+1}}$, and we obtain the result by applying the IH with $k + 1$.
 \end{itemize}
 \end{proof}
 
+\subsection{Lemma \ref{l4} with evaluation context}
+
+Recall the definition of evaluation contexts: 
+
+\[
+  \E ::= \cdot \mid \ap{\E}{M}
+\]
+
+We now further characterize evaluation contexts as mappings between types\footnote{more details to be found in chapter
+46 of PFPL}: 
+\begin{mathpar}
+\inferrule{
+}{
+  \hasC{\cdot}{\Gamma}{A}{\Gamma}{A}
+}\and
+\inferrule{
+  \hasC{\E}{\Gamma}{A}{\Gamma'}{\fn{A_1}{A_2}}
+  \and
+  \hasEF{\Gamma}{M}{A_1}
+}{
+  \hasC{\ap{\E}{M}}{\Gamma}{A}{\Gamma'}{A_2}
+}
+\end{mathpar}
+
+Where \hasC{\E}{\Gamma}{A}{\Gamma'}{A'} can be read as if \hasEF{\Gamma}{M}{A}, then \hasEF{\Gamma'}{\fillin{\E}{M}}{A'}.
+
+Further, we can define when evalutaion contexts are beta-normalizing:
+
+\begin{mathpar}
+\inferrule{
+}{
+  \bnorm{\cdot}
+}\and
+\inferrule{
+  \bnorm{M}
+  \and
+  \bnorm{\E}
+}{
+  \bnorm{\ap{\E}{M}}
+}
+\end{mathpar}
+
+Now, Lemma \ref{l4} can be formulated as follows:
+
+\begin{lem}\label{l5}
+If \hasC{\E}{\Gamma}{C}{\Gamma}{A} and \bnorm{\E},
+then \hnorm{\Gamma, x : C}{A}{\fillin{\E}{x}}
+\end{lem}
+
+\begin{proof}
+Proceed with induction on the structure of $A$.
+\begin{itemize}
+  \setlength\itemsep{1em}
+  \item $A = b$\\
+  Need to show that \hnorm{\Gamma}{b}{x}, which follows since variables are beta-normal.
+  \item $A = \fn{A_1}{A_2}$\\
+  Proceed with nested induction on context typing and normalization.
+  \begin{itemize}
+  \setlength\itemsep{1em}
+  \item $\E = \cdot$\\
+  Let $\Gamma' \ge \Gamma,x:A$. Suppose \hnorm{\Gamma'}{A_1}{M}. It suffices to show \hnorm{\Gamma'}{A_2}{\ap{x}{M}}. 
+  Note \bnorm{M} from IH on Lemma \ref{l2}.
+  Now apply the outer IH with $\hasC{\ap{\cdot}{M}}{\Gamma}{A}{\Gamma}{A_2}$ to obtain 
+  \hnorm{\Gamma,x:A}{A}{\fillin{\ap{\cdot}{M}}{x}}, and result follows from monotonicity of hereditary normalization.
+  \item $\E = \ap{\E'}{M}$ because $\hasC{\E'}{\Gamma}{C}{\Gamma}{\fn{A'}{A}}, \hasEF{\Gamma}{M}{A'}$ and 
+  \bnorm{M}, \bnorm{\E'}\\
+  We need to show that \hnorm{\Gamma,x:C}{A}{\fillin{\E}{x}}. Let $\Gamma' \ge \Gamma,x:C$, and 
+  suppose \hnorm{\Gamma'}{A_1}{N}. We need to show \hnorm{\Gamma'}{A_2}{\ap{\fillin{\E}{x}}{N}}. Since
+  $\ap{\fillin{\E}{x}}{N} = \fillin{\ap{\E}{N}}{x}$, it suffices to show \hnorm{\Gamma'}{A_2}{\fillin{\ap{\E}{N}}{x}}.
+  By the definition of context typing, we have \hasC{\ap{\E}{N}}{\Gamma}{C}{\Gamma}{A_2}. In addition, 
+  by IH on Lemma \ref{l2}, we have $\bnorm{N}$, consequently $\bnorm{\ap{\E}{N}}$. Lastly, we obtain the result by applying the outer IH on $\ap{\E}{N}$.
+  \end{itemize}
+\end{itemize}
+\end{proof}
+
+Note that the proof is an induction over the lexicographical ordering on the structures of 
+$(A,\; \hasC{\E}{\Gamma}{C}{\Gamma}{C},\; \bnorm{\E})$. In particular, when appealing to the inductive hypothesis,
+the size of structurese relating to $\E$ increases in some cases, but only when $A$ is correspondingly decreasing. We can recover Lemma \ref{l4} by instantiating Lemma \ref{l5} with the empty evaluation context.
+
+We have one last lemma to prove, namely:
+
+\begin{lem}\label{l6}
+If \bnorm{\ap{M}{x}}, then \bnorm{M}.
+\end{lem}
+
+\begin{proof}
+Let $\stepbs{\ap{M}{x}}{N}$ and $\bnf{N}$.
+Proceed with induction on the length of the sequence to beta-normal form.
+\begin{itemize}
+  \setlength\itemsep{1em}
+  \item $\stepbk{\ap{M}{x}}{0}{N}$\\
+  Then $\bnf{\ap{M}{x}}$, and $\bnf{M}$, and $M$ also beta-normalizes in 0 steps. 
+  \item $\stepbk{\ap{M}{x}}{k+1}{N}$\\
+  Proceed by cases on the first step.
+  \begin{itemize}
+  \setlength\itemsep{1em}
+  \item \stepb{\ap{\lam{x}{a}{M'}}{x}}{M'}\\
+  Then $M'$ beta-normalizes in $k$ steps. The same $k$ steps will also normalize $M$ performed under the lambda.
+  \item \stepb{\ap{M}{x}}{\ap{M'}{x}}\\
+  By IH, \bnorm{M'}, and it follows that $\bnorm{M}$.
+  \item \stepb{\ap{M}{x}}{\ap{M'}{N}}\\
+  Impossible.
+  \item \stepb{\lam{x}{A}{M'}}{\lam{x}{A}{M''}}\\
+  Impossible.
+  \end{itemize}
+  
+\end{itemize}
+\end{proof}
 \section{Strong Normalization}
 \bibliographystyle{plainnat}
 \bibliography{ctt}
