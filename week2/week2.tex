@@ -19,6 +19,7 @@
 
 
 \newenvironment{proofattempt}{\paragraph{\emph{Proof Attempt}.}}{\hfill\color{red}{X}\par}
+\newenvironment{prfattemptref}[1]{\paragraph{\emph{Proof Attempt of #1}.}}{\hfill\color{red}{X}\par}
 
 \newcommand{\redprl}{{\color{red}\textbf{Red}}\textbf{PRL}}
 
@@ -95,6 +96,9 @@
 \setitemize{noitemsep, topsep=0pt, leftmargin=*}
 \setenumerate{noitemsep, topsep=0pt, leftmargin=*}
 \setdescription{noitemsep, topsep=0pt, leftmargin=*}
+
+% to dos
+\usepackage{todonotes}
 
 \begin{document}
 
@@ -173,7 +177,7 @@ Let's now return to proving our ultimate goal, namely that hereditary terminatio
 \end{thm}
 
 \begin{proofattempt}
-  Induction on $A$.
+  By induction on the structure of $A$.
    \begin{itemize}
   \setlength\itemsep{1em}
   \item $A = b$\\
@@ -193,10 +197,6 @@ Another option is to change the definition of hereditary termination entirely an
 formulation is phrased in terms of an implication, the positive formulation requires the term
 to be an actual lambda.  \emph{Positive hereditary termination} $\htermp{A}{M}$ of a term $M$ at type
 $A$ is defined as follows:
-
-% Notice in the definition of hereditary termination above, we take a ``negative'' approach with respect to the 
-% function type, in that we consider everything that can happen in the elimination form for functions. Dually, we can 
-% also formulate hereditary termination ``positively''. 
 
 \begin{align*}
   \htermp{b}{M} &\triangleq \steps{M}{c} \quad (\exists c : b)\\
@@ -265,7 +265,7 @@ $\Gamma$).
 
 Now, we can state our main fundamental Theorem~\ref{thm:hterm} as follows:
 
-\begin{thm}
+\begin{thm}[Hereditary termination -- semantic formulation]
 If $\hasEF{\Gamma}{M}{A}$, then $\hasEC{\Gamma}{M}{A}$.
 \end{thm}
 
@@ -278,15 +278,18 @@ fruitless to expect the truth to be decidable in general. \footnote{See Derek Dr
 
 \section{Open Term Computation}
 
-We can also interpret variables in a different sense, where they stand for open terms - they are indeterminates. 
-Then the judgment $\hasEF{\Gamma}{M}{A}$ could be interpreted as a mapping $M$ from open terms to the type $A$.\\
+Next, we move on to \emph{open term computation}, for which we would like to prove
+\emph{normalization}.  In this new setting, we interpret the judgment $\hasEF{\Gamma}{M}{A}$ as
+a mapping on open terms --- rather than a mapping on closed terms, as we have done previously.
+In this setting, we adopt a computational view on variables, treating them as indeterminates.
 
-Recall the beta-contraction relation, $\contrb{P}{P'}$:
+A term $M$ is \emph{normalizing}, $\bnorm{M}$, if it has some terminating sequence of
+beta-reductions.  Recall the beta-contraction relation, $\contrb{P}{P'}$:
 \[
 \contrb{\ap{(\lam{x}{A}{M})}{N}}{[N/x]M}
 \]
 
-With this, we formulate beta-reduction: 
+Relying on beta-contraction, we formulate beta-reduction by the following rules:
 
 \begin{mathpar}
 \inferrule{
@@ -316,39 +319,61 @@ Further, we define beta-normal form, $\bnf{N}$:
 \bnf{N} \triangleq N \not\mapsto_{\beta}
 \]
 
-Where $N \not\mapsto_{\beta}$ means that no beta-reduction rule applies to $N$. This informal notation can be formalized.
-
-Finally, we can define when a term is beta-normalizing, $\bnorm{M}$: 
+Where $N \not\mapsto_{\beta}$ means that no beta-reduction rule applies to $N$.  Finally, we
+can define when a term is beta-normalizing, $\bnorm{M}$:
 \[
 \bnorm{M} \triangleq \exists N. \stepbs{M}{N} \;\text{and}\; \bnf{N}
 \]
 
 Now we can state the fundamental theorem for normalization: 
-\begin{thm}
+\begin{thm}[Normalization]\label{thm:norm}
 If $\hasEF{\Gamma}{M}{A}$ then $\bnorm{M}$.
 \end{thm}
 
-Following the proof for termination, we introduce a stronger notion for normalization, \emph{hereditary normalization}:
+Attempting to prove Theorem~\ref{thm:norm} by induction on typing, we will get stuck on proving
+the case of function application, as we already did when attempting to prove termination last
+week.  Similarly, we introduce a stronger notion for normalization, \emph{hereditary normalization}:
 
 \begin{align*}
   \hnorm{\Delta}{b}{M} &\triangleq \bnorm{M}\\
   \hnorm{\Delta}{\fn{A}{B}}{M} &\triangleq
   \forall N.\ \hnorm{\Delta}{A}{N} \implies \hnorm{\Delta}{B}{\ap{M}{N}}
 \end{align*}
-As before, we define $\hnorm{\Delta}{\Gamma}{\gamma}$ to be $\forall x : A \in \Gamma.\ \hnorm{\Delta}{A}{\gamma(x)}$
 
-Some notes about this definition:
-\begin{itemize}
-\setlength\itemsep{1em}
-\item This predicate is defined on terms $M$ s.t. $\hasEF{\Delta}{M}{A}$. The extra argument to the hereditary normalization (compared to termination) $\Delta$ reflects this fact, since normalization is defined on open terms.
-\item We formulate hereditary normalization in the negative way; turns out this is the only way
-\item What can we say about positive types (sums)?
-\end{itemize}
+The above definition relies on \emph{hereditary normalizing substitution}, which generalizes
+hereditary terminating substitution to open terms:
+\[
+\hnorm{\Delta}{\Gamma}{\gamma} \triangleq \forall x : A \in \Gamma.\ \hnorm{\Delta}{A}{\gamma(x)}
+\]
+As before, $\gamma$ defines the mapping $\gamma : \Delta \to \Gamma$ such that for each
+$x : A \in \Gamma$ we have $\hasEF{\Delta}{\gamma(x)}{A}$.  The superscript $\Delta$ in
+$\hnorm{\Delta}{\Gamma}{\gamma}$ draws attention to the fact that open terms can be substituted
+for variables, contrasting hereditary terminating substitution $\hterm{\Gamma}{\gamma}$, where
+$\Delta$ is empty.  Recall that $\hat{\gamma}(M)$, or $\hat{M}$, for short, denotes the application
+of substitution to the term $M$, which is defined for our language as follows:
 
-The proof can be divided into three lemmas: 
-\begin{lem}\label{l1}
+\begin{align*}
+\hat{\gamma}(c) &\triangleq c\\
+\hat{\gamma}(x) &\triangleq \gamma(x)\\
+\hat{\gamma}(M N) &\triangleq \hat{\gamma}(M) \hat{\gamma}(N)\\
+\hat{\gamma}(\lam{x}{A}{M}) &\triangleq \lam{x}{A}{\hat{\gamma}(M)} \quad (x \notin \mathsf{dom}\; \gamma)
+\end{align*}
+
+Given the definitions of $\hnorm{\Delta}{A}{M}$ and $\hnorm{\Delta}{\Gamma}{\gamma}$ we can now
+state our fundamental theorem of normalization:
+
+\begin{thm}[Hereditary normalization]\label{thm:hnorm}
 If $\hasEF{\Gamma}{M}{A}$ and $\hnorm{\Delta}{\Gamma}{\gamma}$, then $\hnorm{\Delta}{A}{\hat\gamma(M)}$.
-\end{lem}
+\end{thm}
+
+Our fundamental theorem uses a negative formulation of hereditary normalization, which is the
+only possible choice in the presence of indeterminates.  This raises the question what how to
+accommodate positive types, such as sums.
+
+\todo[inline]{Please check above paragraph.}
+
+To prove normalization for the simply typed lambda calculus, we additionally need the following
+two lemmas, whose proofs mutually rely on each other:
 
 \begin{lem}\label{l2}
 If $\hnorm{\Delta}{A}{M}$ then $\bnorm{M}$.
@@ -358,19 +383,19 @@ If $\hnorm{\Delta}{A}{M}$ then $\bnorm{M}$.
 $\hnorm{\Gamma}{\Gamma}{\id{\Gamma}}$.
 \end{lem}
 
-\subsection{Lemma \ref{l1}}
+In the following, we develop the proof of our fundamental Theorem~\ref{thm:hnorm} and the two
+lemmas above.  As usual, we develop the proof step-by-step, starting with failed attempts that
+lead us to refine what we have already stated.
 
-\begin{lemm}
-If $\hasEF{\Gamma}{M}{A}$ and $\hnorm{\Delta}{\Gamma}{\gamma}$, then $\hnorm{\Delta}{A}{\hat\gamma(M)}$.
-\end{lemm}
+\subsection{Proof of Theorem~\ref{thm:hnorm}, Hereditary Normalization}
 
-\begin{proof}
-Induction on typing. 
+\begin{proof}[\textbf{Proof of Theorem~\ref{thm:hnorm}}]
+By induction on typing. 
 \begin{itemize}
   \setlength\itemsep{1em}
   \item $\hasEF{\Gamma', x : A}{x}{A}$\\
-    Suppose $\hnorm{\Delta}{\Gamma}{\gamma}$. 
-    We need to  show $\hnorm{\Delta}{A}{\hat{\gamma}(x)}$, which follows directly by our assumption.
+    Suppose $\hnorm{\Delta}{\Gamma', x : A}{\gamma}$. 
+    We need to  show $\hnorm{\Delta}{A}{\hat{\gamma}(x)}$, which follows directly from our assumption.
   \item $\hasEF{\Gamma}{c}{b}$\\
     Suppose $\hnorm{\Delta}{\Gamma}{\gamma}$. We need to show that $\hnorm{\Delta}{b}{c}$, which is to 
     show that $\bnorm{c}$. Since $\bnf{c}$, we have $c$ normalizing in 0 steps. 
@@ -391,7 +416,7 @@ Induction on typing.
     $\hnorm{\Delta}{\fn{A}{B}}{\hat{\gamma}(\lam{x}{A}{M})}$. 
     Thus, suppose $\hnorm{\Delta}{A}{N}$. It suffices to show that 
     $\hnorm{\Delta}{B}{\ap{\hat{\gamma}(\lam{x}{A}{M})}{N}}$. Notice that with $N$, we can extend $\gamma$ to be
-    $\gamma' = \gamma[x \mapsto N]$, and since $N$ is hereditarily normalizing in $A$, it follows that 
+    $\gamma' = \gamma[x \mapsto N]$, and since $N$ is hereditarily normalizing at $A$, it follows that 
     $\hnorm{\Delta}{\Gamma,x : A}{\gamma'}$. Applying the IH, we have that $\hnorm{\Delta}{B}{\hat{\gamma'}(M)}$. 
     Since substitution is commutative, $\hat{\gamma'}(M) = [N/x]\hat{\gamma}(M)$, and 
     $\ap{\hat{\gamma}(\lam{x}{A}{M})}{N} = \ap{\lam{x}{A}{\hat{\gamma}(M)}}{N}$. Further, 
@@ -401,43 +426,36 @@ Induction on typing.
 \end{itemize}
 \end{proof}
 
-The proof for the next 2 lemmas will be mutual induction. However, this is not enough. We will need to further
-strengthen Lemma \ref{l3}, but let's see where we fail.
+\subsection{Attempting to Prove Lemmas \ref{l2} and \ref{l3}}
 
-\subsection{Lemma \ref{l2}}
+The proof of Lemmas \ref{l2} and \ref{l3} goes by simultaneous induction.  It will turn out that
+we will need to further strengthen Lemma \ref{l3} in order to get the induction go through, but
+let's see first where we fail.
 
-\begin{lemm}
-If $\hnorm{\Delta}{A}{M}$ then $\bnorm{M}$.
-\end{lemm}
-
-\begin{proofattempt}
-Induction on $A$.
+\begin{prfattemptref}{Lemma~\ref{l2}}
+By induction on the structure of $A$.
 \begin{itemize}
   \setlength\itemsep{1em}
   \item $A = b$\\
   Immediate from definition of hereditary normalization.
-  \item $A = \fn{A_1}{A_2}$\\
-  Suppose $\hnorm{\Delta}{A}{M}$. We need to show $\bnorm{M}$. Now we are in a bind. If we can somehow use 
-  Lemma \ref{l3} to obtain a hereditarily normalizing input of type $A_1$, then we can proceed with induction 
-  to obtain the result. For now, we will assume (*) that gives us a $\Gamma'$ such that $x : A_1 \in \Gamma'$.
-  By Lemma \ref{l3} we have $\hnorm{\Gamma'}{\Gamma'}{\id{\Gamma'}}$, in particular, $\hnorm{\Gamma'}{A_1}{x}$. By 
-  the definition of hereditary normalization, we further have that $\hnorm{\Gamma'}{A_2}{\ap{M}{x}}$. Now applying the 
-  IH, we see that $\bnorm{\ap{M}{x}}$, and by Lemma \ref{l5} we have $\bnorm{M}$. 
-  \qedhere
+\item $A = \fn{A_1}{A_2}$\\
+  Suppose $\hnorm{\Delta}{A}{M}$. We need to show $\bnorm{M}$. Now we are in a bind. If we can
+  somehow use Lemma \ref{l3} to obtain a hereditarily normalizing input of type $A_1$, then we
+  could apply the inductive hypothesis to possibly obtain the result. For now, we will
+  assume that there is a way to create a context $\Gamma'$ such that $x : A_1 \in \Gamma'$ (see
+  Section~\ref{subsec:kripke_sem} for solution).  By Lemma \ref{l3} we have
+  $\hnorm{\Gamma'}{\Gamma'}{\id{\Gamma'}}$, in particular, $\hnorm{\Gamma'}{A_1}{x}$. By the
+  definition of hereditary normalization, we further have that
+  $\hnorm{\Gamma'}{A_2}{\ap{M}{x}}$. Now applying the IH, we see that $\bnorm{\ap{M}{x}}$, and
+  by Lemma~\ref{l6} we have $\bnorm{M}$.  \qedhere
 \end{itemize}
-\end{proofattempt}
+\end{prfattemptref}
 
 Postponing the issues with this proof, we will move on to proving Lemma \ref{l3}, and resolve everything after
 presenting the two proofs.
 
-\subsection{Lemma \ref{l3}}
-
-\begin{lemm}
-$\hnorm{\Gamma}{\Gamma}{\id{\Gamma}}$.
-\end{lemm}
-
-\begin{proofattempt}
-Let $x : A \in \Gamma$ be arbitrary. Proceed with induction on $A$.
+\begin{prfattemptref}{Lemma~\ref{l3}}
+Let $x : A \in \Gamma$ be arbitrary. Proceed by induction on the structure of $A$.
 \begin{itemize}
   \setlength\itemsep{1em}
   \item $A = b$\\
@@ -447,7 +465,7 @@ Let $x : A \in \Gamma$ be arbitrary. Proceed with induction on $A$.
   that $\hnorm{\Gamma}{A_2}{\ap{x}{M_1}}$. Now it would be nice to apply the IH to complete the proof, but which
   is not strong enough.
 \end{itemize}
-\end{proofattempt}
+\end{prfattemptref}
 
 Notice that for every variable of function type, we want them to be hereditarily normalizing when applied to 
 beta-normal terms. We will add this to the lemma:
@@ -462,7 +480,7 @@ context $\Gamma'$
 out of thin air, which allowed us to supply the argument to the function term. To do this, we will make a change to 
 the definition of hereditary normalization, which will involve the notion of Kripke semantics.
 
-\subsection{Kripke semantics}
+\subsection{Kripke semantics}\label{subsec:kripke_sem}
 
 Kripke semantics, or presheafs, are related to/gives the solution to the following:
 \begin{itemize}
