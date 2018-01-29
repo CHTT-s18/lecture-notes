@@ -37,8 +37,9 @@
 \newcommand{\hterm}[2]{\ensuremath{\mathsf{HT}_{#1}(#2)}}
 \newcommand{\htermp}[2]{\ensuremath{\mathsf{HT}^+_{#1}(#2)}}
 \newcommand{\termb}[1]{\ensuremath{{#1} \; \mathsf{term}_{\beta}}}
-\newcommand{\hcbn}[2]{\ensuremath{\mathsf{HT}^{\mathsf{cbn}}_{#1}(#2)}}
-\newcommand{\hcbv}[2]{\ensuremath{\mathsf{HT}^{\mathsf{cbv}}_{#1}(#2)}}
+\newcommand{\hv}[2]{\ensuremath{\mathsf{HV}_{#1}(#2)}}
+\newcommand{\hvcbn}[2]{\ensuremath{\mathsf{HV}^{\mathsf{cbn}}_{#1}(#2)}}
+\newcommand{\hvcbv}[2]{\ensuremath{\mathsf{HV}^{\mathsf{cbv}}_{#1}(#2)}}
 
 \newcommand{\contrb}[2]{#1 \mathrel{\text{contr}_\beta} #2}
 \newcommand{\bnf}[1]{#1 \mathrel{\text{nf}_\beta}}
@@ -72,7 +73,7 @@
 
 \usepackage{fancyhdr}
 \fancyhead[RO,LE]{\scshape 15-819: Computational Higher Type Theory}
-\fancyhead[LO,RE]{\scshape Lecture Notes Week 1}
+\fancyhead[LO,RE]{\scshape Lecture Notes Week 2}
 \pagestyle{fancy}
 
 \usepackage{hyperref}
@@ -100,131 +101,177 @@
 
 \bigskip
 
-\section{Notation \& Historical Notes}
-The following proof method is attributed to William Tait, who first proved normalization for the STLC. Below are some 
-notations you might find in the literature:
+\section{Setting the Scene}
 
-\begin{enumerate}
-\item hereditarily \dots\\
-\item logical relations (Statman)\\
-\item Tait's Method (W. Tait)\\
-\item Girard's Method (J-Y Girard)\\
-\item Computability (Tait's Method)\\
-\item Reducibility Method (Girard)
-\end{enumerate}
+Last week, we explored \emph{closed term computation} for the simply typed lambda calculus
+(STLC) with the goal to prove that all well-typed STLC programs terminate.  Our exploration
+lead us to redescover Tait's~\citeyear{Tait:67} \emph{hereditary termination} $\hterm{A}{M}$ of
+a term $M$ at type $A$ and \emph{hereditary terminating substitution} $\hterm{\Gamma}{\gamma}$
+of closing substitution mapping $\gamma$ at context $\Gamma$ to strengthen our inductive
+hypothesis.  The predicates $\hterm{A}{M}$ and $\hterm{\Gamma}{\gamma}$ amount to
+\emph{behavioral} invariants, indexed by a type and typing context, respectively.  Depending on
+the source, different terms are used in the literature to refer to methods based on such
+behavioral invariants.  Most commonly used is the term \emph{hereditary}.  Tait himself used
+the term \emph{computability}, whereas some people refer to such methods as \emph{Tait's
+  Method}.  Statman~\citeyear{Statman:85} introduced the term \emph{logical relation}, which
+underlines the idea of a behavioral invariant.  Moreover, the term \emph{Girard's method} can
+be found in the literature as well as the term \emph{Reducibility Method}, which is most likely
+due to Girard himself.
 
-\section{Fundamental Theorem Cont'd}
+In this week's lectures, we are going to generalize the results of the previous week to
+\emph{open term computation}.  Before doing so, however, we first have to finish our proof of
+hereditary termination.
 
-\subsubsection{Head expansion}
+\section{Closed Term Computation Continued}
 
-To complete the proof from last time (that well-typed terms are hereditarily terminating under substitution by 
-hereditarily terminating maps), we need to prove a lemma known as ``head expansion'' or ``reverse execution'':
+Our main result of last week is the proof or Theorem~\ref{thm:hterm}, which states that well-typed terms are hereditarily terminating under substitution by 
+hereditarily terminating maps:
 
-\begin{lem}[Head expansion]
+\begin{thm}[Hereditary termination]\label{thm:hterm}
+  If $\hasEF{\Gamma}{M}{A}$ and $\gamma : \cdot \to \Gamma$ so that
+  $\hterm{\Gamma}{\gamma}$ then $\hterm{A}{\hat{\gamma}(M)}$.
+\end{thm}
+
+Given this result, we should move on to proving that hereditary termination actually implies
+termination.  Before doing so, however, we first have to finish our proof
+Theorem~\ref{thm:hterm}, which relies on a lemma known as \emph{head expansion} or
+\emph{reverse execution}, which we are going to prove next:
+
+\begin{lem}[Head expansion]\label{lem:hexp}
   If $\hterm{A}{M'}$ and $\step{M}{M'}$ then $\hterm{A}{M}$.
 \end{lem}
+
 \begin{proof}
-  Induction on $A$.
+  By induction on the structure of $A$.
   \begin{itemize}
   \setlength\itemsep{1em}
   \item $A = b$\\
-    Suppose $\hterm{b}{M'}$ and $\step{M}{M'}$. We need to show $\hterm{b}{M}$. By definition, it suffices to show that $M \Downarrow$. 
+    Suppose $\hterm{b}{M'}$ and $\step{M}{M'}$. We need to show $\hterm{b}{M}$. By the
+    definition of hereditary termination, it suffices to show that $M \Downarrow$. 
     This is clear since $M' \Downarrow$ and $\step{M}{M'}$.
   \item $A = \fn{A_1}{A_2}$\\
     Suppose $\hterm{\fn{A_1}{A_2}}{M'}$ and $\step{M}{M'}$. We need to show $\hterm{\fn{A_1}{A_2}}{M}$.
     Now suppose $\hterm{A_1}{N}$, and we need to show $\hterm{A_2}{\ap{M}{N}}$. 
-    By the definition of HT and our assumption, we have $\hterm{A_2}{\ap{M'}{N}}$. 
+    By the definition of hereditary termination and by our assumption, we have $\hterm{A_2}{\ap{M'}{N}}$. 
     Note that $\step{\ap{M}{N}}{\ap{M'}{N}}$ by our assumption and the compuation rule.
-    Now applying the IH, we have $\hterm{A_2}{\ap{M}{N}}$.
-    \footnote{Terms in the hereditary termination predicate get bigger, but types get smaller. Since the induction 
-    is on $A$, we are okay.}
+    Now applying the IH\footnote{Note that the IH can be applied because the induction is on
+      the structure of $A$, not on terms.  Whereas the terms in the hereditary termination
+      predicate get bigger, the types get smaller.}, we have $\hterm{A_2}{\ap{M}{N}}$.
     \qedhere
   \end{itemize}
 \end{proof}
 
-\subsubsection{Termination of STLC}
+Let's now return to proving our ultimate goal, namely that hereditary termination implies termination of terms in the STLC:
 
-Now we need to show that hereditary termination implies termination of terms in the STLC:
-\begin{thm}
+\begin{thm}[Termination]\label{thm:term}
   If $\hterm{A}{M}$ then $\termb{M}$.
 \end{thm}
-\begin{proof}
+
+\begin{proofattempt}
   Induction on $A$.
    \begin{itemize}
   \setlength\itemsep{1em}
   \item $A = b$\\
     Suppose $\hterm{b}{M}$. Done by definition of hereditary termination.  
   \item $A = \fn{A_1}{A_2}$\\
-    Suppose $\hterm{\fn{A_1}{A_2}}{M}$. We need to show $\termb{M}$. We are stuck here; and there are a couple of
-    options to consider.
+    Suppose $\hterm{\fn{A_1}{A_2}}{M}$. We need to show $\termb{M}$. We are stuck here.
   \end{itemize}
-\end{proof}
+\end{proofattempt}
 
-\begin{enumerate}
-\item Weaken the theorem so that we can only conclude termination for observables (terms in the base type).
-\item Add $\termb{M}$ to the definition of $\hterm{A}{M}$; while this comes off as a hack, everything so far will 
-still work out.
-\end{enumerate}
+The question is what we should do at this point.  One possibility is to basically ``give up''
+and weaken the theorem to expect termination to hold only for observables, i.e., for terms of
+the base type.  Alternatively, we could strengthen the induction hypothesis even further by
+changing the defintion of $\hterm{A}{M}$ to also insist on $\termb{M}$.
 
-\subsection{Another Hereditary Termination (Positive Formulation)}
+Another option is to change the definition of hereditary termination entirely and use a
+\emph{positive} formulation rather than a \emph{negative} one.  Whereas our current negative
+formulation is phrased in terms of an implication, the positive formulation requires the term
+to be an actual lambda.  \emph{Positive hereditary termination} $\htermp{A}{M}$ of a term $M$ at type
+$A$ is defined as follows:
 
-Notice in the definition of hereditary termination above, we take a ``negative'' approach with respect to the 
-function type, in that we consider everything that can happen in the elimination form for functions. Dually, we can 
-also formulate hereditary termination ``positively''. 
+% Notice in the definition of hereditary termination above, we take a ``negative'' approach with respect to the 
+% function type, in that we consider everything that can happen in the elimination form for functions. Dually, we can 
+% also formulate hereditary termination ``positively''. 
 
 \begin{align*}
-  \htermp{b}{M} &\triangleq \steps{M}{c}\\
+  \htermp{b}{M} &\triangleq \steps{M}{c} \quad (\exists c : b)\\
   \htermp{\fn{A}{B}}{M} &\triangleq \steps{M}{\lam{x}{A}{M_2}} \; \text{and}\;
   \forall M_1.\ \htermp{A}{M_1} \implies \htermp{A_2}{[M_1/x]M_2}
 \end{align*}
 
-This is also known as the ``method of canonical forms'', and we can define hereditary termination in terms of 
-``hereditary values'', whose definition will depend on whether we are working ``call by value'' or ``call by name''. 
+The positive formulation is also known as the \emph{method of canonical forms}.  Using a
+positive formulation of hereditary termination, the proof of the introductory rule is
+straightforward, whereas the elimination rule takes some work, relying on head expansion, in
+particular.
 
-\subsection{C.B.V vs. C.B.N}
+We can rephrase the above definition of $\htermp{A}{M}$ by introducing the notion of a
+\emph{hereditary value} $\hv{A}{V}$ of a value $V$ at type $A$
 
-In both C.B.V and C.B.N, a hereditary value at base type is simply a value. 
-At the function type for C.B.N, we have
-\[
-\hcbn{\fn{A_1}{A_2}}{V} \triangleq V = \lam{x}{A}{M_2} \; \text{and} \; \forall M_1. \hterm{A_1}{M_1} \implies
+\begin{align*}
+  \htermp{b}{M} &\triangleq \steps{M}{\valueJ{V}} \;\text{such that}\; \hv{A}{V}
+\end{align*}
+
+\noindent and then give a definition of a hereditary value that differs depending on whether a \emph{call-by-value}
+($\mathsf{cbv}$) or \emph{call-by-name} ($\mathsf{cbn}$) semantics is used:
+
+\begin{align*}
+\hv{b}{V} &\triangleq V = c : b \\
+\hvcbv{\fn{A_1}{A_2}}{V} &\triangleq V = \lam{x}{A}{M_2} \; \text{and} \; \forall V_1. \hvcbv{A_1}{V_1} \implies
+\hterm{A_2}{[V_1/x]M_2} \\
+\hvcbn{\fn{A_1}{A_2}}{V} &\triangleq V = \lam{x}{A}{M_2} \; \text{and} \; \forall M_1. \hterm{A_1}{M_1} \implies
 \hterm{A_2}{[M_1/x]M_2}
-\]
-For C.B.V:
-\[
-\hcbv{\fn{A_1}{A_2}}{V} \triangleq V = \lam{x}{A}{M_2} \; \text{and} \; \forall V_1. \hcbv{A_1}{V_1} \implies
-\hterm{A_2}{[V_1/x]M_2}
-\]
+\end{align*}
 
-TODO: fill in explanation for distinction. 
+In both interpretations a hereditary value at a base type is simply a value, whereas at a
+function type the insistance on a value as an argument is only made for a call-by value
+semantics, but not for a call-by-name semantics.  From this perspective, the negative
+formulation of hereditary termination only really makes sense in the context of a call-by-name
+semantics.  Only then, function arguments can be unevaluated computations that permit the weakened
+termination theorem discussed earlier that insists on termination for base types only.  For a
+call-by-value semantics, on the other hand, a positive formulation of hereditary termination is
+required for termination, as this formulation is phrased in terms of values.
+
+In this case study of closed term computation we have assumed a call-by-name evaluation
+semantics.  For a call-by-value evaluation semantics, our main fundamental
+Theorem~\ref{thm:hterm} needs to be phrased in terms of hereditary values, with
+$\hvcbv{\Gamma}{\gamma}$ correspondingly defined:
+
+\begin{thm}[Call-by-value hereditary termination]\label{thm:hcbvterm}
+  If $\hasEF{\Gamma}{M}{A}$ and $\gamma : \cdot \to \Gamma$ so that
+  $\hvcbv{\Gamma}{\gamma}$ then $\htermp{A}{\hat{\gamma}(M)}$.
+\end{thm}
 
 \subsection{Summary}
 
-We we have shown so far can be summarized as a relationship between syntax and semantics: well-typed terms 
-terminate according to the semantics (the computation rules). We can make this more apparent by introducing 
-some new notation: 
+The introduction of behavioral invariants has allowed us to express the \emph{semantic}
+property of \emph{syntax}.  Specifically, we have shown that well-type terms terminate.  To
+talk about the semantic properties of terms, we introduce the following notation:
 
-\begin{align}
-&\hasTC{\Gamma}{A} && \\
-&M \in A && \hterm{A}{M}\\
-&\hasEC{\Gamma}{M}{A} && \gamma \in \Gamma \implies \hat\gamma(M) \in A &\\
-\end{align}
+\begin{align*}
+&A \; \mathsf{type} &&\text{iff}  \quad \quad A, B ::= b \mid \fn{A}{B}&\\
+&\gamma \in \Gamma &&\text{iff} \quad \quad \hterm{\Gamma}{\gamma}&\\
+&M \in A &&\text{iff} \quad \quad \hterm{A}{M}&\\
+&\hasEC{\Gamma}{M}{A} &&\text{iff} \quad \quad \gamma \in \Gamma \implies \hat\gamma(M) \in A&
+\end{align*}
 
-Notice that the ``membership'' relation has a computation flavor; it is a behavorial condition on $M$: which says 
-that $M$ satisfy the specification $A$. \\
+Note that the ``membership'' relation has a computational flavor; it is a behavorial condition
+on $M$ (or $\gamma$), which says that $M$ (or $\gamma$) satisfies the specification $A$ (or
+$\Gamma$).
 
-Now, we can state our theorem as follows: 
+Now, we can state our main fundamental Theorem~\ref{thm:hterm} as follows:
 
 \begin{thm}
 If $\hasEF{\Gamma}{M}{A}$, then $\hasEC{\Gamma}{M}{A}$.
 \end{thm}
 
-This is in some sense a soundness theorem (in the language of formal logics), which means that the formally derivable
-terms are actually true (according to the computational specification). Therefore, we can think of formal systems as a 
-way of \emph{accessing} the \emph{truth}. Note that we make no claims that $\hasEC{\Gamma}{M}{A}$ be decidable, 
-as it is fruitless to expect the truth to be decidable in general. \footnote{see dreyer's Milner lectures for 
-further discussion.}
+This is in some sense a soundness theorem (in the language of formal logics), which means that
+the formally derivable terms are actually true (according to the computational
+specification). Therefore, we can think of formal systems as a way of \emph{accessing} the
+\emph{truth}. Note that we make no claims that $\hasEC{\Gamma}{M}{A}$ be decidable, as it is
+fruitless to expect the truth to be decidable in general. \footnote{See Derek Dreyer's Milner
+  Award Lecture for further discussion.}
 
-\section{Normalization}
+\section{Open Term Computation}
 
 We can also interpret variables in a different sense, where they stand for open terms - they are indeterminates. 
 Then the judgment $\hasEF{\Gamma}{M}{A}$ could be interpreted as a mapping $M$ from open terms to the type $A$.\\
