@@ -114,7 +114,7 @@
 
 Last week, we explored \emph{closed term computation} for the simply typed lambda calculus
 (STLC) with the goal to prove that all well-typed STLC programs terminate.  Our exploration
-lead us to redescover Tait's~\citeyear{Tait:67} \emph{hereditary termination} $\hterm{A}{M}$ of
+lead us to rediscover Tait's~\citeyear{Tait:67} \emph{hereditary termination} $\hterm{A}{M}$ of
 a term $M$ at type $A$ and \emph{hereditary terminating substitution} $\hterm{\Gamma}{\gamma}$
 of closing substitution mapping $\gamma$ at context $\Gamma$ to strengthen our inductive
 hypothesis.  The predicates $\hterm{A}{M}$ and $\hterm{\Gamma}{\gamma}$ amount to
@@ -228,7 +228,7 @@ We can rephrase the above definition of $\htermp{A}{M}$ by introducing the notio
 \end{align*}
 
 In both interpretations a hereditary value at a base type is simply a value, whereas at a
-function type the insistance on a value as an argument is only made for a call-by value
+function type the insistance on a value as an argument is only made for a call-by-value
 semantics, but not for a call-by-name semantics.  From this perspective, the negative
 formulation of hereditary termination only really makes sense in the context of a call-by-name
 semantics.  Only then, function arguments can be unevaluated computations that permit the weakened
@@ -661,8 +661,9 @@ the size of structurese relating to $\E$ increases in some cases, but only when 
 
 In these notes, we have proved normalization for the simply typed lambda calculus.
 Occasionally, \emph{strong normalization} is shown to hold for a calculus, which guarantees
-that there are no infinite reduction sequences.  The value of asserting strong normalization
-for a calculus is that it enables reasoning by transfinite induction on reductions.
+that there are no infinite reduction sequences. The value of asserting strong normalization
+for a calculus is that it enables reasoning by transfinite induction on reductions, which can be used to prove 
+properties such as confluence. 
 
 \bibliographystyle{plainnat}
 \bibliography{ctt}
