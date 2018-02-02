@@ -131,6 +131,33 @@
   \pagestyle{fancy}
   \vskip 1.5em}
 \makeatother
-
-
 \pagestyle{fancy}
+
+\RequirePackage{xr}
+
+% Courtesy of
+% https://www.sharelatex.com/learn/Kb/Cross_referencing_with_the_xr_package_in_ShareLaTeX
+\makeatletter
+\newcommand*{\addFileDependency}[1]{% argument=file name and extension
+  \typeout{(#1)}
+  \@addtofilelist{#1}
+  \IfFileExists{#1}{}{\typeout{No file #1.}}
+}
+\makeatother
+
+\newcommand*{\myexternaldocument}[2]{%
+  \externaldocument[#2:]{#1}%
+  \addFileDependency{#1.tex}%
+  \addFileDependency{#1.aux}%
+  \message{Added external document #1 with prefix ``#2:''.}
+}
+
+\makeatletter
+\newcount\weekIncludeXR
+\weekIncludeXR=1
+\def\doXRs{\loop
+  \myexternaldocument{week\the\weekIncludeXR}{W\the\weekIncludeXR}
+  \advance\weekIncludeXR by +1
+  \ifnum \weekIncludeXR<\@week
+  \repeat}
+\makeatother
