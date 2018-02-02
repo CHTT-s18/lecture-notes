@@ -1,131 +1,22 @@
 \documentclass{article}
 
-\usepackage{amsthm}
-\usepackage{amsmath}
-\usepackage{amssymb}
-\usepackage{natbib}
-\usepackage{xcolor}
-\usepackage{mathpartir}
-\usepackage{url}
-
-% Theorems
-\newtheorem{thm}{Theorem}
-\newtheorem{cor}[thm]{Corollary}
-\newtheorem{lem}[thm]{Lemma}
-\newtheorem{remark}[thm]{Remark}
-\newtheorem{claim}[thm]{Attempt}
-\newtheorem{defn}[thm]{Definition}
-\newtheorem*{lemm}{Lemma}
-\newtheorem{exercise}[thm]{Exercise}
-
-\newenvironment{proofattempt}{\paragraph{\emph{Proof Attempt}.}}{\hfill\color{red}{X}\par}
-\newenvironment{prfattemptref}[1]{\paragraph{\emph{Proof Attempt of #1}.}}{\hfill\color{red}{X}\par}
-
-\newcommand{\redprl}{{\color{red}\textbf{Red}}\textbf{PRL}}
-
-\newcommand{\eeq}{\ensuremath{\doteq}}
-
-\newcommand{\hasTF}[2]{\ensuremath{#1 \vdash #2\ \mathsf{type}}}
-\newcommand{\hasEF}[3]{\ensuremath{#1 \vdash #2 : #3}}
-\newcommand{\hasTEF}[3]{\ensuremath{#1 \vdash #2 \equiv #3\ \mathsf{type}}}
-\newcommand{\hasEEF}[4]{\ensuremath{#1 \vdash #2 \equiv #3 : #4}}
-
-\newcommand{\hasTC}[2]{\ensuremath{#1 \gg #2\ \mathsf{type}}}
-\newcommand{\hasEC}[3]{\ensuremath{#1 \gg #2 \in #3}}
-\newcommand{\hasTEC}[3]{\ensuremath{#1 \gg #2 \eeq #3\ \mathsf{type}}}
-\newcommand{\hasEEC}[4]{\ensuremath{#1 \gg #2 \eeq #3 : #4}}
-
-\newcommand{\hasC}[5]{\ensuremath{#1 : (#2 \rhd #3) \leadsto (#4 \rhd #5)}}
-
-\newcommand{\hterm}[2]{\ensuremath{\mathsf{HT}_{#1}(#2)}}
-\newcommand{\htermp}[2]{\ensuremath{\mathsf{HT}^+_{#1}(#2)}}
-\newcommand{\termb}[1]{\ensuremath{{#1} \; \mathsf{term}_{\beta}}}
-\newcommand{\hv}[2]{\ensuremath{\mathsf{HV}_{#1}(#2)}}
-\newcommand{\hvcbn}[2]{\ensuremath{\mathsf{HV}^{\mathsf{cbn}}_{#1}(#2)}}
-\newcommand{\hvcbv}[2]{\ensuremath{\mathsf{HV}^{\mathsf{cbv}}_{#1}(#2)}}
-
-\newcommand{\contrb}[2]{#1 \mathrel{\text{contr}_\beta} #2}
-\newcommand{\bnf}[1]{#1 \mathrel{\text{nf}_\beta}}
-\newcommand{\bnorm}[1]{\ensuremath{#1 \mathrel{\text{norm}_\beta}}}
-\newcommand{\stepb}[2]{\ensuremath{#1 \mapsto_{\beta} #2}}
-\newcommand{\stepbs}[2]{\ensuremath{#1 \mapsto_{\beta}^* #2}}
-\newcommand{\stepbk}[3]{\ensuremath{#1 \mapsto_{\beta}^{(#2)} #3}}
-
-\newcommand{\hnorm}[3]{\ensuremath{\mathsf{HN}^{#1}_{#2}(#3)}}
-\newcommand{\id}[1]{\ensuremath{\mathsf{id}(#1)}}
-
-\newcommand{\AND}{\mathrel{\wedge}}
-\newcommand{\OR}{\mathrel{\vee}}
-
-\newcommand{\step}[2]{\ensuremath{#1 \mapsto #2}}
-\newcommand{\steps}[2]{\ensuremath{#1 \mapsto^* #2}}
-\newcommand{\eval}[2]{\ensuremath{#1 \mathrel{\Downarrow} #2}}
-\newcommand{\valueJ}[1]{\ensuremath{#1\ \mathsf{value}}}
-\newcommand{\fillin}[2]{\ensuremath{#1\{#2\}}}
-
-
-\newcommand{\fn}[2]{\ensuremath{#1 \to #2}}
-\newcommand{\nat}{\ensuremath{\mathsf{nat}}}
-\newcommand{\bool}{\ensuremath{\mathsf{bool}}}
-\newcommand{\tp}{\ensuremath{\mathsf{T}}}
-\newcommand{\ap}[2]{\ensuremath{#1\ #2}}
-\newcommand{\lam}[3]{\ensuremath{\lambda #1 {:} #2.\, #3}}
-\newcommand{\emptypair}{\ensuremath{\langle \rangle}}
-\newcommand{\exprpair}[2]{\ensuremath{\langle #1, #2\rangle}}
-\newcommand{\pairtype}[2]{\ensuremath{#1 \times #2}}
-\newcommand{\booltype}{\text{bool}}
-\newcommand{\unittype}{1}
-
-\newcommand{\E}{\mathcal{E}}
-
-\newcommand{\true}{\ensuremath{\mathrm{\underline{true}}}}
-\newcommand{\false}{\ensuremath{\mathrm{\underline{false}}}}
-\newcommand{\ifexpr}[3]{\ensuremath{\mathrm{\underline{if}}(#1; #2; #3)}} 
-\newcommand{\ifexprtyp}[4]{\ensuremath{\mathrm{\underline{if}_#1}(#2; #3; #4)}} 
-
-
-% Page layout
-\usepackage[paper=letterpaper,top=1in,bottom=1in,left=0.8in,right=0.8in,]{geometry}
-\setlength{\parindent}{0mm}
-\setlength{\parskip}{1.5mm}
-
-\usepackage{fancyhdr}
-\fancyhead[RO,LE]{\scshape 15-819: Computational Higher Type Theory}
-\fancyhead[LO,RE]{\scshape Lecture Notes Week 3}
-\pagestyle{fancy}
-
-\usepackage{hyperref}
-
-% titles
-\usepackage{titlesec}
-\titleformat*{\section}{\large\bfseries}
-\titleformat*{\subsection}{\normalsize\bfseries}
-\titleformat*{\subsubsection}{\bfseries}
-\titleformat*{\paragraph}{\bfseries}
-
-% package to customize three basic list environments: enumerate, itemize and description.
-\usepackage{enumitem}
-\setitemize{noitemsep, topsep=0pt, leftmargin=*}
-\setenumerate{noitemsep, topsep=0pt, leftmargin=*}
-\setdescription{noitemsep, topsep=0pt, leftmargin=*}
-
-% to dos
-\usepackage{todonotes}
+\usepackage{chtt-notes}
+\scribes{Michael Coblenz and Ryan Kavanagh}
+\week{3}
+% The following command will let you cross-reference labels
+% in the files week1.tex, week2.tex, ..., week\@week.tex,
+% where if l is a label in "weekN.tex", then you can access
+% the label using \ref{WN:l}.
+\doXRs
 
 \begin{document}
 
-\begin{center}
-\Large{\scshape Computational Higher Type Theory (CHTT)}\\[2pt]
-\large{\scshape Robert Harper}\\[4pt]
-\large\bfseries{Lecture Notes of Week 3 by Michael Coblenz and Ryan Kavanaugh}
-\end{center}
-
-\bigskip
+\maketitle
 
 \section{Setting the Scene}
 Last week, we discovered the need for Kripke logical relations, which are related to the notion of pre-sheaves from category theory. The problem, we discovered, is that we need to allocate fresh variables, but when we add them to the context, we have to worry about whether all the things we proved in the previous context still hold with the addition a new variable. We will establish an ordering on worlds $\Delta$ and show that properties that hold one world hold in future worlds too.
 
-When we write \hnorm{\Delta}{A}{M}: 
+When we write \hnorm{\Delta}{A}{M}:
 \begin{itemize}
 \item $\Delta$ is the ``world'' of indeterminates, that is, variables and their types;
 \item A is the type at which to consider M.
@@ -145,27 +36,27 @@ We define hereditary normalization as follows:
 That is, a function is hereditarily normalizing if, when applied to a hereditarily normalizing argument, the application is hereditarily normalizing.
 
 Review from last time:
-\begin{lem}[Head expansion]\label{lem:hexp}
+\begin{lemma}[Head expansion]\label{lem:hexp}
   \text{If} $\hnorm{\Delta}{A}{M'}$ \text{and} $\step{M}{M'}$ \text{then} $\hnorm{\Delta}{A}{M}$.
-\end{lem}
+\end{lemma}
 
-\begin{lem}[Workhorse]\label{lem:workhorse}
+\begin{lemma}[Workhorse]\label{lem:workhorse}
 \leavevmode %make items align
 \begin{enumerate}
 \item \text{If} \hnorm{\Delta}{A}{M} \text{then} \bnorm{M}.
 \item If \bnorm{\E} then \hnorm{\Delta}{A}{\ap{\E}{\{x\}}} where \hasEF{\Delta}{x}{C} and \hasEF{\Delta}{\E}{C \leadsto A}.
 \end{enumerate}
-\end{lem}
+\end{lemma}
 
 
-\begin{thm}[Fundamental theorem of logical relations (FTLR)]
+\begin{theorem}[Fundamental theorem of logical relations (FTLR)]
 \label{FTLR}
  If \hasEF{\Gamma}{M}{A} and $\gamma: \Delta \to \Gamma$, then $\hnorm{\Gamma}{\Delta}{\delta}$ implies $\hnorm{\Delta}{A}{\hat{\gamma}(M)}$.
- \end{thm}
- 
- \begin{cor}
+ \end{theorem}
+
+ \begin{corollary}
   If \hasEF{\Gamma}{M}{A} then \bnorm{M}. i.e. well-typed terms are normalizing.
- \end{cor}
+ \end{corollary}
 
 It is important to note that these considerations are \textit{behavioral}, that is, they pertain to the behavior of terms. This is much deeper than structural considerations. However, the important thing about the setup here is that the structure of a term results in specific behavior. The point is that we can know that a term normalizes (a behavioral question) by knowing only that it has a type (a structural question).
 
@@ -186,48 +77,48 @@ Add ``negative'' products to the language and prove termination and normalizatio
 
 \begin{tabular}{ll}
 \exprpair{M_1}{M_2} & val\\
-M.1, M.2 & projections\\ 
+M.1, M.2 & projections\\
 \step{\exprpair{M_1}{M_2}.1}{M_1}\\
 \step{\exprpair{M_1}{M_2}.1}{M_1}\\
 \step{\exprpair{M_1}{M_2}.2}{M_2}\\
 \end{tabular}
 
-Define: 
+Define:
 \begin{enumerate}
-	\item \hterm{\pairtype{A_1}{A_2}}{M}, and reprove termination.
-	\item \hnorm{\Delta}{\pairtype{A_1}{A_2}}{M}, and reprove termination.
+        \item \hterm{\pairtype{A_1}{A_2}}{M}, and reprove termination.
+        \item \hnorm{\Delta}{\pairtype{A_1}{A_2}}{M}, and reprove termination.
 \end{enumerate}
 
 Consider this for negative and positive types. The negative formulation takes the approach that if one projects from it, it is well-behaved; that is, one uses a negative pair by projecting from it. The positive formulation would be defined in terms of pattern matching:
 
 \begin{itemize}
-	\item let \emptypair \  be $M$ in $N$
-	\item let \exprpair{x}{y} be $M$ in $N_{x, y}$
+        \item let \emptypair \  be $M$ in $N$
+        \item let \exprpair{x}{y} be $M$ in $N_{x, y}$
 \end{itemize}
 
 \todo{do this exercise}
 \end{exercise}
 
 \section{Booleans}
-This brings us to showing hereditary termination and hereditary normalization for the booleans. We can think of booleans as the prime example of positive types. 
+This brings us to showing hereditary termination and hereditary normalization for the booleans. We can think of booleans as the prime example of positive types.
 
 \begin{itemize}
-    \item \true{}, \false{} are the values, otherwise known as the introduction or canonical forms. 
+    \item \true{}, \false{} are the values, otherwise known as the introduction or canonical forms.
     \item \ifexpr{M}{P}{Q} is the elimination form.
     \item We extend the evaluation contexts: $\E ::= \ldots \mid \ifexpr{\E}{P}{Q}$
-    \item Dynamic semantics: 
+    \item Dynamic semantics:
     \begin{itemize}
-		\item \step{\ifexpr{\true}{P}{Q}}{P}
-		\item \step{\ifexpr{\false}{P}{Q}}{Q}
-	\end{itemize}
+                \item \step{\ifexpr{\true}{P}{Q}}{P}
+                \item \step{\ifexpr{\false}{P}{Q}}{Q}
+        \end{itemize}
 \end{itemize}
 
 \begin{mathpar}
 \inferrule{ }{\hasEF{\Gamma}{\true}{\booltype}} \and \inferrule{ }{\hasEF{\Gamma}{\false}{\booltype}} \\
 \inferrule{
-	\hasEF{\Gamma}{M}{\booltype} \and \hasEF{\Gamma}{P}{A} \and \hasEF{\Gamma}{Q}{A}
+        \hasEF{\Gamma}{M}{\booltype} \and \hasEF{\Gamma}{P}{A} \and \hasEF{\Gamma}{Q}{A}
 }{
-	\hasEF{\Gamma}{\ifexprtyp{A}{M}{P}{Q}}{A}
+        \hasEF{\Gamma}{\ifexprtyp{A}{M}{P}{Q}}{A}
 }
 \end{mathpar}
 
@@ -264,17 +155,17 @@ Show hereditary termination for positive products.
 \hterm{\pairtype{A_1}{A_1}}{M} &\triangleq \steps{M}{\exprpair{M_1}{M_2}} \ \text{such that} \  \hterm{A_1}{M_1} \text{and} \  \hterm{A_2}{M_2}\\
 \end{align*}
 \todo{do this.}
-\end{exercise} 
+\end{exercise}
 
 As an aside, is it possible to give a \textit{negative} formulation of \booltype? It would look like this:
 
 \[
 \hterm{\booltype}{M} \triangleq \text{if} \hspace{12pt} \begin{minipage}{5cm}
-	\begin{enumerate}
-	\item A type
-	\item \hterm{A}{P}
-	\item \hterm{A}{Q}
-	\end{enumerate}
+        \begin{enumerate}
+        \item A type
+        \item \hterm{A}{P}
+        \item \hterm{A}{Q}
+        \end{enumerate}
 \end{minipage}\\
 \]
 
@@ -296,21 +187,21 @@ If \hasEF{\Gamma}{M}{A} \ \text{and} \ \gamma : \Delta \to \Gamma \ then \  \hno
 
 Now we need to define \hnorm{\booltype}{\Delta}{M} so that we are able to prove the above. How should we do it?
 
-A first attempt: 
+A first attempt:
 \[
 \hnorm{\Delta}{\booltype}{M} \triangleq \steps{M}{\true} \ \text{or} \ \steps{M}{\false}
 \]
 But this makes no sense because $M$ is open. M may well be (for example) $x$, or $x N$, or even $\ifexpr{x N}{P}{Q}$.
 
 This shows a constraint regarding our definition. We must validate:
-\begin{lem}[HT for products]
+\begin{lemma}[HT for products]
 \leavevmode
 \label{ht-prods}
 \begin{enumerate}
 \item \hnorm{\Delta}{\booltype}{\true} and \hnorm{\Delta}{\booltype}{\false}
 \item If \hnorm{\Delta}{\booltype}{\hat M} and \hnorm{\Delta}{A}{\hat P} and \hnorm{\Delta}{A}{\hat Q}, then \hnorm{\Delta}{A}{\ifexpr{\hat M}{\hat P}{\hat Q}}.
 \end{enumerate}
-\end{lem}
+\end{lemma}
 
 If we choose a definition of hereditary termination that meets these criteria, we will be done. But what definition should that be? Let us discover it.
 
@@ -324,19 +215,19 @@ We want to show that \bnorm{\hat M}. We know \bnorm{M}. From this fact, we can c
 
 By definition, we know \bnorm{\hat{M}}. By workhorse lemma, we conclude \bnorm{\hat{P}} and \bnorm{\hat{Q}} (since we assumed that \hnorm{\Delta}{A}{\hat P} and \hnorm{\Delta}{A}{\hat Q}). As a reminder, the workhorse lemma is:
 
-\begin{lem}[Workhorse lemma, duplicated for reference]\label{lem:workhorse}
+\begin{lemma}[Workhorse lemma, duplicated for reference]\label{lem:workhorse}
 \leavevmode %make items align
 \begin{enumerate}
 \item \text{If} \hnorm{\Delta}{A}{M} \text{then} \bnorm{M}.
 \item If \bnorm{\E} then \hnorm{\Delta}{A}{\ap{\E}{\{x\}}} where \hasEF{\Delta}{x}{C} and \hasEF{\Delta}{\E}{C \leadsto A}.
 \end{enumerate}
-\end{lem}
+\end{lemma}
 
 Now, since \bnorm{\hat{M}}, there must exist N such that \steps{M}{N} where $N$ does not reduce. We consider the cases for N. It will be easy to satisfy part 1 of lemma \ref{ht-prods}, but we must choose carefully so that we can show part 2: \hnorm{\booltype}{A}{\ifexpr{\hat M}{\hat P}{\hat Q}}
 
-\textbf{case}: $N = \true$. We will need to choose \hnorm{\Delta}{A}{} 
-so that we can show \hnorm{\Delta}{A}{\ifexpr{\hat M}{\hat P}{\hat Q}}. 
-Since \steps{\hat M}{\true}, we know that the whole if expression 
+\textbf{case}: $N = \true$. We will need to choose \hnorm{\Delta}{A}{}
+so that we can show \hnorm{\Delta}{A}{\ifexpr{\hat M}{\hat P}{\hat Q}}.
+Since \steps{\hat M}{\true}, we know that the whole if expression
 reduces to $\hat{P}$, where \hnorm{\Delta}{A}{\hat P} (by assumption). Therefore, we have \hnorm{\Delta}{A}{\ifexpr{\hat M}{\hat P}{\hat Q}}.
 
 \textbf{case}: $N = \false$. This case is similar to the case for $N = \true$ with $\hat Q$ instead of $\hat P$.
