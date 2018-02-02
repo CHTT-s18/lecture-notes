@@ -1,0 +1,367 @@
+\documentclass{article}
+
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{natbib}
+\usepackage{xcolor}
+\usepackage{mathpartir}
+\usepackage{url}
+
+% Theorems
+\newtheorem{thm}{Theorem}
+\newtheorem{cor}[thm]{Corollary}
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{remark}[thm]{Remark}
+\newtheorem{claim}[thm]{Attempt}
+\newtheorem{defn}[thm]{Definition}
+\newtheorem*{lemm}{Lemma}
+\newtheorem{exercise}[thm]{Exercise}
+
+\newenvironment{proofattempt}{\paragraph{\emph{Proof Attempt}.}}{\hfill\color{red}{X}\par}
+\newenvironment{prfattemptref}[1]{\paragraph{\emph{Proof Attempt of #1}.}}{\hfill\color{red}{X}\par}
+
+\newcommand{\redprl}{{\color{red}\textbf{Red}}\textbf{PRL}}
+
+\newcommand{\eeq}{\ensuremath{\doteq}}
+
+\newcommand{\hasTF}[2]{\ensuremath{#1 \vdash #2\ \mathsf{type}}}
+\newcommand{\hasEF}[3]{\ensuremath{#1 \vdash #2 : #3}}
+\newcommand{\hasTEF}[3]{\ensuremath{#1 \vdash #2 \equiv #3\ \mathsf{type}}}
+\newcommand{\hasEEF}[4]{\ensuremath{#1 \vdash #2 \equiv #3 : #4}}
+
+\newcommand{\hasTC}[2]{\ensuremath{#1 \gg #2\ \mathsf{type}}}
+\newcommand{\hasEC}[3]{\ensuremath{#1 \gg #2 \in #3}}
+\newcommand{\hasTEC}[3]{\ensuremath{#1 \gg #2 \eeq #3\ \mathsf{type}}}
+\newcommand{\hasEEC}[4]{\ensuremath{#1 \gg #2 \eeq #3 : #4}}
+
+\newcommand{\hasC}[5]{\ensuremath{#1 : (#2 \rhd #3) \leadsto (#4 \rhd #5)}}
+
+\newcommand{\hterm}[2]{\ensuremath{\mathsf{HT}_{#1}(#2)}}
+\newcommand{\htermp}[2]{\ensuremath{\mathsf{HT}^+_{#1}(#2)}}
+\newcommand{\termb}[1]{\ensuremath{{#1} \; \mathsf{term}_{\beta}}}
+\newcommand{\hv}[2]{\ensuremath{\mathsf{HV}_{#1}(#2)}}
+\newcommand{\hvcbn}[2]{\ensuremath{\mathsf{HV}^{\mathsf{cbn}}_{#1}(#2)}}
+\newcommand{\hvcbv}[2]{\ensuremath{\mathsf{HV}^{\mathsf{cbv}}_{#1}(#2)}}
+
+\newcommand{\contrb}[2]{#1 \mathrel{\text{contr}_\beta} #2}
+\newcommand{\bnf}[1]{#1 \mathrel{\text{nf}_\beta}}
+\newcommand{\bnorm}[1]{\ensuremath{#1 \mathrel{\text{norm}_\beta}}}
+\newcommand{\stepb}[2]{\ensuremath{#1 \mapsto_{\beta} #2}}
+\newcommand{\stepbs}[2]{\ensuremath{#1 \mapsto_{\beta}^* #2}}
+\newcommand{\stepbk}[3]{\ensuremath{#1 \mapsto_{\beta}^{(#2)} #3}}
+
+\newcommand{\hnorm}[3]{\ensuremath{\mathsf{HN}^{#1}_{#2}(#3)}}
+\newcommand{\id}[1]{\ensuremath{\mathsf{id}(#1)}}
+
+\newcommand{\AND}{\mathrel{\wedge}}
+\newcommand{\OR}{\mathrel{\vee}}
+
+\newcommand{\step}[2]{\ensuremath{#1 \mapsto #2}}
+\newcommand{\steps}[2]{\ensuremath{#1 \mapsto^* #2}}
+\newcommand{\eval}[2]{\ensuremath{#1 \mathrel{\Downarrow} #2}}
+\newcommand{\valueJ}[1]{\ensuremath{#1\ \mathsf{value}}}
+\newcommand{\fillin}[2]{\ensuremath{#1\{#2\}}}
+
+
+\newcommand{\fn}[2]{\ensuremath{#1 \to #2}}
+\newcommand{\nat}{\ensuremath{\mathsf{nat}}}
+\newcommand{\bool}{\ensuremath{\mathsf{bool}}}
+\newcommand{\tp}{\ensuremath{\mathsf{T}}}
+\newcommand{\ap}[2]{\ensuremath{#1\ #2}}
+\newcommand{\lam}[3]{\ensuremath{\lambda #1 {:} #2.\, #3}}
+\newcommand{\emptypair}{\ensuremath{\langle \rangle}}
+\newcommand{\exprpair}[2]{\ensuremath{\langle #1, #2\rangle}}
+\newcommand{\pairtype}[2]{\ensuremath{#1 \times #2}}
+\newcommand{\booltype}{\text{bool}}
+\newcommand{\unittype}{1}
+
+\newcommand{\E}{\mathcal{E}}
+
+\newcommand{\true}{\ensuremath{\mathrm{\underline{true}}}}
+\newcommand{\false}{\ensuremath{\mathrm{\underline{false}}}}
+\newcommand{\ifexpr}[3]{\ensuremath{\mathrm{\underline{if}}(#1; #2; #3)}} 
+\newcommand{\ifexprtyp}[4]{\ensuremath{\mathrm{\underline{if}_#1}(#2; #3; #4)}} 
+
+
+% Page layout
+\usepackage[paper=letterpaper,top=1in,bottom=1in,left=0.8in,right=0.8in,]{geometry}
+\setlength{\parindent}{0mm}
+\setlength{\parskip}{1.5mm}
+
+\usepackage{fancyhdr}
+\fancyhead[RO,LE]{\scshape 15-819: Computational Higher Type Theory}
+\fancyhead[LO,RE]{\scshape Lecture Notes Week 3}
+\pagestyle{fancy}
+
+\usepackage{hyperref}
+
+% titles
+\usepackage{titlesec}
+\titleformat*{\section}{\large\bfseries}
+\titleformat*{\subsection}{\normalsize\bfseries}
+\titleformat*{\subsubsection}{\bfseries}
+\titleformat*{\paragraph}{\bfseries}
+
+% package to customize three basic list environments: enumerate, itemize and description.
+\usepackage{enumitem}
+\setitemize{noitemsep, topsep=0pt, leftmargin=*}
+\setenumerate{noitemsep, topsep=0pt, leftmargin=*}
+\setdescription{noitemsep, topsep=0pt, leftmargin=*}
+
+% to dos
+\usepackage{todonotes}
+
+\begin{document}
+
+\begin{center}
+\Large{\scshape Computational Higher Type Theory (CHTT)}\\[2pt]
+\large{\scshape Robert Harper}\\[4pt]
+\large\bfseries{Lecture Notes of Week 3 by Michael Coblenz and Ryan Kavanaugh}
+\end{center}
+
+\bigskip
+
+\section{Setting the Scene}
+Last week, we discovered the need for Kripke logical relations, which are related to the notion of pre-sheaves from category theory. The problem, we discovered, is that we need to allocate fresh variables, but when we add them to the context, we have to worry about whether all the things we proved in the previous context still hold with the addition a new variable. We will establish an ordering on worlds $\Delta$ and show that properties that hold one world hold in future worlds too.
+
+When we write \hnorm{\Delta}{A}{M}: 
+\begin{itemize}
+\item $\Delta$ is the ``world'' of indeterminates, that is, variables and their types;
+\item A is the type at which to consider M.
+\end{itemize}
+
+
+We define hereditary normalization as follows:
+
+\begin{align*}
+\hnorm{\Delta}{b}{M} &\triangleq \bnorm{M} \\
+\hnorm{\Delta}{\fn{A_1}{A_2}}{M} &\triangleq  \forall \Delta' \geq \Delta. \  \text{if} \ \hnorm{\Delta'}{A_1}{M_1}\  \text{then} \ \hnorm{\Delta'}{A_2}{M M_1}
+\end{align*}
+
+
+%\hnorm{\Delta}{b}{M} if and only if $\bnorm{M}$ \\
+%\hnorm{\Delta}{\fn{A_1}{A_2}}{M} if and only if  $\forall \Delta' \geq \Delta. \  \text{if} \ \hnorm{A_1}{\Delta'}{M_1}\  \text{then} \ \hnorm{A_2}{\Delta'}{M M_1}$ \\
+That is, a function is hereditarily normalizing if, when applied to a hereditarily normalizing argument, the application is hereditarily normalizing.
+
+Review from last time:
+\begin{lem}[Head expansion]\label{lem:hexp}
+  \text{If} $\hnorm{\Delta}{A}{M'}$ \text{and} $\step{M}{M'}$ \text{then} $\hnorm{\Delta}{A}{M}$.
+\end{lem}
+
+\begin{lem}[Workhorse]\label{lem:workhorse}
+\leavevmode %make items align
+\begin{enumerate}
+\item \text{If} \hnorm{\Delta}{A}{M} \text{then} \bnorm{M}.
+\item If \bnorm{\E} then \hnorm{\Delta}{A}{\ap{\E}{\{x\}}} where \hasEF{\Delta}{x}{C} and \hasEF{\Delta}{\E}{C \leadsto A}.
+\end{enumerate}
+\end{lem}
+
+
+\begin{thm}[Fundamental theorem of logical relations (FTLR)]
+\label{FTLR}
+ If \hasEF{\Gamma}{M}{A} and $\gamma: \Delta \to \Gamma$, then $\hnorm{\Gamma}{\Delta}{\delta}$ implies $\hnorm{\Delta}{A}{\hat{\gamma}(M)}$.
+ \end{thm}
+ 
+ \begin{cor}
+  If \hasEF{\Gamma}{M}{A} then \bnorm{M}. i.e. well-typed terms are normalizing.
+ \end{cor}
+
+It is important to note that these considerations are \textit{behavioral}, that is, they pertain to the behavior of terms. This is much deeper than structural considerations. However, the important thing about the setup here is that the structure of a term results in specific behavior. The point is that we can know that a term normalizes (a behavioral question) by knowing only that it has a type (a structural question).
+
+In order to prove the Theorem \ref{FTLR}, we need to show: if \hasEF{\Delta}{x}{A}, then \hnorm{\Delta}{A}{x}. It follows that \hnorm{\Gamma}{\Gamma}{id} and $\hat{id}(M) = M$.
+
+Informally, we need to show that x M is hereditarily normalizing whenever M is hereditarily normalizing. We also need to show that \hnorm{\fn{A_1}{A_2}}{\Delta}{M} implies \bnorm{M} (Lemma 9 from last week). These two proofs rely on each other via mutual induction.
+
+The problem is that in the function case, we need an argument for M, which we don't have, because in our negative formulation we can only reason about M by applying it something. The question is, what do we apply it to? Our idea is to allocate a fresh variable. We have to do so at type smaller than \fn{A_1}{A_2} so that the induction hypothesis will hold, and conveniently, $A_1$, the argument type of M, is such a type. Consider M x, which is of type $A_2$, and note that the induction hypothesis applies! Then we can conclude that \bnorm{M x}, so therefore \bnorm{M} by head expansion.
+
+In order to allocate a variable, we need to move from $\Delta$ (which does not include the fresh variable) to $\Delta' = \Delta, x: A_1$ (which does). But now we have a problem, \textit{stability}: Do facts from the old world $\Delta$ still hold in the new world $\Delta'$? What we need is to know that for a given proposition P, \hnorm{\Delta}{A}{P} implies \hnorm{\Delta'}{A}{P} for all $\Delta' \geq \Delta$
+
+These worlds,  are ordered by a relation $\geq$.  This is called ``functoriality'' or ``monotonicity''. We also need $\geq$ to be transitive so that once a fact is established in a given world, it is also established in \textit{all} future worlds. In our context, this is going to mean that we can allocate a fresh variable without altering the behavior of a given program.
+
+
+\begin{exercise}[Adding products]
+\normalfont
+Add ``negative'' products to the language and prove termination and normalization. The products look like this:
+
+\begin{tabular}{ll}
+\exprpair{M_1}{M_2} & val\\
+M.1, M.2 & projections\\ 
+\step{\exprpair{M_1}{M_2}.1}{M_1}\\
+\step{\exprpair{M_1}{M_2}.1}{M_1}\\
+\step{\exprpair{M_1}{M_2}.2}{M_2}\\
+\end{tabular}
+
+Define: 
+\begin{enumerate}
+	\item \hterm{\pairtype{A_1}{A_2}}{M}, and reprove termination.
+	\item \hnorm{\Delta}{\pairtype{A_1}{A_2}}{M}, and reprove termination.
+\end{enumerate}
+
+Consider this for negative and positive types. The negative formulation takes the approach that if one projects from it, it is well-behaved; that is, one uses a negative pair by projecting from it. The positive formulation would be defined in terms of pattern matching:
+
+\begin{itemize}
+	\item let \emptypair \  be $M$ in $N$
+	\item let \exprpair{x}{y} be $M$ in $N_{x, y}$
+\end{itemize}
+
+\todo{do this exercise}
+\end{exercise}
+
+\section{Booleans}
+This brings us to showing hereditary termination and hereditary normalization for the booleans. We can think of booleans as the prime example of positive types. 
+
+\begin{itemize}
+    \item \true{}, \false{} are the values, otherwise known as the introduction or canonical forms. 
+    \item \ifexpr{M}{P}{Q} is the elimination form.
+    \item We extend the evaluation contexts: $\E ::= \ldots \mid \ifexpr{\E}{P}{Q}$
+    \item Dynamic semantics: 
+    \begin{itemize}
+		\item \step{\ifexpr{\true}{P}{Q}}{P}
+		\item \step{\ifexpr{\false}{P}{Q}}{Q}
+	\end{itemize}
+\end{itemize}
+
+\begin{mathpar}
+\inferrule{ }{\hasEF{\Gamma}{\true}{\booltype}} \and \inferrule{ }{\hasEF{\Gamma}{\false}{\booltype}} \\
+\inferrule{
+	\hasEF{\Gamma}{M}{\booltype} \and \hasEF{\Gamma}{P}{A} \and \hasEF{\Gamma}{Q}{A}
+}{
+	\hasEF{\Gamma}{\ifexprtyp{A}{M}{P}{Q}}{A}
+}
+\end{mathpar}
+
+The subscript A in \underline{if} is a bit of syntax for the formalism, but upon type erasure, it would go away.
+
+Note that \underline{if} is a \textit{recursor}: it witnesses the fact that bool is inductively defined by \true{} and \false{}. Importantly, \underline{if} has nothing to do with logical implication! It merely witnesses that these are the two booleans. Perhaps a better name for \underline{if} would have been \underline{boolcase} because it is the thing that case-analyzes on the two booleans, but that is not the case for historical reasons.
+
+\subsection{Termination for closed interpretations}
+In this section, we prove termination for closed interpretations in the presence of booleans. The key idea here is our definition of hereditary termination:
+
+\[
+\hterm{\booltype}{M} \triangleq \ \steps{M}{\true} \ \text{or} \ \steps{M}{\false}
+\]
+
+
+This is a \textit{positive} interpretation because \underline{if} is itself positive. We have not formulated \underline{if} in a style of ``if you were to do something with an \underline{if}, this is how it would behave\ldots''.
+
+By our updated definition of hereditary termination, if \hterm{\booltype}{M} then \termb{M} (since \booltype{} is a base type). Head expansion is also straightforward because of the way we defined the dynamic semantics; one can always back evaluation up a step.
+
+The proof of the fundamental theorem of linear relations needs to be updated for \booltype, but this is easy. We need to show that if \hasEF{\Gamma}{M}{A} and \hterm{\Gamma}{\gamma} then \hterm{A}{\hat\gamma(M)}. Specifically:
+\[
+\text{if} \ \hasEF{\Gamma}{M}{\booltype}  \ \text{and} \  \hterm{\Gamma}{\gamma} \ \text{then} \  \hterm{\booltype}{\hat\gamma(M)}.
+\]
+
+By case analysis on the typing judgement, we see that either $M = \true$ or $M = \false$. In either case, $M$ contains no variables, so $\hat\gamma(M)) = M$. By definition of the dynamic semantics, $M$ is a value.
+
+A corollary: if $M : A$ then \termb{M}.
+
+\begin{exercise}
+Show hereditary termination for positive products.
+
+\begin{align*}
+\hterm{\unittype}{M} &\triangleq \steps{M}{\emptypair}\\
+\hterm{\pairtype{A_1}{A_1}}{M} &\triangleq \steps{M}{\exprpair{M_1}{M_2}} \ \text{such that} \  \hterm{A_1}{M_1} \text{and} \  \hterm{A_2}{M_2}\\
+\end{align*}
+\todo{do this.}
+\end{exercise} 
+
+As an aside, is it possible to give a \textit{negative} formulation of \booltype? It would look like this:
+
+\[
+\hterm{\booltype}{M} \triangleq \text{if} \hspace{12pt} \begin{minipage}{5cm}
+	\begin{enumerate}
+	\item A type
+	\item \hterm{A}{P}
+	\item \hterm{A}{Q}
+	\end{enumerate}
+\end{minipage}\\
+\]
+
+But now we would be in trouble in the proof: A is not smaller than \booltype, so the proof doesn't go through!
+
+Now, observe regarding the negative formulation of booleans:
+\[
+\booltype = \forall A . \fn{A}{\fn{A}{A}}
+\]
+
+These are also called Church booleans! This is exactly how one encodes the booleans in lambda calculus. Presumably Church observed this correspondence directly when inventing this representation of the booleans.
+
+\subsection{Open terms}
+We need to show normalization for open terms in the presence of booleans. The fundamental theorem of logical relations says:
+
+\[
+If \hasEF{\Gamma}{M}{A} \ \text{and} \ \gamma : \Delta \to \Gamma \ then \  \hnorm{\Delta}{\Gamma}{\gamma} \ implies \ \hnorm{\Delta}{A}{\hat\gamma(M)}
+\]
+
+Now we need to define \hnorm{\booltype}{\Delta}{M} so that we are able to prove the above. How should we do it?
+
+A first attempt: 
+\[
+\hnorm{\Delta}{\booltype}{M} \triangleq \steps{M}{\true} \ \text{or} \ \steps{M}{\false}
+\]
+But this makes no sense because $M$ is open. M may well be (for example) $x$, or $x N$, or even $\ifexpr{x N}{P}{Q}$.
+
+This shows a constraint regarding our definition. We must validate:
+\begin{lem}[HT for products]
+\leavevmode
+\label{ht-prods}
+\begin{enumerate}
+\item \hnorm{\Delta}{\booltype}{\true} and \hnorm{\Delta}{\booltype}{\false}
+\item If \hnorm{\Delta}{\booltype}{\hat M} and \hnorm{\Delta}{A}{\hat P} and \hnorm{\Delta}{A}{\hat Q}, then \hnorm{\Delta}{A}{\ifexpr{\hat M}{\hat P}{\hat Q}}.
+\end{enumerate}
+\end{lem}
+
+If we choose a definition of hereditary termination that meets these criteria, we will be done. But what definition should that be? Let us discover it.
+
+What do we know about $\hat M$?
+
+\begin{enumerate}
+\item \hnorm{\Delta}{\booltype}{M} implies \bnorm{M} (by workhorse lemma)
+\end{enumerate}
+
+We want to show that \bnorm{\hat M}. We know \bnorm{M}. From this fact, we can conclude that \steps{M}{N}, and N does not reduce. If we knew \bnorm{\hat M}, we would know that \steps{\hat M}{N}, and N does not reduce. \todo{why are these the same N?}
+
+By definition, we know \bnorm{\hat{M}}. By workhorse lemma, we conclude \bnorm{\hat{P}} and \bnorm{\hat{Q}} (since we assumed that \hnorm{\Delta}{A}{\hat P} and \hnorm{\Delta}{A}{\hat Q}). As a reminder, the workhorse lemma is:
+
+\begin{lem}[Workhorse lemma, duplicated for reference]\label{lem:workhorse}
+\leavevmode %make items align
+\begin{enumerate}
+\item \text{If} \hnorm{\Delta}{A}{M} \text{then} \bnorm{M}.
+\item If \bnorm{\E} then \hnorm{\Delta}{A}{\ap{\E}{\{x\}}} where \hasEF{\Delta}{x}{C} and \hasEF{\Delta}{\E}{C \leadsto A}.
+\end{enumerate}
+\end{lem}
+
+Now, since \bnorm{\hat{M}}, there must exist N such that \steps{M}{N} where $N$ does not reduce. We consider the cases for N. It will be easy to satisfy part 1 of lemma \ref{ht-prods}, but we must choose carefully so that we can show part 2: \hnorm{\booltype}{A}{\ifexpr{\hat M}{\hat P}{\hat Q}}
+
+\textbf{case}: $N = \true$. We will need to choose \hnorm{\Delta}{A}{} 
+so that we can show \hnorm{\Delta}{A}{\ifexpr{\hat M}{\hat P}{\hat Q}}. 
+Since \steps{\hat M}{\true}, we know that the whole if expression 
+reduces to $\hat{P}$, where \hnorm{\Delta}{A}{\hat P} (by assumption). Therefore, we have \hnorm{\Delta}{A}{\ifexpr{\hat M}{\hat P}{\hat Q}}.
+
+\textbf{case}: $N = \false$. This case is similar to the case for $N = \true$ with $\hat Q$ instead of $\hat P$.
+
+\textbf{case}: otherwise: what do we know about $N$? $N$ does not reduce, yet $N \neq \true$ and $N \neq \false$. How can this be, given that \hasEF{\Delta}{N}{\booltype}? One possibility is that $N = x$. This is possible if \hasEF{\Delta}{x}{\booltype}. Another case is $N = x R$; this is possible if \hasEF{\Delta}{x}{\fn{A}{\booltype}} and \hasEF{\Delta}{R}{A}. In general, N can be any evaluation context that starts with a variable (otherwise it would have been head-reducible)! So $N = \E \{ x \}$. \textbf{We will need to require that \bnorm{\E}}.
+
+By part 2 of the workhorse lemma, since \bnorm{\E}, we conclude:
+\[
+ \hnorm{\Delta}{A}{\E \{ x \}}\\
+\]
+What we are really interested in is showing:
+\[
+ \hnorm{\Delta}{A}{\ifexpr{\E \{ x \}}{\hat P}{\hat Q}} \\
+\]
+But \step{\ifexpr{\E \{ x \}}{\hat P}{\hat Q}}{\E \{ x \}}, so we have the result we need by applying the head expansion lemma.
+
+We conclude that the following definition of hereditary normalization is the right one:
+
+\[
+\hnorm{\Delta}{\booltype}{M} \triangleq \bnorm{M}
+\]
+
+
+
+\bibliographystyle{plainnat}
+\bibliography{ctt}
+
+\end{document}
