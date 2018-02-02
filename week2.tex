@@ -133,7 +133,7 @@ hereditary termination.
 
 \section{Closed Term Computation Continued}
 
-Our main result of last week is the proof or Theorem~\ref{thm:hterm}, which states that well-typed terms are hereditarily terminating under substitution by 
+Our main result of last week is the proof or Theorem~\ref{thm:hterm}, which states that well-typed terms are hereditarily terminating under substitution by
 hereditarily terminating maps:
 
 \begin{thm}[Hereditary termination]\label{thm:hterm}
@@ -156,12 +156,12 @@ Theorem~\ref{thm:hterm}, which relies on a lemma known as \emph{head expansion} 
   \setlength\itemsep{1em}
   \item $A = b$\\
     Suppose $\hterm{b}{M'}$ and $\step{M}{M'}$. We need to show $\hterm{b}{M}$. By the
-    definition of hereditary termination, it suffices to show that $M \Downarrow$. 
+    definition of hereditary termination, it suffices to show that $M \Downarrow$.
     This is clear since $M' \Downarrow$ and $\step{M}{M'}$.
   \item $A = \fn{A_1}{A_2}$\\
     Suppose $\hterm{\fn{A_1}{A_2}}{M'}$ and $\step{M}{M'}$. We need to show $\hterm{\fn{A_1}{A_2}}{M}$.
-    Now suppose $\hterm{A_1}{N}$, and we need to show $\hterm{A_2}{\ap{M}{N}}$. 
-    By the definition of hereditary termination and by our assumption, we have $\hterm{A_2}{\ap{M'}{N}}$. 
+    Now suppose $\hterm{A_1}{N}$, and we need to show $\hterm{A_2}{\ap{M}{N}}$.
+    By the definition of hereditary termination and by our assumption, we have $\hterm{A_2}{\ap{M'}{N}}$.
     Note that $\step{\ap{M}{N}}{\ap{M'}{N}}$ by our assumption and the compuation rule.
     Now applying the IH\footnote{Note that the IH can be applied because the induction is on
       the structure of $A$, not on terms.  Whereas the terms in the hereditary termination
@@ -181,7 +181,7 @@ Let's now return to proving our ultimate goal, namely that hereditary terminatio
    \begin{itemize}
   \setlength\itemsep{1em}
   \item $A = b$\\
-    Suppose $\hterm{b}{M}$. Done by definition of hereditary termination.  
+    Suppose $\hterm{b}{M}$. Done by definition of hereditary termination.
   \item $A = \fn{A_1}{A_2}$\\
     Suppose $\hterm{\fn{A_1}{A_2}}{M}$. We need to show $\termb{M}$. We are stuck here.
   \end{itemize}
@@ -311,7 +311,7 @@ Relying on beta-contraction, we formulate beta-reduction by the following rules:
   \stepb{M}{M'}
 }{
   \stepb{\lam{x}{A}{M}}{\lam{x}{A}{M'}}
-} 
+}
 \end{mathpar}
 
 Further, we define beta-normal form, $\bnf{N}$:
@@ -325,7 +325,7 @@ can define when a term is beta-normalizing, $\bnorm{M}$:
 \bnorm{M} \triangleq \exists N. \stepbs{M}{N} \;\text{and}\; \bnf{N}
 \]
 
-Now we can state the fundamental theorem for normalization: 
+Now we can state the fundamental theorem for normalization:
 \begin{thm}[Normalization]\label{thm:norm}
 If $\hasEF{\Gamma}{M}{A}$ then $\bnorm{M}$.
 \end{thm}
@@ -390,38 +390,38 @@ lead us to refine what we have already stated.
 \subsubsection{Proof of Fundamental Theorem}
 
 \begin{proof}[\textbf{Proof of Theorem~\ref{thm:hnorm}}]
-By induction on typing. 
+By induction on typing.
 \begin{itemize}
   \setlength\itemsep{1em}
   \item $\hasEF{\Gamma', x : A}{x}{A}$\\
-    Suppose $\hnorm{\Delta}{\Gamma', x : A}{\gamma}$. 
+    Suppose $\hnorm{\Delta}{\Gamma', x : A}{\gamma}$.
     We need to  show $\hnorm{\Delta}{A}{\hat{\gamma}(x)}$, which follows directly from our assumption.
   \item $\hasEF{\Gamma}{c}{b}$\\
-    Suppose $\hnorm{\Delta}{\Gamma}{\gamma}$. We need to show that $\hnorm{\Delta}{b}{c}$, which is to 
-    show that $\bnorm{c}$. Since $\bnf{c}$, we have $c$ normalizing in 0 steps. 
+    Suppose $\hnorm{\Delta}{\Gamma}{\gamma}$. We need to show that $\hnorm{\Delta}{b}{c}$, which is to
+    show that $\bnorm{c}$. Since $\bnf{c}$, we have $c$ normalizing in 0 steps.
   \item $\inferrule{
       \hasEF{\Gamma}{M}{\fn{A}{B}}\\
       \hasEF{\Gamma}{N}{A}
     }{\hasEF{\Gamma}{\ap{M}{N}}{B}}$\\
     Applying the IH, we have $\hnorm{\Delta}{\fn{A}{B}}{\hat{\gamma}(M)}$
     and $\hnorm{\Delta}{A}{\hat{\gamma}(N)}$. By definition of hereditary normalization, we have
-    $\hnorm{\Delta}{B}{\ap{\hat{\gamma}(M)}{\hat{\gamma}(N)}}$. Since $\hat{\gamma}(\ap{M}{N}) = 
+    $\hnorm{\Delta}{B}{\ap{\hat{\gamma}(M)}{\hat{\gamma}(N)}}$. Since $\hat{\gamma}(\ap{M}{N}) =
     \ap{\hat{\gamma}(M)}{\hat{\gamma}(N)}$, we have
     $\hnorm{\Delta}{B}{\hat{\gamma}(\ap{M}{N})}$.
   \item
     $\inferrule{
       \hasEF{\Gamma, x : A}{M}{B}\\
     }{\hasEF{\Gamma}{\lam{x}{A}{M}}{\fn{A}{B}}}$\\
-    Suppose $\hnorm{\Delta}{\Gamma}{\gamma}$. We need to show that 
-    $\hnorm{\Delta}{\fn{A}{B}}{\hat{\gamma}(\lam{x}{A}{M})}$. 
-    Thus, suppose $\hnorm{\Delta}{A}{N}$. It suffices to show that 
+    Suppose $\hnorm{\Delta}{\Gamma}{\gamma}$. We need to show that
+    $\hnorm{\Delta}{\fn{A}{B}}{\hat{\gamma}(\lam{x}{A}{M})}$.
+    Thus, suppose $\hnorm{\Delta}{A}{N}$. It suffices to show that
     $\hnorm{\Delta}{B}{\ap{\hat{\gamma}(\lam{x}{A}{M})}{N}}$. Notice that with $N$, we can extend $\gamma$ to be
-    $\gamma' = \gamma[x \mapsto N]$, and since $N$ is hereditarily normalizing at $A$, it follows that 
-    $\hnorm{\Delta}{\Gamma,x : A}{\gamma'}$. Applying the IH, we have that $\hnorm{\Delta}{B}{\hat{\gamma'}(M)}$. 
-    Since substitution is commutative, $\hat{\gamma'}(M) = [N/x]\hat{\gamma}(M)$, and 
-    $\ap{\hat{\gamma}(\lam{x}{A}{M})}{N} = \ap{\lam{x}{A}{\hat{\gamma}(M)}}{N}$. Further, 
+    $\gamma' = \gamma[x \mapsto N]$, and since $N$ is hereditarily normalizing at $A$, it follows that
+    $\hnorm{\Delta}{\Gamma,x : A}{\gamma'}$. Applying the IH, we have that $\hnorm{\Delta}{B}{\hat{\gamma'}(M)}$.
+    Since substitution is commutative, $\hat{\gamma'}(M) = [N/x]\hat{\gamma}(M)$, and
+    $\ap{\hat{\gamma}(\lam{x}{A}{M})}{N} = \ap{\lam{x}{A}{\hat{\gamma}(M)}}{N}$. Further,
     $\step{\ap{\lam{x}{A}{\hat{\gamma}(M)}}{N}}{[N/x]\hat{\gamma}(M)}$ by the computation rule. The result then follows
-    from head expansion. 
+    from head expansion.
    \qedhere
 \end{itemize}
 \end{proof}
@@ -519,10 +519,10 @@ By induction on the structure of $A$, simultaneously with the proof of Lemma~\re
   \item $A = b$\\
   Immediate from definition of hereditary normalization.
   \item $A = \fn{A_1}{A_2}$\\
-  Suppose $\hnorm{\Delta}{A}{M}$. We need to show $\bnorm{M}$. Let $\Delta' = \Delta, x : A_1$. By IH on Lemma \ref{l4} 
-  (with $k = 0$), we have $\hnorm{\Delta'}{A_1}{x}$. By the definition of hereditary termination, we have 
-  $\hnorm{\Delta'}{A_2}{\ap{M}{x}}$. Applying the IH, we have $\bnorm{\ap{M}{x}}$, and by Lemma \ref{l6} we have 
-  $\bnorm{M}$. 
+  Suppose $\hnorm{\Delta}{A}{M}$. We need to show $\bnorm{M}$. Let $\Delta' = \Delta, x : A_1$. By IH on Lemma \ref{l4}
+  (with $k = 0$), we have $\hnorm{\Delta'}{A_1}{x}$. By the definition of hereditary termination, we have
+  $\hnorm{\Delta'}{A_2}{\ap{M}{x}}$. Applying the IH, we have $\bnorm{\ap{M}{x}}$, and by Lemma \ref{l6} we have
+  $\bnorm{M}$.
   \qedhere
 \end{itemize}
 \end{proof}
@@ -532,11 +532,11 @@ By induction on the structure of $A$, simultaneously with the proof of Lemma~\re
 \begin{itemize}
   \setlength\itemsep{1em}
   \item $A = b$\\
-  We need to show $\bnorm{\ap{\ap{x}{M_1}}{\dots M_k}}$, which holds since each $M_i$ is normalizing, and thus the 
+  We need to show $\bnorm{\ap{\ap{x}{M_1}}{\dots M_k}}$, which holds since each $M_i$ is normalizing, and thus the
   term does not beta-reduce.
   \item $A = \fn{A_{k+1}}{A_{k+2}}$\\
-  We need to show $\hnorm{\Gamma}{A}{\ap{\ap{x}{M_1}}{\dots M_k}}$. Let $\Gamma' \ge \Gamma$ and 
-  $\hnorm{\Gamma'}{A_{k+1}}{M_{k+1}}$. It suffices to show that 
+  We need to show $\hnorm{\Gamma}{A}{\ap{\ap{x}{M_1}}{\dots M_k}}$. Let $\Gamma' \ge \Gamma$ and
+  $\hnorm{\Gamma'}{A_{k+1}}{M_{k+1}}$. It suffices to show that
   $\hnorm{\Gamma'}{A_{k+2}}{\ap{\ap{\ap{x}{M_1}}{\dots M_k}}{M_{k+1}}}$.
   By IH on Lemma \ref{l2}, we have that $\bnorm{M_{k+1}}$, and we obtain the result by applying the IH with $k + 1$.
 \end{itemize}
@@ -555,7 +555,7 @@ Proceed with induction on the length of the sequence to beta-normal form.
 \begin{itemize}
   \setlength\itemsep{1em}
   \item $\stepbk{\ap{M}{x}}{0}{N}$\\
-  Then $\bnf{\ap{M}{x}}$, and $\bnf{M}$, and $M$ also beta-normalizes in 0 steps. 
+  Then $\bnf{\ap{M}{x}}$, and $\bnf{M}$, and $M$ also beta-normalizes in 0 steps.
   \item $\stepbk{\ap{M}{x}}{k+1}{N}$\\
   Proceed by cases on the first step.
   \begin{itemize}
@@ -569,7 +569,7 @@ Proceed with induction on the length of the sequence to beta-normal form.
   \item \stepb{\lam{x}{A}{M'}}{\lam{x}{A}{M''}}\\
   Impossible.
   \end{itemize}
-  
+
 \end{itemize}
 \end{proof}
 
@@ -580,14 +580,14 @@ contexts and a note on strong normalization.
 
 \subsubsection{Lemma \ref{l4} with evaluation context}
 
-Recall the definition of evaluation contexts: 
+Recall the definition of evaluation contexts:
 
 \[
   \E ::= \cdot \mid \ap{\E}{M}
 \]
 
 We now further characterize evaluation contexts as mappings between types, as detailed in
-Chapter~46 of~\cite{HarperBook2016}: 
+Chapter~46 of~\cite{Harper:16}:
 \begin{mathpar}
 \inferrule{
 }{
@@ -638,22 +638,22 @@ Proceed by induction on the structure of $A$.
   \begin{itemize}
   \setlength\itemsep{1em}
   \item $\E = \cdot$\\
-  Let $\Gamma' \ge \Gamma,x:A$. Suppose \hnorm{\Gamma'}{A_1}{M}. It suffices to show \hnorm{\Gamma'}{A_2}{\ap{x}{M}}. 
+  Let $\Gamma' \ge \Gamma,x:A$. Suppose \hnorm{\Gamma'}{A_1}{M}. It suffices to show \hnorm{\Gamma'}{A_2}{\ap{x}{M}}.
   Note \bnorm{M} from IH on Lemma \ref{l2}.
-  Now apply the outer IH with $\hasC{\ap{\cdot}{M}}{\Gamma}{A}{\Gamma}{A_2}$ to obtain 
+  Now apply the outer IH with $\hasC{\ap{\cdot}{M}}{\Gamma}{A}{\Gamma}{A_2}$ to obtain
   \hnorm{\Gamma,x:A}{A}{\fillin{\ap{\cdot}{M}}{x}}, and result follows from monotonicity of hereditary normalization.
-  \item $\E = \ap{\E'}{M}$ because $\hasC{\E'}{\Gamma}{C}{\Gamma}{\fn{A'}{A}}, \hasEF{\Gamma}{M}{A'}$ and 
+  \item $\E = \ap{\E'}{M}$ because $\hasC{\E'}{\Gamma}{C}{\Gamma}{\fn{A'}{A}}, \hasEF{\Gamma}{M}{A'}$ and
   \bnorm{M}, \bnorm{\E'}\\
-  We need to show that \hnorm{\Gamma,x:C}{A}{\fillin{\E}{x}}. Let $\Gamma' \ge \Gamma,x:C$, and 
+  We need to show that \hnorm{\Gamma,x:C}{A}{\fillin{\E}{x}}. Let $\Gamma' \ge \Gamma,x:C$, and
   suppose \hnorm{\Gamma'}{A_1}{N}. We need to show \hnorm{\Gamma'}{A_2}{\ap{\fillin{\E}{x}}{N}}. Since
   $\ap{\fillin{\E}{x}}{N} = \fillin{\ap{\E}{N}}{x}$, it suffices to show \hnorm{\Gamma'}{A_2}{\fillin{\ap{\E}{N}}{x}}.
-  By the definition of context typing, we have \hasC{\ap{\E}{N}}{\Gamma}{C}{\Gamma}{A_2}. In addition, 
+  By the definition of context typing, we have \hasC{\ap{\E}{N}}{\Gamma}{C}{\Gamma}{A_2}. In addition,
   by IH on Lemma \ref{l2}, we have $\bnorm{N}$, consequently $\bnorm{\ap{\E}{N}}$. Lastly, we obtain the result by applying the outer IH on $\ap{\E}{N}$.
   \end{itemize}
 \end{itemize}
 \end{proof}
 
-Note that the proof is an induction over the lexicographical ordering on the structures of 
+Note that the proof is an induction over the lexicographical ordering on the structures of
 $(A,\; \hasC{\E}{\Gamma}{C}{\Gamma}{C},\; \bnorm{\E})$. In particular, when appealing to the inductive hypothesis,
 the size of structurese relating to $\E$ increases in some cases, but only when $A$ is correspondingly decreasing. We can recover Lemma \ref{l4} by instantiating Lemma \ref{l5} with the empty evaluation context.
 
@@ -662,8 +662,8 @@ the size of structurese relating to $\E$ increases in some cases, but only when 
 In these notes, we have proved normalization for the simply typed lambda calculus.
 Occasionally, \emph{strong normalization} is shown to hold for a calculus, which guarantees
 that there are no infinite reduction sequences. The value of asserting strong normalization
-for a calculus is that it enables reasoning by transfinite induction on reductions, which can be used to prove 
-properties such as confluence. 
+for a calculus is that it enables reasoning by transfinite induction on reductions, which can be used to prove
+properties such as confluence.
 
 \bibliographystyle{plainnat}
 \bibliography{ctt}
