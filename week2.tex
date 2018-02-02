@@ -1,114 +1,12 @@
 \documentclass{article}
-
-\usepackage{amsthm}
-\usepackage{amsmath}
-\usepackage{amssymb}
-\usepackage{natbib}
-\usepackage{xcolor}
-\usepackage{mathpartir}
-\usepackage{url}
-
-% Theorems
-\newtheorem{thm}{Theorem}
-\newtheorem{cor}[thm]{Corollary}
-\newtheorem{lem}[thm]{Lemma}
-\newtheorem{remark}[thm]{Remark}
-\newtheorem{claim}[thm]{Attempt}
-\newtheorem{defn}[thm]{Definition}
-\newtheorem*{lemm}{Lemma}
-
-
-\newenvironment{proofattempt}{\paragraph{\emph{Proof Attempt}.}}{\hfill\color{red}{X}\par}
-\newenvironment{prfattemptref}[1]{\paragraph{\emph{Proof Attempt of #1}.}}{\hfill\color{red}{X}\par}
-
-\newcommand{\redprl}{{\color{red}\textbf{Red}}\textbf{PRL}}
-
-\newcommand{\eeq}{\ensuremath{\doteq}}
-
-\newcommand{\hasTF}[2]{\ensuremath{#1 \vdash #2\ \mathsf{type}}}
-\newcommand{\hasEF}[3]{\ensuremath{#1 \vdash #2 : #3}}
-\newcommand{\hasTEF}[3]{\ensuremath{#1 \vdash #2 \equiv #3\ \mathsf{type}}}
-\newcommand{\hasEEF}[4]{\ensuremath{#1 \vdash #2 \equiv #3 : #4}}
-
-\newcommand{\hasTC}[2]{\ensuremath{#1 \gg #2\ \mathsf{type}}}
-\newcommand{\hasEC}[3]{\ensuremath{#1 \gg #2 \in #3}}
-\newcommand{\hasTEC}[3]{\ensuremath{#1 \gg #2 \eeq #3\ \mathsf{type}}}
-\newcommand{\hasEEC}[4]{\ensuremath{#1 \gg #2 \eeq #3 : #4}}
-
-\newcommand{\hasC}[5]{\ensuremath{#1 : (#2 \rhd #3) \leadsto (#4 \rhd #5)}}
-
-\newcommand{\hterm}[2]{\ensuremath{\mathsf{HT}_{#1}(#2)}}
-\newcommand{\htermp}[2]{\ensuremath{\mathsf{HT}^+_{#1}(#2)}}
-\newcommand{\termb}[1]{\ensuremath{{#1} \; \mathsf{term}_{\beta}}}
-\newcommand{\hv}[2]{\ensuremath{\mathsf{HV}_{#1}(#2)}}
-\newcommand{\hvcbn}[2]{\ensuremath{\mathsf{HV}^{\mathsf{cbn}}_{#1}(#2)}}
-\newcommand{\hvcbv}[2]{\ensuremath{\mathsf{HV}^{\mathsf{cbv}}_{#1}(#2)}}
-
-\newcommand{\contrb}[2]{#1 \mathrel{\text{contr}_\beta} #2}
-\newcommand{\bnf}[1]{#1 \mathrel{\text{nf}_\beta}}
-\newcommand{\bnorm}[1]{\ensuremath{#1 \mathrel{\text{norm}_\beta}}}
-\newcommand{\stepb}[2]{\ensuremath{#1 \mapsto_{\beta} #2}}
-\newcommand{\stepbs}[2]{\ensuremath{#1 \mapsto_{\beta}^* #2}}
-\newcommand{\stepbk}[3]{\ensuremath{#1 \mapsto_{\beta}^{(#2)} #3}}
-
-\newcommand{\hnorm}[3]{\ensuremath{\mathsf{HN}^{#1}_{#2}(#3)}}
-\newcommand{\id}[1]{\ensuremath{\mathsf{id}(#1)}}
-
-\newcommand{\AND}{\mathrel{\wedge}}
-\newcommand{\OR}{\mathrel{\vee}}
-
-\newcommand{\step}[2]{\ensuremath{#1 \mapsto #2}}
-\newcommand{\steps}[2]{\ensuremath{#1 \mapsto^* #2}}
-\newcommand{\eval}[2]{\ensuremath{#1 \mathrel{\Downarrow} #2}}
-\newcommand{\valueJ}[1]{\ensuremath{#1\ \mathsf{value}}}
-\newcommand{\fillin}[2]{\ensuremath{#1\{#2\}}}
-
-\newcommand{\fn}[2]{\ensuremath{#1 \to #2}}
-\newcommand{\nat}{\ensuremath{\mathsf{nat}}}
-\newcommand{\bool}{\ensuremath{\mathsf{bool}}}
-\newcommand{\tp}{\ensuremath{\mathsf{T}}}
-\newcommand{\ap}[2]{\ensuremath{#1\ #2}}
-\newcommand{\lam}[3]{\ensuremath{\lambda #1 {:} #2.\, #3}}
-
-\newcommand{\E}{\mathcal{E}}
-
-% Page layout
-\usepackage[paper=letterpaper,top=1in,bottom=1in,left=0.8in,right=0.8in,]{geometry}
-\setlength{\parindent}{0mm}
-\setlength{\parskip}{1.5mm}
-
-\usepackage{fancyhdr}
-\fancyhead[RO,LE]{\scshape 15-819: Computational Higher Type Theory}
-\fancyhead[LO,RE]{\scshape Lecture Notes Week 2}
-\pagestyle{fancy}
-
-\usepackage{hyperref}
-
-% titles
-\usepackage{titlesec}
-\titleformat*{\section}{\large\bfseries}
-\titleformat*{\subsection}{\normalsize\bfseries}
-\titleformat*{\subsubsection}{\bfseries}
-\titleformat*{\paragraph}{\bfseries}
-
-% package to customize three basic list environments: enumerate, itemize and description.
-\usepackage{enumitem}
-\setitemize{noitemsep, topsep=0pt, leftmargin=*}
-\setenumerate{noitemsep, topsep=0pt, leftmargin=*}
-\setdescription{noitemsep, topsep=0pt, leftmargin=*}
-
-% to dos
-\usepackage{todonotes}
+\usepackage{chtt-notes}
+\scribes{Stephanie Balzer and Yue Niu}
+\week{2}
+\doXRs
 
 \begin{document}
 
-\begin{center}
-\Large{\scshape Computational Higher Type Theory (CHTT)}\\[2pt]
-\large{\scshape Robert Harper}\\[4pt]
-\large\bfseries{Lecture Notes of Week 2 by Stephanie Balzer and Yue Niu}
-\end{center}
-
-\bigskip
+\maketitle
 
 \section{Setting the Scene}
 
@@ -136,19 +34,19 @@ hereditary termination.
 Our main result of last week is the proof or Theorem~\ref{thm:hterm}, which states that well-typed terms are hereditarily terminating under substitution by
 hereditarily terminating maps:
 
-\begin{thm}[Hereditary termination]\label{thm:hterm}
+\begin{theorem}[Hereditary termination]\label{thm:hterm}
   If $\hasEF{\Gamma}{M}{A}$ and $\gamma : \cdot \to \Gamma$ so that
   $\hterm{\Gamma}{\gamma}$ then $\hterm{A}{\hat{\gamma}(M)}$.
-\end{thm}
+\end{theorem}
 
 Given this result, we should move on to proving that hereditary termination actually implies
 termination.  Before doing so, however, we first have to finish our proof
 Theorem~\ref{thm:hterm}, which relies on a lemma known as \emph{head expansion} or
 \emph{reverse execution}, which we are going to prove next:
 
-\begin{lem}[Head expansion]\label{lem:hexp}
+\begin{lemma}[Head expansion]\label{lem:hexp}
   If $\hterm{A}{M'}$ and $\step{M}{M'}$ then $\hterm{A}{M}$.
-\end{lem}
+\end{lemma}
 
 \begin{proof}
   By induction on the structure of $A$.
@@ -172,9 +70,9 @@ Theorem~\ref{thm:hterm}, which relies on a lemma known as \emph{head expansion} 
 
 Let's now return to proving our ultimate goal, namely that hereditary termination implies termination of terms in the STLC:
 
-\begin{thm}[Termination]\label{thm:term}
+\begin{theorem}[Termination]\label{thm:term}
   If $\hterm{A}{M}$ then $\termb{M}$.
-\end{thm}
+\end{theorem}
 
 \begin{proofattempt}
   By induction on the structure of $A$.
@@ -241,10 +139,10 @@ semantics.  For a call-by-value evaluation semantics, our main fundamental
 Theorem~\ref{thm:hterm} needs to be phrased in terms of hereditary values, with
 $\hvcbv{\Gamma}{\gamma}$ correspondingly defined:
 
-\begin{thm}[Call-by-value hereditary termination]\label{thm:hcbvterm}
+\begin{theorem}[Call-by-value hereditary termination]\label{thm:hcbvterm}
   If $\hasEF{\Gamma}{M}{A}$ and $\gamma : \cdot \to \Gamma$ so that
   $\hvcbv{\Gamma}{\gamma}$ then $\htermp{A}{\hat{\gamma}(M)}$.
-\end{thm}
+\end{theorem}
 
 \subsection{Summary}
 
@@ -265,9 +163,9 @@ $\Gamma$).
 
 Now, we can state our main fundamental Theorem~\ref{thm:hterm} as follows:
 
-\begin{thm}[Hereditary termination -- semantic formulation]
+\begin{theorem}[Hereditary termination -- semantic formulation]
 If $\hasEF{\Gamma}{M}{A}$, then $\hasEC{\Gamma}{M}{A}$.
-\end{thm}
+\end{theorem}
 
 This is in some sense a soundness theorem (in the language of formal logics), which means that
 the formally derivable terms are actually true (according to the computational
@@ -326,9 +224,9 @@ can define when a term is beta-normalizing, $\bnorm{M}$:
 \]
 
 Now we can state the fundamental theorem for normalization:
-\begin{thm}[Normalization]\label{thm:norm}
+\begin{theorem}[Normalization]\label{thm:norm}
 If $\hasEF{\Gamma}{M}{A}$ then $\bnorm{M}$.
-\end{thm}
+\end{theorem}
 
 Attempting to prove Theorem~\ref{thm:norm} by induction on typing, we will get stuck on proving
 the case of function application, as we already did when attempting to prove termination last
@@ -362,9 +260,9 @@ of substitution to the term $M$, which is defined for our language as follows:
 Given the definitions of $\hnorm{\Delta}{A}{M}$ and $\hnorm{\Delta}{\Gamma}{\gamma}$ we can now
 state our fundamental theorem of normalization:
 
-\begin{thm}[Hereditary normalization]\label{thm:hnorm}
+\begin{theorem}[Hereditary normalization]\label{thm:hnorm}
 If $\hasEF{\Gamma}{M}{A}$ and $\hnorm{\Delta}{\Gamma}{\gamma}$, then $\hnorm{\Delta}{A}{\hat\gamma(M)}$.
-\end{thm}
+\end{theorem}
 
 Our fundamental theorem uses a negative formulation of hereditary normalization, which is the
 only possible choice in the presence of indeterminates.  This raises the question what how to
@@ -373,13 +271,13 @@ accommodate positive types, such as sums.
 To prove normalization for the simply typed lambda calculus, we additionally need the following
 two lemmas, whose proofs mutually rely on each other:
 
-\begin{lem}\label{l2}
+\begin{lemma}\label{l2}
 If $\hnorm{\Delta}{A}{M}$ then $\bnorm{M}$.
-\end{lem}
+\end{lemma}
 
-\begin{lem}\label{l3}
+\begin{lemma}\label{l3}
 $\hnorm{\Gamma}{\Gamma}{\id{\Gamma}}$.
-\end{lem}
+\end{lemma}
 
 In the following, we develop the proof of our fundamental Theorem~\ref{thm:hnorm} and the two
 lemmas above.  As usual, we develop the proof step-by-step, starting with failed attempts that
@@ -471,9 +369,9 @@ If we knew that a variable of a function type is hereditarily normalizing when a
 beta-normal term, we could complete the above proof.  So, let's refine Lemma~\ref{l3} with
 this idea, resulting in Lemma~\ref{l4}:
 
-\begin{lem}\label{l4}
+\begin{lemma}\label{l4}
 For all $k$, if $x : A_1 \to \dots \to A_k \to A \in \Gamma$ and for each $i \le k$, $\hasEF{\Gamma}{M_i}{A_i}$ and $\bnorm{M_i}$, then $\hnorm{\Gamma}{A}{\ap{\ap{x}{M_1}}{\dots M_k}}$.
-\end{lem}
+\end{lemma}
 
 Note that we need each argument to be \emph{normalizing} instead of merely \emph{hereditarily
   normalizing}.  Before proving Lemma \ref{l4}, we first return to the issue raised in the
@@ -545,9 +443,9 @@ By induction on the structure of $A$, simultaneously with the proof of Lemma~\re
 Finally, we have to state and prove Lemma~\ref{l6}, which we relied upon in the proofs of
 Lemmas \ref{l2} and \ref{l4}:
 
-\begin{lem}\label{l6}
+\begin{lemma}\label{l6}
 If \bnorm{\ap{M}{x}}, then \bnorm{M}.
-\end{lem}
+\end{lemma}
 
 \begin{proof}
 Let $\stepbs{\ap{M}{x}}{N}$ and $\bnf{N}$.
@@ -622,10 +520,10 @@ Further, we can define when evalutaion contexts are beta-normalizing:
 
 Now, Lemma \ref{l4} can be formulated as follows:
 
-\begin{lem}\label{l5}
+\begin{lemma}\label{l5}
 If \hasC{\E}{\Gamma}{C}{\Gamma}{A} and \bnorm{\E},
 then \hnorm{\Gamma, x : C}{A}{\fillin{\E}{x}}
-\end{lem}
+\end{lemma}
 
 \begin{proof}
 Proceed by induction on the structure of $A$.

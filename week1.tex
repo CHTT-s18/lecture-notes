@@ -1,96 +1,12 @@
 \documentclass{article}
-
-\usepackage{amsthm}
-\usepackage{amsmath}
-\usepackage{amssymb}
-\usepackage{natbib}
-\usepackage{xcolor}
-\usepackage{mathpartir}
-\usepackage{url}
-
-% Theorems
-\newtheorem{thm}{Theorem}
-\newtheorem{cor}[thm]{Corollary}
-\newtheorem{lem}[thm]{Lemma}
-\newtheorem{remark}[thm]{Remark}
-\newtheorem{claim}[thm]{Attempt}
-\newtheorem{defn}[thm]{Definition}
-
-\newenvironment{proofattempt}{\paragraph{\emph{Proof Attempt}.}}{\hfill\color{red}{X}\par}
-
-\newcommand{\redprl}{{\color{red}\textbf{Red}}\textbf{PRL}}
-
-\newcommand{\eeq}{\ensuremath{\doteq}}
-
-\newcommand{\hasTF}[2]{\ensuremath{#1 \vdash #2\ \mathsf{type}}}
-\newcommand{\hasEF}[3]{\ensuremath{#1 \vdash #2 : #3}}
-\newcommand{\hasTEF}[3]{\ensuremath{#1 \vdash #2 \equiv #3\ \mathsf{type}}}
-\newcommand{\hasEEF}[4]{\ensuremath{#1 \vdash #2 \equiv #3 : #4}}
-
-\newcommand{\hasTC}[2]{\ensuremath{#1 \gg #2\ \mathsf{type}}}
-\newcommand{\hasEC}[3]{\ensuremath{#1 \gg #2 \in #3}}
-\newcommand{\hasTEC}[3]{\ensuremath{#1 \gg #2 \eeq #3\ \mathsf{type}}}
-\newcommand{\hasEEC}[4]{\ensuremath{#1 \gg #2 \eeq #3 : #4}}
-
-\newcommand{\hterm}[2]{\ensuremath{\mathsf{HT}_{#1}(#2)}}
-
-\newcommand{\AND}{\mathrel{\wedge}}
-\newcommand{\OR}{\mathrel{\vee}}
-
-\newcommand{\step}[2]{\ensuremath{#1 \mapsto #2}}
-\newcommand{\steps}[2]{\ensuremath{#1 \mapsto^* #2}}
-\newcommand{\eval}[2]{\ensuremath{#1 \mathrel{\Downarrow} #2}}
-\newcommand{\valueJ}[1]{\ensuremath{#1\ \mathsf{value}}}
-\newcommand{\fillin}[2]{\ensuremath{#1\{#2\}}}
-
-\newcommand{\fn}[2]{\ensuremath{#1 \to #2}}
-\newcommand{\nat}{\ensuremath{\mathsf{nat}}}
-\newcommand{\bool}{\ensuremath{\mathsf{bool}}}
-\newcommand{\tp}{\ensuremath{\mathsf{T}}}
-\newcommand{\ap}[2]{\ensuremath{#1\ #2}}
-\newcommand{\lam}[3]{\ensuremath{\lambda #1 {:} #2.\, #3}}
-
-% Page layout
-\usepackage[paper=letterpaper,top=1in,bottom=1in,left=0.8in,right=0.8in,]{geometry}
-\setlength{\parindent}{0mm}
-\setlength{\parskip}{1.5mm}
-
-\usepackage{fancyhdr}
-\fancyhead[RO,LE]{\scshape 15-819: Computational Higher Type Theory}
-\fancyhead[LO,RE]{\scshape Lecture Notes Week 1}
-\pagestyle{fancy}
-
-\usepackage{hyperref}
-
-% titles
-\usepackage{titlesec}
-\titleformat*{\section}{\large\bfseries}
-\titleformat*{\subsection}{\normalsize\bfseries}
-\titleformat*{\subsubsection}{\bfseries}
-\titleformat*{\paragraph}{\bfseries}
-
-% package to customize three basic list environments: enumerate, itemize and description.
-\usepackage{enumitem}
-\setitemize{noitemsep, topsep=0pt, leftmargin=*}
-\setenumerate{noitemsep, topsep=0pt, leftmargin=*}
-\setdescription{noitemsep, topsep=0pt, leftmargin=*}
+\usepackage{chtt-notes}
+\scribes{Daniel Gratzer}
+\week{1}
+\doXRs
 
 \begin{document}
 
-\begin{center}
-\Large{\scshape Computational Higher Type Theory (CHTT)}\\[2pt]
-\large{\scshape Robert Harper}\\[4pt]
-\large\bfseries{Lecture Notes of Week 1 by Daniel Gratzer}
-\end{center}
-
-\bigskip
-
-% \title{Computational Type Theory (CHTT): Lecture Notes Week 1}
-% \author{Robert Harper\\ Notes provided by Daniel Gratzer}
-% \date{\today}
-
-% \begin{document}
-% \maketitle
+\maketitle
 
 \section{Administrative Materials}
 
@@ -551,10 +467,10 @@ claim let us define an extension of $\hterm{-}{-}$ to substitutions:
 \[
   \hterm{\Gamma}{\gamma} \triangleq \forall x : A \in \Gamma.\ \hterm{A}{\gamma(x)}
 \]
-\begin{thm}
+\begin{theorem}
   If $\hasEF{\Gamma}{M}{A}$ and $\gamma : \cdot \to \Gamma$ so that
   $\hterm{\Gamma}{\gamma}$ then $\hterm{A}{\hat{\gamma}(M)}$.
-\end{thm}
+\end{theorem}
 \begin{proof}
   We proceed by induction on $\hasEF{\cdot}{M}{A}$ which is
   inductively defined after all.
@@ -605,9 +521,9 @@ claim let us define an extension of $\hterm{-}{-}$ to substitutions:
 In the above, I have claimed that it was \emph{obvious} that if a term
 steps to another one and this new term is hereditarily terminating
 the first term is terminating. This can be formally stated:
-\begin{lem}
+\begin{lemma}
   If $\hterm{A}{M'}$ and $\step{M}{M'}$ then $\hterm{A}{M}$.
-\end{lem}
+\end{lemma}
 This is a result of the determinacy of $\mapsto$ and the fact that
 hereditary termination is purely behavioral: it relies only on the
 evaluation behavior of $M$.
