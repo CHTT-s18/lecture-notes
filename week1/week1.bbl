@@ -1,0 +1,80 @@
+\begin{thebibliography}{11}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Angiuli and Harper(2016{\natexlab{a}})]{Angiuli:chtt1:16}
+Carlo Angiuli and Robert Harper.
+\newblock Computational higher type theory {I}: Abstract cubical realizability.
+\newblock \url{https://arxiv.org/abs/1604.08873v2}, 2016{\natexlab{a}}.
+
+\bibitem[Angiuli and Harper(2016{\natexlab{b}})]{Angiuli:chtt2:16}
+Carlo Angiuli and Robert Harper.
+\newblock Computational higher type theory {II}: Dependent cubical
+  realizability.
+\newblock \url{https://arxiv.org/abs/1606.09638v2}, 2016{\natexlab{b}}.
+
+\bibitem[Angiuli et~al.(2017{\natexlab{a}})Angiuli, Brunerie, Coquand,
+  Hou~(Favonia), Harper, and Licata]{Angiuli:cart:17}
+Carlo Angiuli, Guillaume Brunerie, Thierry Coquand, Kuen-Bang Hou~(Favonia),
+  Robert Harper, and Daniel~R Licata.
+\newblock Cartesian cubical type theory.
+\newblock url{http://www.cs.cmu.edu/~rwh/papers/uniform/uniform.pdf},
+  2017{\natexlab{a}}.
+
+\bibitem[Angiuli et~al.(2017{\natexlab{b}})Angiuli, Harper, and
+  Wilson]{Angiuli:chtt:17}
+Carlo Angiuli, Robert Harper, and Todd Wilson.
+\newblock Computational higher-dimensional type theory.
+\newblock POPL 2017, 2017{\natexlab{b}}.
+
+\bibitem[Angiuli et~al.(2017{\natexlab{c}})Angiuli, {Hou (Favonia)}, and
+  Harper]{Angiuli:chtt3:17}
+Carlo Angiuli, Kuen-Bang {Hou (Favonia)}, and Robert Harper.
+\newblock Computational higher type theory {III}: Univalent universes and exact
+  equality.
+\newblock \url{https://arxiv.org/abs/1712.01800}, 2017{\natexlab{c}}.
+
+\bibitem[Cavallo and Harper(2018)]{Cavallo:18}
+Evan Cavallo and Robert Harper.
+\newblock Computational higher type theory {IV}: Inductive types.
+\newblock \url{https://arxiv.org/abs/1801.01568}, 2018.
+
+\bibitem[Cohen et~al.(2016)Cohen, Coquand, Huber, and M{\"o}rtberg]{Cohen:16}
+Cyril Cohen, Thierry Coquand, Simon Huber, and Anders M{\"o}rtberg.
+\newblock Cubical type theory: a constructive interpretation of the univalence
+  axiom.
+\newblock \url{https://arxiv.org/abs/1611.02108}, 2016.
+
+\bibitem[Constable et~al.(1986)Constable, Allen, Bromley, Cleaveland, Cremer,
+  Harper, Howe, Knoblock, Mendler, Panangaden, Sasaki, and Smith]{Constable:86}
+R.~L. Constable, S.~F. Allen, H.~M. Bromley, W.~R. Cleaveland, J.~F. Cremer,
+  R.~W. Harper, D.~J. Howe, T.~B. Knoblock, N.~P. Mendler, P.~Panangaden, J.~T.
+  Sasaki, and S.~F. Smith.
+\newblock \emph{Implementing Mathematics with the Nuprl Proof Development
+  System}.
+\newblock 1986.
+
+\bibitem[Martin-L{\"o}f(1982)]{MartinLof:79}
+Per Martin-L{\"o}f.
+\newblock Constructive mathematics and computer programming.
+\newblock In \emph{Logic, Methodology and Philosophy of Science VI, Proceedings
+  of the Sixth International Congress of Logic, Methodology and Philosophy of
+  Science, Hannover 1979}. 1982.
+
+\bibitem[Sterling et~al.(2018)Sterling, {Hou (Favonia)}, Cavallo, Angiuli,
+  Wilcox, Akentyev, Christiansen, Gratzer, and Morrison]{redprl}
+Jonathan Sterling, Kuen-Bang {Hou (Favonia)}, Evan Cavallo, Carlo Angiuli,
+  James Wilcox, Eugene Akentyev, David Christiansen, Daniel Gratzer, and Darin
+  Morrison.
+\newblock {RedPRL} -- the {P}eople's {R}efinement {L}ogic.
+\newblock \url{http://www.redprl.org/}, 2018.
+
+\bibitem[Tait(1967)]{Tait:67}
+William~W. Tait.
+\newblock {Intensional Interpretations of Functionals of Finite Type I}.
+\newblock \emph{Journal of Symbolic Logic}, 1967.
+
+\end{thebibliography}

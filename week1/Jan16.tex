@@ -1,0 +1,160 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{hyperref}
+\begin{document}
+{\center{\bf 15-819 Computational Type Theory}}
+
+{\center{\bf 15-819 Notes from January 16, 2018}}
+
+Overview of Comutational Type Theory vs Formal Type Theory
+
+Technical invesigation of $\lambda$-calculus with function types
+(simple type theory)
+
+\begin{enumerate}
+\item Historical context development of critical ideas\\
+  central idea -- especially relational interpretation of types
+\item foreshadows later development of higher types (coercion of types)\\
+master theory of type coercion\\
+(an investigation of the meaning of type equality\\
+need both formal and computational aspects\\
+two notions of variable
+\item redPRL implementation of CHiTT\\
+redprl.org
+\item fundamentals of computational type theory (0-dimensional)
+\item guarded computational type theory (harper and ?)\\
+talk about ``causality''/``time''
+\item higher type theory\\
+cubical type theory (in computational form)\\
+\begin{itemize}
+\item[a)] cubical infrastructure
+\item[b)] univalence, inductive types\\
+identify (treat as equal) eqivalent types
+\[\begin{array}{c}
+A\leftrightarrow B\\
+---\\
+A = B\\
+\end{array}\]
+if equivalence then equal
+\end{itemize}
+\item Computational Type Theory as a specification language for
+program verification, especially with regard to state, partiality
+\item {\bf Types are more than just propositions}\\
+(Down with Curry-Howard rant) as a formal but uninteresting observation
+\item Type theory vs theory of proofs
+\item Type theory as a theory of truth (Brouwer/Heyting/Kolomogrov)\\
+{\sl Author's Comment: Heyting, A. ``Intuitionism: An Introduction''
+(1956) North-Holland Publishing ISBN 7204-2239-6}
+\item Types are parasitic on computation
+\item comparison with higher type theory
+\begin{itemize}
+\item cartesian form (normal cube)
+\item kleene form (Kleene algebra cube)
+\end{itemize}
+\item separation logic (Reynolds)
+\begin{itemize}
+\item type theory for concurrency
+\item action and session tyhpes (substructural logic)
+\end{itemize}
+\item See ~/rwh/courses/chtt
+\item Read Proofs and Refuations\\
+\href{url}{https://math.berkeley.edu/~kpmann/Lakatos.pdf}
+\item {\bf Formal Type Theory}
+\begin{itemize}
+\item structural
+\item prescriptive
+\item axiomatic
+\end{itemize}
+\item {\bf Computational Type Theory}\\
+\href{url}{http://www.nuprl.org/documents/Constable/NaiveTypeTheoryPreface.html}
+\begin{itemize}
+\item behavioral
+\item descriptive
+\item semantic
+\end{itemize}
+\item Formal Type Theory
+Formal logic (bunch of rules / derivation tree)
+\[\begin{array}{rclrcl}
+\Gamma & \vdash & A~type &\quad\Gamma & \vdash & A\equiv B\\
+\Gamma & \vdash & M:A    &\quad\Gamma & \vdash & M \stackrel{<}{=} N:A
+\end{array}\]
+(defunitional equality)\\
+\vskip 0.1cm
+$\displaystyle\frac{\Gamma \vdash M:A \quad \Gamma \vdash A\equiv B}
+{\Gamma \vdash M:B}$
+\item Formal Type Theory Methodology
+\begin{enumerate}
+\item correspondence to formal logic
+\begin{itemize}
+\item $\Gamma\vdash A:Prop \approx \Gamma\vdash A~Type$
+\item Prop is Type but (nat, list are not Prop)
+\item $\Gamma\vdash A~true \approx \Gamma\vdash M:A~(\exists M)$
+\end{itemize}
+\item constructive (two senses)
+\begin{itemize}
+\item[A)] computational interpretation\\
+proofs should run as programs
+\item[B)] absense of law of excluded middle\\
+axiomatic freedom
+\item law of excluded middle $\leftrightarrow$ no univalence
+\end{itemize}
+\item decidability
+\begin{itemize}
+\item recursively enumerable $\leftrightarrow$ computationally enumerable
+\item insist on decidable
+\item either it is derivable or not
+\item type checking is proof checking
+\item issue of complexity (size of proof terms)
+\end{itemize}
+\item Computational meaning is imposed after the fact
+\end{enumerate}
+\item {\bf Computational Type Theory}
+\begin{itemize}
+\item type theory is {\bf all} about computation
+\item type theory is foundational in that it is a self-standing theory
+of truth (don't need sets)
+\item truth is based on computation because that is the fundamental
+human faculty (we all understand ``algorithm'')\\
+{\sl Author's Comment: Brouwer's philosophy is that mathematics is
+fundamentally about human communication and that everyone has an
+intuitive understanding of an algorithm.}
+\item start with a programming language
+\begin{itemize}
+\item $M\rightarrow M^\prime$ deterministic transition
+\item $M\Downarrow V$ (M evaluates to V)
+\end{itemize}
+\item defines types and elements using ``a meaning explanation''\\
+(semantics in terms of computation)
+\item types are certain programs when evaluated their values
+designate a specification
+\item ``nat'' specifies programs that evaluate to O or to the successor
+\item ``if true then nat else 17'' is a type
+\begin{itemize}
+\item elements of a type (obey/satisfy) the specification of the type
+\item ``if true then 0 else false'' $in$ nat
+\item ``if true then 0 else false'' $in$ ``if true then nat else 17''
+\end{itemize}
+\item meaning of variables in computational type theory is different
+from variables in formal type theory
+\[\begin{array}{cl}
+\Gamma \gg M\in A & \Gamma \gg M=N \in A\\
+\Gamma \gg A~type & \Gamma \gg A=B
+\end{array}\]
+\item no sense checkable\\
+abs $\equiv$ identity in nat\\
+abs $\not\equiv$ identity in $\mathbb{N}$
+\item type theory specifying behavior, not structure
+\item in computational type theory the role of type theory is to access the
+truth
+\item A is true and proof extracts the program M
+\item ``Refinement Logic'' by Constable and Bates\\
+\href{url}{http://www.cs.cornell.edu/courses/cs4860/2012a/lec-04.pdf}\\
+\href{url}{http://www.redprl.org/pdfs/designing-the-peoples-refinement-logic.pdf}\\
+\href{url}{http://pdfs.semanticscholar.org/c466/665677a8a82a1e5084574972da1a5d11c2bb.pdf}
+\item Chetan Murthy\\
+\href{url}{https://awards.acm.og/award-winners/MURTHY\_6789112}
+\end{itemize}
+\end{enumerate}
+
+\end{document}

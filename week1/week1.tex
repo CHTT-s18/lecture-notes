@@ -1,0 +1,618 @@
+\documentclass{article}
+
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{natbib}
+\usepackage{xcolor}
+\usepackage{mathpartir}
+\usepackage{url}
+
+% Theorems
+\newtheorem{thm}{Theorem}
+\newtheorem{cor}[thm]{Corollary}
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{remark}[thm]{Remark}
+\newtheorem{claim}[thm]{Attempt}
+\newtheorem{defn}[thm]{Definition}
+
+\newenvironment{proofattempt}{\paragraph{\emph{Proof Attempt}.}}{\hfill\color{red}{X}\par}
+
+\newcommand{\redprl}{{\color{red}\textbf{Red}}\textbf{PRL}}
+
+\newcommand{\eeq}{\ensuremath{\doteq}}
+
+\newcommand{\hasTF}[2]{\ensuremath{#1 \vdash #2\ \mathsf{type}}}
+\newcommand{\hasEF}[3]{\ensuremath{#1 \vdash #2 : #3}}
+\newcommand{\hasTEF}[3]{\ensuremath{#1 \vdash #2 \equiv #3\ \mathsf{type}}}
+\newcommand{\hasEEF}[4]{\ensuremath{#1 \vdash #2 \equiv #3 : #4}}
+
+\newcommand{\hasTC}[2]{\ensuremath{#1 \gg #2\ \mathsf{type}}}
+\newcommand{\hasEC}[3]{\ensuremath{#1 \gg #2 \in #3}}
+\newcommand{\hasTEC}[3]{\ensuremath{#1 \gg #2 \eeq #3\ \mathsf{type}}}
+\newcommand{\hasEEC}[4]{\ensuremath{#1 \gg #2 \eeq #3 : #4}}
+
+\newcommand{\hterm}[2]{\ensuremath{\mathsf{HT}_{#1}(#2)}}
+
+\newcommand{\AND}{\mathrel{\wedge}}
+\newcommand{\OR}{\mathrel{\vee}}
+
+\newcommand{\step}[2]{\ensuremath{#1 \mapsto #2}}
+\newcommand{\steps}[2]{\ensuremath{#1 \mapsto^* #2}}
+\newcommand{\eval}[2]{\ensuremath{#1 \mathrel{\Downarrow} #2}}
+\newcommand{\valueJ}[1]{\ensuremath{#1\ \mathsf{value}}}
+\newcommand{\fillin}[2]{\ensuremath{#1\{#2\}}}
+
+\newcommand{\fn}[2]{\ensuremath{#1 \to #2}}
+\newcommand{\nat}{\ensuremath{\mathsf{nat}}}
+\newcommand{\bool}{\ensuremath{\mathsf{bool}}}
+\newcommand{\tp}{\ensuremath{\mathsf{T}}}
+\newcommand{\ap}[2]{\ensuremath{#1\ #2}}
+\newcommand{\lam}[3]{\ensuremath{\lambda #1 {:} #2.\, #3}}
+
+% Page layout
+\usepackage[paper=letterpaper,top=1in,bottom=1in,left=0.8in,right=0.8in,]{geometry}
+\setlength{\parindent}{0mm}
+\setlength{\parskip}{1.5mm}
+
+\usepackage{fancyhdr}
+\fancyhead[RO,LE]{\scshape 15-819: Computational Higher Type Theory}
+\fancyhead[LO,RE]{\scshape Lecture Notes Week 1}
+\pagestyle{fancy}
+
+\usepackage{hyperref}
+
+% titles
+\usepackage{titlesec}
+\titleformat*{\section}{\large\bfseries}
+\titleformat*{\subsection}{\normalsize\bfseries}
+\titleformat*{\subsubsection}{\bfseries}
+\titleformat*{\paragraph}{\bfseries}
+
+% package to customize three basic list environments: enumerate, itemize and description.
+\usepackage{enumitem}
+\setitemize{noitemsep, topsep=0pt, leftmargin=*}
+\setenumerate{noitemsep, topsep=0pt, leftmargin=*}
+\setdescription{noitemsep, topsep=0pt, leftmargin=*}
+
+\begin{document}
+
+\begin{center}
+\Large{\scshape Computational Higher Type Theory (CHTT)}\\[2pt]
+\large{\scshape Robert Harper}\\[4pt]
+\large\bfseries{Lecture Notes of Week 1 by Daniel Gratzer}
+\end{center}
+
+\bigskip
+
+% \title{Computational Type Theory (CHTT): Lecture Notes Week 1}
+% \author{Robert Harper\\ Notes provided by Daniel Gratzer}
+% \date{\today}
+
+% \begin{document}
+% \maketitle
+
+\section{Administrative Materials}
+
+\begin{itemize}
+\item Participation in this course is measured by presenting papers to
+  the seminar and taking notes on a weekly basis. There
+  will be no credit assigned for the course.
+\item The course website is \url{http://cs.cmu.edu/~rwh/courses/chtt}.
+\end{itemize}
+
+\section{Course Overview}
+
+This is a course dedicated to computational type theory.  The term \emph{computational type
+  theory} (CTT) is due to Constable in conjunction with the
+Nuprl project~\citep{Constable:86}, based on Martin-L\"{o}f's meaning
+explanation~\citep{MartinLof:79}.  Possible topics of this course
+include, but are not limited to, the following:
+\begin{itemize}
+\item \emph{Fundamentals} of computational type theory in the zero
+  dimensional setting (as opposed to the higher dimensional setting).
+\item Explore the \redprl{}~\citep{redprl} proof assistant, a usable
+  implementation of computational higher type theory.
+\item \emph{Guarded computational type theory} (Sterling and Harper). Rough
+  idea: talk about causality/time in type theory to discuss the
+  consumption of infinite data through time.
+\item Higher type theory, i.e., \emph{cubical type theory}, in the computational
+  form~\citep{Angiuli:chtt1:16,Angiuli:chtt2:16,Angiuli:chtt3:17,Cavallo:18}.  Of particular
+  concern in this setting are \emph{univalence} and \emph{inductive types}.  Univalence is
+  concerned with the identification of ``equivalent'' types.  A computational interpretation of
+  equivalence is roughly based on the idea of a line between types, allowing to map back and forth
+  between them.
+\item Computational type theory as a \emph{specification language} for program
+  \emph{verification}. Specifically the idea of using computational type theory to handle general
+  references (Gratzer and Crary) and more generally that types
+  classify computation, not merely logical propositions!  This idea adopts the
+  Brouwer-Heyting-Kolmogorov operational interpretation of intuitionistic logic that views type
+  theory as a theory of \emph{truth}, whereas the formal correspondence discovered by Curry and
+  Howard views type theory as a theory of \emph{proof}.
+\item A comparison of formal \emph{higher type theories}, such as
+  \citet{Cohen:16} (Kleene algebra form) and \citet{Angiuli:cart:17} (Cartesian form).
+\end{itemize}
+
+This week's lecture will be a more modest discussion of what defines
+the difference between \emph{computational} type theory versus
+\emph{formal} type theory. This discussion will be supplemented by
+investigating the practical differences between the formal perspective
+and the computational perspective on a simple type theory. This
+exercises will have two further benefits for our future study:
+\begin{enumerate}
+\item Provide a historical context for the development of critical
+  ideas. In particular, the development of a relational interpretation
+  of types.
+\item Foreshadow some of the necessary technical tools for developing
+  higher type theory~\citep{Angiuli:chtt:17}. Higher type theory can roughly
+  be understood as a \emph{master theory of coercion} for the purpose of investigating the
+  meaning of type equality.  Both formal and computational higher type theory rely on
+  two notions of a variable.
+\end{enumerate}
+
+\section{Computational Type Theory versus Formal Type Theory}
+We now position \emph{formal type theory} (FTT) with \emph{computational type theory} (CTT).
+In the beginning we focus on the zero dimensional setting and expand to the higher dimensional
+setting in later parts of this course.  Formal type theory is also known as \emph{structural},
+\emph{prescriptive}, or \emph{axiomatic} type theory, whereas computational type theory is
+referred to as \emph{behavioral}, \emph{descriptive}, or \emph{semantic}.
+
+\subsection{Formal Type Theory (FTT)}
+\emph{Formal type theory} is a \emph{formal logic}. It defines a
+\emph{recursively-enumerable} set inductively by a collection of rules of
+judgments. The key judgments for formal type theory are:
+\begin{itemize}
+\item $\hasTF{\Gamma}{A}$
+\item $\hasEF{\Gamma}{M}{A}$
+\end{itemize}
+These judgments are relative to the typing context $\Gamma$, which provides the typing of the
+free variables.  A type theory is a collection of rules of such judgments, defining the
+precise meanings of ``type'' and ``term''. As a type theory becomes more complex, also
+necessary is a form of equality. Traditionally called \emph{definitional equality} it is also
+defined by a pair of judgments:
+\begin{itemize}
+\item $\hasTEF{\Gamma}{A}{B}$
+\item $\hasEEF{\Gamma}{M}{N}{A}$
+\end{itemize}
+These judgments are also used to classify \emph{calculation}. All of
+the rules are expected to be stable under $\equiv$. A common way that
+this is ensured (at least for types) is the inclusion of the following
+rule:
+\[
+  \inferrule{
+    \hasEF{\Gamma}{M}{A}\\
+    \hasTEF{\Gamma}{A}{B}
+  }{\hasEF{\Gamma}{M}{B}}
+\]
+These judgments link the type theory to a formal logic. A type, as
+defined by $\hasTF{\Gamma}{A}$, can be treated as a proposition. Then
+a term can be understood as a proof. A proposition is true when there
+is a term that occupies the corresponding type, giving rise to the following formal correspondence:
+\[
+\hasTF{\Gamma}{A} \quad \sim \quad \ensuremath{\Gamma \vdash A\ \mathsf{prop}}\]
+\[\hasEF{\Gamma}{M}{A} \quad \sim \quad \ensuremath{\Gamma \vdash A\ \mathsf{true}}
+\]
+There is a slight
+mismatch in that there are types in type theory which seem utterly
+trivial from the perspective of logic. For instance, the natural
+numbers are just $\top$ under this interpretation, but we intuitively
+believe that the natural numbers have a more interesting structure
+than say, unit!
+
+We should also expect that a standard formal type theory will define a
+\emph{constructive} logic. The meaning of constructive is slightly ambiguous
+in its modern usage. There are at least two senses in which this can be
+interpreted.
+\begin{enumerate}
+\item A \emph{computational} meaning: proofs are programs that run.\\
+  This is a property not enjoyed by an arbitrary collection of rules
+  and it also fails for interesting collections of sound rules. For
+  instance, ``book HoTT'' is not constructive in this sense.
+
+  There is a certain intrinsic motivation for this for a computer
+  scientist; types classify terms which are thought of as programs so
+  we expect them to run. Beyond aesthetic considerations, there are
+  practical advantages to this. Upon calculating a particular term of
+  type \nat{} with some desired property, in a constructive type
+  theory this term can be run to an actual numeral.
+
+\item The \emph{absence} of classical principles.\\
+  That is, no proofs of the law of excluded middle, double negation
+  elimination, or other similar propositions. This view has been
+  termed ``not not constructive''. The absence of these principles
+  means the theory admits more models and correspondingly more logical
+  principles, giving rise to axiomatic freedom. Another interesting
+  observation is the fact that univalence is simply inconsistent in
+  the presence of the law of excluded middle so it's only sensible to
+  consider in a constructive theory.
+\end{enumerate}
+Formal type theory also is recursively enumerable by definition. Many
+people also want the judgments to be \emph{decidable}, as opposed to merely
+semidecidable. If the four judgments are decidable then, since type
+checking is proof checking, it's possible to validate whether a proof
+is correct. If you're using type theory for a foundation of
+mathematics centered around mechanization then perhaps this is a
+desirable property. Even in the most decidable theory the complexity of
+deciding judgments is ``horrendous''. This presents a slight practical
+issue for the above story.
+
+Finally, the \emph{computational} meaning of formal type theory is \emph{extrinsically}
+imposed.  If the type theory is constructive in
+the first sense then, after-the-fact, we can build such an
+interpretation.
+
+\subsection{Computational Type Theory (CTT)}
+In \emph{computational type theory}, rather than working with computation
+after-the-fact, computation comes first. Moreover, rather than a collection
+of inference rules defining the type theory and bolting on models of
+these rules, the type theory stands alone.  In particular, it does not depend on any other
+mathematical structures (e.g., sets) for its interpretation.  Computational type theory
+can be seen as a foundational \emph{theory of truth}, as opposed to a theory of
+proof.  Computational type theory thus adopts the Brouwerian principle, in which truth is based on
+computation because the notion of computation (or of an algorithm) is a fundamental human faculty.
+
+The start of computational type theory is then a system of
+computation, a programming language.  The resulting deterministic transition system relies on two
+judgments
+\begin{itemize}
+\item $\step{M}{M'}$, which signifies that the program $M$ steps to the
+  program $M'$,
+\item $\valueJ{M}$,  which signifies that $M$ no longer steps and is a
+  done computing.
+\end{itemize}
+The types are defined by a meaning explanation~\citep{MartinLof:79} in
+terms of computation. All of the objects of this meaning explanation
+are drawn from this programming language so that they have a notion of
+computation off the bat. This also means that types are just certain
+programs which avoids a sticking point in formal type theory, the
+precise relationship between terms and types.
+
+In computational type theory, a type provides a specification of what values belong to it and
+is as such a program that runs to a value.  % In computational type theory, a type is simply a program that runs to
+% a value for which we have a specification of what values belong to
+% it.
+A specification may look like
+\begin{quote}
+  $\nat$ specifies programs which evaluate to either $0$ or
+  $\mathrm{suc}(M)$ where $M$ is a term of type $\nat$.
+\end{quote}
+This specification gives an obvious definition of what elements of a
+type are. An element of a type is simply a program which satisfies the
+specification of the type. We bundle up these ideas into two
+judgments:
+\begin{itemize}
+\item $\hasTC{\Gamma}{A}$, for when $A$ evaluates to a value
+  which names a specification,
+\item $\hasEC{\Gamma}{M}{A}$, for when $M$ evaluates to a value that satisfies the
+  specification of $A$.
+% \item $\hasEC{\Gamma}{M}{A}$, for when an $M$ satisfies the
+%   specification of $A$.
+\end{itemize}
+These judgments are not enumerable or checkable in any sense. They are
+arbitrarily complex and are richer than the recursively enumerable set
+we encountered with formal type theory.
+
+Types will also come equipped with a notion of \emph{exact equality}, $\eeq$,
+specified at each type. This notion of equality can be bundled up into
+judgments:
+\[
+  \hasTEC{\Gamma}{A}{B} \qquad \qquad
+  \hasEEC{\Gamma}{M}{N}{A}
+\]
+Since these judgments are wildly undecidable there is a question of
+convenience. We can no longer rely on computers to aid us in the
+construction or checking of these judgments. In order to work with
+this, computational type theory can be paired with some proof theory
+(constructed after-the-fact) which provides a convenient way to
+establish these judgments. They cannot capture the full scope of the
+original judgments but by carving out useful subsets we can work with
+them. Since these proof theories are secondary and cannot possibly be
+canonical, it is supremely unimportant if they satisfy many classic
+proof theory properties. For instance, it's common to add explicit
+rules for cut or even that are not closed under computational
+equivalence.
+
+\section{Case Study: The Simply Typed Lambda Calculus with Base Types}
+
+We now turn to trying to make the above discussion more concrete by
+applying it to a simple type theory. The language consists of the types
+\[
+  A, B ::= b \mid \fn{A}{B}
+\]
+and the terms
+\[
+  M, N ::= x \mid c \mid \lam{x}{A}{M} \mid \ap{M}{N}
+\]
+The grammar for contexts is the completely standard version for
+non-dependent type theories.
+\[
+  \Gamma ::= \cdot \mid \Gamma, x : A\ (\text{distinct variables})
+\]
+To express this language as a formal type theory we now define the
+usual judgments:
+\begin{mathpar}
+  \inferrule{ }{\hasEF{\Gamma, x : A}{x}{A}}\and
+  \inferrule{
+    \hasEF{\Gamma}{M}{\fn{A}{B}}\\
+    \hasEF{\Gamma}{N}{A}
+  }{\hasEF{\Gamma}{\ap{M}{N}}{B}} \and
+  \inferrule{ }{\hasEF{\Gamma}{c_0}{b}} \and
+  \inferrule{ }{\hasEF{\Gamma}{c_1}{b}}
+\end{mathpar}
+Here we have assumed the existence of two distinct constants $c_0$ and $c_1$ of type
+$b$. We want these constants to provide some way to distinguish
+terms and they can be thought of as the two different answers a
+program might provide. This does not, however, make the base type equivalent to
+$\bool$. Firstly, we have not ensured that the base type includes no
+other constants besides these two distinguished points, so the base
+type may include arbitrarily many distinct members. Even if we did
+limit ourselves to just two such constants we have not internalized
+branching on the difference in our program. In other words, we have
+not included anything like an {\tt if}. This is deliberate, we wish the
+base type to only serve as the answer that a program provides, and
+including {\tt if} would lead to subtle complications for the upcoming
+proof of normalization.
+
+Of course to work with this theory we need a notion of substitution:
+$[M/x]M'$. More generally, it will be necessary to have a notion of
+substitution between contexts to allow for simultaneous substitution:
+$\gamma : \Delta \to \Gamma$. This means that for each
+$x : A \in \Gamma$, we then have $\hasEF{\Delta}{\gamma(x)}{A}$. The
+notion of applying a substitution can be extended to a full term:
+$\hat{\gamma}(M)$. The details of this are elided because they're a
+bit low level.
+
+There remains the question of the judgment $\equiv$. We would expect
+to have some notion of computation included in $\equiv$. More than
+this, however, we would also expect it to be the case that $\equiv$ is
+a reflexive, symmetric, transitive, compatible (congruent)
+relation. The first three qualifiers ensure that $\equiv$ behaves like
+some notion of equality and the last would allow us to replace equals
+by equals in terms. Two examples rules are:
+\begin{mathpar}
+  \inferrule{
+    \hasEEF{\Gamma, x : A}{M}{N}{B}
+  }{\hasEEF{\Gamma}{\lam{x}{A}{M}}{\lam{x}{A}{N}}{\fn{A}{B}}}\and
+  \inferrule{
+    \hasEF{\Gamma, x : A}{M}{B}\\
+    \hasEF{\Gamma}{N}{A}\\
+  }{\hasEEF{\Gamma}{\ap{(\lam{x}{A}{M})}{N}}{[N/x]M}{B}}\and
+\end{mathpar}
+This concludes the essentials of a formal system here. We now turn to
+the computational understanding of this system. There are two ways to
+do this and we will briefly explore both.
+\begin{itemize}
+\item We study closed terms only\footnote{Perhaps we can restrict
+  to even just closed terms of base type.} with a notion of closed
+  evaluation.
+\item We can study open terms of any type paired with a notion of
+  \emph{open reduction}.
+\end{itemize}
+Of particular importance is the differences in the equalities that these two
+approaches produce. Foreshadowing: in the closed term model there are
+a number of equalities that hold on open terms because we know that
+variables will be replaced with closed terms of the right type. This
+permits reasoning principles that are simply invalid in an open
+reductions setting. For instance, in the closed setting only should
+$\hasEEF{x: \nat}{x + 0}{0 + x}{\nat}$.
+
+\subsection{Closed Term Computation}
+
+In order to get started with the first computational interpretation we
+need to define the notion of closed evaluation that we're working
+with. This comes with two judgments,
+\[
+  \valueJ{M} \qquad
+  \step{M}{M'}
+\]
+On top of these judgments we can of course specify the reflexive
+transitive closure of $(\step{-}{-})$: $(\steps{-}{-})$. We will also
+use the specialized version of $(\steps{-}{-})$: $(\eval{-}{-})$. The
+rule is that $\eval{M}{N}$ if $\steps{M}{N}$ and $\valueJ{N}$. The
+rules for stepping and value judgments are given below.
+\begin{mathpar}
+  \inferrule{ }{\valueJ{c}}\and
+  \inferrule{ }{\valueJ{\lam{x}{A}{M}}}\and
+  \inferrule{
+    \step{M}{M'}
+  }{\step{\ap{M}{N}}{\ap{M'}{N}}}\and
+  \inferrule{ }{\step{\ap{(\lam{x}{A}{M})}{N}}{[N/x]M}}
+\end{mathpar}
+This could also have been phrased in terms of evaluation contexts. In
+this set up we define
+\[
+  E ::= \cdot \mid \ap{E}{M}
+\]
+Then we can define $\fillin{E}{M}$ as filling the hole with $M$. The
+main appeal of this approach is that our operational semantics
+collapse to the rule
+\[
+  \step{M}{M'} \iff M = \fillin{E}{P} \AND M' = \fillin{E}{P'} \AND P \mathrel{\text{contr}_\beta} P'
+\]
+Where $P \mathrel{\text{contr}_\beta} P'$ holds precisely when
+$P = \ap{(\lam{x}{A}{M})}{N}$ and $P' = [N/x]M$ for some $M$ and $N$.
+
+With this machinery in hand, we are in a position to state the goal
+that we are after for the closed notion of computation.
+\begin{quote}
+  We want to show that all well-typed programs terminate. That is, if
+  $\hasEF{\cdot}{M}{A}$ then there is a $V$ so that $\eval{M}{V}$
+  (shortened to $M \Downarrow$).
+\end{quote}
+There is an analogous statement for open terms, which is that open
+terms ``normalize''. To formally state this, however, we need a notion
+of open reduction which we do not currently possess.
+
+\begin{claim}
+  If $\hasEF{\cdot}{M}{A}$ then $M \Downarrow$.
+\end{claim}
+\begin{proofattempt}
+  We proceed by induction on $\hasEF{\cdot}{M}{A}$ which is
+  inductively defined after all.
+  \begin{itemize}
+  \setlength\itemsep{1em}
+  \item $\hasEF{\Gamma', x : A}{x}{A}$\\
+    This is vacuous since we assumed $\Gamma = \cdot$.
+  \item $\inferrule{
+      \hasEF{\cdot}{M}{\fn{A}{B}}\\
+      \hasEF{\cdot}{N}{A}
+    }{\hasEF{\cdot}{\ap{M}{N}}{B}}$\\
+    In this case our induction hypothesis tells us that $M \Downarrow$
+    and $N \Downarrow$. So we can get that $\ap{M}{N}$ runs to two
+    values applied to each other.
+
+    At this point, we're very stuck however. There's no intrinsic
+    reason that values applied to each other should always
+    terminate. In fact, this is only true if the application is
+    well-typed. As an explicit instance of this, if the program was
+    not required to be typed we would have to show that the following
+    terminates.
+    \[
+      \ap{(\lam{x}{?}{\ap{x}{x}})}{(\lam{x}{?}{\ap{x}{x}})}
+    \]
+  \end{itemize}
+  And thus our proof fails.
+\end{proofattempt}
+
+\subsubsection{Tait's Groundbreaking Development}
+
+This leads us to the conclusion that we should \emph{strengthen} our
+induction hypothesis somehow so that we have leverage when we get to
+that case. In particular, we need something with better closure
+conditions. This motivates the switch from termination to
+\emph{hereditary termination}. In order for this switch to be a good
+move, we need two facts to hold.
+\begin{enumerate}
+\item It needs to imply termination.
+\item It needs to be strong enough to get the induction to go through.
+\end{enumerate}
+Hereditary termination, in the style first proposed by
+Tait~\citep{Tait:67}, written $\hterm{A}{-}$ will be defined by
+induction on the type, $A$.
+\begin{align*}
+  \hterm{b}{M} &\triangleq M \Downarrow\\
+  \hterm{\fn{A}{B}}{M} &\triangleq
+  \forall N.\ \hterm{A}{N} \implies \hterm{B}{\ap{M}{N}}
+\end{align*}
+The key insight is that it's defined by induction on the structure of
+$A$. As a side note, this is the negative formulation of the clause
+for hereditary termination at function type since it is phrased in terms of an implication. This could also be
+formulated to ensure that functions are terms which run to lambdas and
+also satisfy the above condition. This positive formulation is
+slightly more robust in the case of empty types but will be equivalent
+for our system.
+
+Let's reattempt our proof, but with a strengthened induction hypothesis.
+\begin{claim}
+  If $\hasEF{\cdot}{M}{A}$ then $\hterm{A}{M}$.
+\end{claim}
+\begin{proofattempt}
+  We proceed by induction on $\hasEF{\cdot}{M}{A}$ which is
+  inductively defined after all.
+  \begin{itemize}
+  \setlength\itemsep{1em}
+  \item $\hasEF{\Gamma', x : A}{x}{A}$\\
+    This is vacuous since we assumed $\Gamma = \cdot$.
+  \item $\hasEF{\cdot}{c}{b}$\\
+    This is immediate since we must show that $c \Downarrow$ but
+    $\steps{c}{c}$ and $\valueJ{c}$ holds.
+  \item $\inferrule{
+      \hasEF{\cdot}{M}{\fn{A}{B}}\\
+      \hasEF{\cdot}{N}{A}
+    }{\hasEF{\cdot}{\ap{M}{N}}{B}}$\\
+    We have by assumption that $\hterm{\fn{A}{B}}{M}$ and
+    $\hterm{A}{N}$ and therefore, unfolding definitions we have
+    $\hterm{B}{\ap{M}{N}}$.
+  \item
+    $\inferrule{
+      \hasEF{x : A}{M}{B}\\
+    }{\hasEF{\cdot}{\lam{x}{A}{M}}{\fn{A}{B}}}$\\
+    Now we must show that $\hterm{\fn{A}{B}}{\lam{x}{A}{M}}$. In order to
+    show this, suppose that we have some $N$ so that $\hterm{A}{N}$
+    holds. We must now show that the following holds.
+    \[
+      \hterm{B}{\ap{(\lam{x}{A}{M})}{N}}
+    \]
+    And now we are stuck. We have no assumption about $M$ since it's
+    open. On the other hand, we do know that
+    $\step{\ap{(\lam{x}{A}{M})}{N}}{[N/x]M}$.
+  \end{itemize}
+  And thus our proof fails.
+\end{proofattempt}
+
+We've failed, but we failed a step further which is progress. Our
+issue seems to be that we need a bit of information about open terms
+because we need to know about the body of the function. The definition
+of hereditary termination is going to make us apply it after all. The
+key move here to switch from closed terms to working with open terms
+and proving something about all well-behaved closing substitutions
+applied to these open terms. In order to write down our strengthened
+claim let us define an extension of $\hterm{-}{-}$ to substitutions:
+\[
+  \hterm{\Gamma}{\gamma} \triangleq \forall x : A \in \Gamma.\ \hterm{A}{\gamma(x)}
+\]
+\begin{thm}
+  If $\hasEF{\Gamma}{M}{A}$ and $\gamma : \cdot \to \Gamma$ so that
+  $\hterm{\Gamma}{\gamma}$ then $\hterm{A}{\hat{\gamma}(M)}$.
+\end{thm}
+\begin{proof}
+  We proceed by induction on $\hasEF{\cdot}{M}{A}$ which is
+  inductively defined after all.
+  \begin{itemize}
+  \setlength\itemsep{1em}
+  \item $\hasEF{\Gamma', x : A}{x}{A}$\\
+    In this case, we must show that $\hterm{A}{\hat{\gamma}(x)}$ but
+    this is immediate since $x : A$ is in the context and
+    $\hterm{\Gamma}{\gamma}$.
+  \item $\hasEF{\Gamma}{c}{b}$\\
+    This is immediate since we must show that
+    $\hat{\gamma}(c) = c \Downarrow$ but $\steps{c}{c}$ and
+    $\valueJ{c}$ holds.
+  \item $\inferrule{
+      \hasEF{\Gamma}{M}{\fn{A}{B}}\\
+      \hasEF{\Gamma}{N}{A}
+    }{\hasEF{\Gamma}{\ap{M}{N}}{B}}$\\
+    We have by assumption that $\hterm{\fn{A}{B}}{\hat{\gamma}(M)}$
+    and $\hterm{A}{\hat{\gamma}(N)}$ and therefore, unfolding
+    definitions we have $\hterm{B}{\hat{\gamma}(\ap{M}{N})}$.
+  \item
+    $\inferrule{
+      \hasEF{\Gamma, x : A}{M}{B}\\
+    }{\hasEF{\Gamma}{\lam{x}{A}{M}}{\fn{A}{B}}}$\\
+
+    Now we must show that
+    $\hterm{\fn{A}{B}}{\hat{\gamma}(\lam{x}{A}{M})}$. In order to show
+    this, suppose that we have some $N$ so that $\hterm{A}{N}$
+    holds. We must now show that the following holds.
+    \[
+      \hterm{B}{\ap{\hat{\gamma}(\lam{x}{A}{M})}{N}}
+    \]
+    It is obvious that it suffices to show that
+    $\hterm{B}{[N/x]\hat{\gamma}(M)}$. We can then define the
+    substitution $\gamma' = \gamma[x \mapsto N]$. Then, by the
+    assumptions that $\hterm{\Gamma}{\gamma}$ and $\hterm{A}{N}$ we
+    have that $\hterm{\Gamma, x : A}{\gamma'}$. Our goal, though, can
+    be rewritten:
+    \[
+      \hterm{B}{[N/x]\hat{\gamma}(M)} \iff
+      \hterm{B}{\hat{\gamma}'(M)}
+    \]
+    What was our induction hypothesis for $M$ again? It states
+    precisely that since $\hterm{\Gamma, x : A}{\gamma'}$ then
+    $\hterm{B}{\hat{\gamma}'(M)}$ holds so we're done. \qedhere
+  \end{itemize}
+\end{proof}
+In the above, I have claimed that it was \emph{obvious} that if a term
+steps to another one and this new term is hereditarily terminating
+the first term is terminating. This can be formally stated:
+\begin{lem}
+  If $\hterm{A}{M'}$ and $\step{M}{M'}$ then $\hterm{A}{M}$.
+\end{lem}
+This is a result of the determinacy of $\mapsto$ and the fact that
+hereditary termination is purely behavioral: it relies only on the
+evaluation behavior of $M$.
+
+\bibliographystyle{plainnat}
+\bibliography{ctt}
+
+\end{document}
