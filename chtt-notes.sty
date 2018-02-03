@@ -117,9 +117,15 @@
 
 % package to customize three basic list environments: enumerate, itemize and description.
 \RequirePackage{enumitem}
-\setitemize{noitemsep, topsep=0pt, leftmargin=*}
-\setenumerate{noitemsep, topsep=0pt, leftmargin=*}
-\setdescription{noitemsep, topsep=0pt, leftmargin=*}
+%%% Let's not do the following indiscriminately, because it gives you overlapping
+%%% subscripts and superscripts when one item has a subscript and the next item
+%%% has a superscript.
+%%% Besides, spacing makes it easier to read text.
+%%% If you really want the following items, add them to the individual instance
+%%% of itemize/enumerate/description. —RAK, 2018-02-02
+%\setitemize{noitemsep, topsep=0pt, leftmargin=*}
+%\setenumerate{noitemsep, topsep=0pt, leftmargin=*}
+%\setdescription{noitemsep, topsep=0pt, leftmargin=*}
 
 % title page, modified from article.cls
 \makeatletter
