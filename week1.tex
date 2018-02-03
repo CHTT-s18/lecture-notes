@@ -327,6 +327,7 @@ use the specialized version of $(\steps{-}{-})$: $(\eval{-}{-})$. The
 rule is that $\eval{M}{N}$ if $\steps{M}{N}$ and $\valueJ{N}$. The
 rules for stepping and value judgments are given below.
 \begin{mathpar}
+  \label{head-reduction}
   \inferrule{ }{\valueJ{c}}\and
   \inferrule{ }{\valueJ{\lam{x}{A}{M}}}\and
   \inferrule{
