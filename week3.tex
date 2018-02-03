@@ -250,7 +250,180 @@ We conclude that the following definition of hereditary normalization is the rig
 \hnorm{\Delta}{\booltype}{M} \triangleq \bnorm{M}
 \]
 
+\section{Adding Sum Types}
 
+Having wet our feet with booleans, we extend our development to handle more interesting sum types.
+We begin by extending our grammar of types to include the nullary sum---$\void$---and binary sums:
+\[
+  A, B ::= \dotsb \mid \void \mid A + B.
+\]
+In the formal setting, these come with a collection of typing rules.
+The introduction rules are:
+\[
+  \infer[\rn{Sum-L-I}]{
+    \hasEF{\Gamma}{\inl M}{A + B}
+  }{
+    \hasEF{\Gamma}{M}{A}
+  }
+  \qquad
+  \infer[\rn{Sum-R-I}]{
+    \hasEF{\Gamma}{\inr M}{A + B}
+  }{
+    \hasEF{\Gamma}{M}{B}
+  }
+\]
+Note that there is no introduction rule for $\void$.
+The elimination rules are:
+\[
+  \infer[\rn{\void-E}]{
+    \hasEF{\Gamma}{\vcase{A}{M}}{A}
+  }{
+    \hasEF{\Gamma}{M}{\void}
+  }
+\]
+and
+\[
+  \infer[\rn{Sum-E}]{
+    \hasEF{\Gamma}{\scase{C}{M}{x}{P}{Q}}{C}
+  }{
+    \hasEF{\Gamma}{M}{A+B}
+    &
+    \hasEF{\Gamma,x:A}{P}{C}
+    &
+    \hasEF{\Gamma,x:B}{Q}{C}
+  }
+\]
+Strictly speaking, $\inl M$ should be thought of as short hand for something like $\mathsf{in}[1]\{A,B\}(M)$, but we will dispense with such pedantry.
+We equip the corresponding terms with the following dynamics:
+\[
+  \infer[\rn{Case-S}]{
+    \step{\scase{C}{M}{x}{P}{Q}}{\scase{C}{M'}{x}{P}{Q}}
+  }{
+    \step{M}{M'}
+  }
+\]
+\[
+  \infer[\rn{Case-L}]{
+    \step{\scase{C}{\inl M}{x}{P}{Q}}{\subst{M}{x}{P}}
+  }{}
+\]
+\[
+  \infer[\rn{Case-R}]{
+    \step{\scase{C}{\inr M}{x}{P}{Q}}{\subst{M}{x}{Q}}
+  }{}
+\]
+
+\subsection{In a closed setting}
+
+The closed setting is again relatively straightforward.
+We define the corresponding hereditary termination predicates:
+\begin{align*}
+  \hterm{\void}{M} &\triangleq \text{(never)},\\
+  \hterm{A+B}{M} &\triangleq \left\{
+                   \begin{array}{r l l l}
+                     \text{either} & \steps{M}{\inl N} & \text{and} & \hterm{A}{N},\\
+                     \text{or} & \steps{M}{\inr N} & \text{and} & \hterm{B}{N}.\\
+                   \end{array} \right.
+\end{align*}
+In particular, for any choice of $M$, $\hterm{void}{M}$ is a contradiction.
+We remark that this is a \textit{positive} formulation.
+Suppose we were to attempt a negative formulation, perhaps something along the lines of:
+\begin{quote}
+  $\hterm{A+B}{M}$ if and only if,
+  if $\left\{\parbox{\linewidth}{\begin{enumerate}
+      \item for all $N$, if $\hterm{A}{N}$, then $\hterm{C}{\subst{N}{x}{P}}$, and
+      \item for all $N$, if $\hterm{B}{N}$, then $\hterm{C}{\subst{N}{x}{Q}}$,
+  \end{enumerate}}\right.$
+  then $\hterm{C}{\scase{C}{M}{x}{P}{Q}}$.
+\end{quote}
+The inductive character of our enterprise would then break down, and we would face the same problems as with a negative formulation of $\bool$.
+We could, however, read off a Church encoding for sums:
+\[
+  \forall C. (A \to C) \to (B \to C) \to C.
+\]
+
+We expand the proof of the head-expansion lemma (see Lemma~\ref{W2:lem:hexp}) to account for these new clauses:
+
+\begin{lemma}[Head expansion with sums]
+  \label{lemma:closed-hexp-sums}
+  If $\hterm{T}{M'}$ and $\step{M}{M'}$, then $\hterm{T}{M}$.
+\end{lemma}
+
+\begin{proof}
+  The proof was by induction on the type.
+  We consider the following new cases for $T$:
+  \begin{itemize}
+  \item $\void$. It is never the case that $\hterm{\void}{M'}$, and so the result follows \textit{ex falso}.
+  \item $A + B$. Our positive formulation of $\hterm{A+B}{M'}$ tells us that, without loss of generality, $\steps{M}{\inl N'}$ for some $N'$ such that $\hterm{A}{N'}$.
+    Because the reduction relation $\step{}{}$ is deterministic, it follows that $\steps{M}{\inl N'}$.
+    From this, we conclude $\hterm{A+B}{M}$.\qedhere
+  \end{itemize}
+\end{proof}
+
+We now prove the additional cases for the FTLR:
+
+\begin{theorem}[FTLR with sums]
+  \label{thm:closed-ftlr-sums}
+  If $\hasEF{\Gamma}{M}{A}$ and the closing substitution $\gamma : \cdot \to \Gamma$ is such that $\hterm{\Gamma}{\gamma}$, then $\hterm{A}{\hat \gamma(M)}$.
+\end{theorem}
+
+\begin{proof}
+  The proof was by induction on the typing judgment.
+  We consider the following new typing cases, remarking that there were no introduction rules for $\void$.
+  \begin{itemize}
+  \item \rn{Sum-L-I}. By the induction hypothesis, we know that $\hterm{A}{\hat \gamma(M)}$.
+    We must show that $\hterm{A + B}{\hat \gamma(\inl M)}$.
+    But this is immediate from the fact that $\hat \gamma(\inl M) = \inl{\hat \gamma(M)}$ and the fact that $\steps{\inl{\hat \gamma(M)}}{\inl{\hat \gamma(M)}}$.
+  \item \rn{Sum-R-I}. Follows by a symmetric argument to the previous case.
+  \item \rn{\void-E}. By the induction hypothesis, we know that $\hterm{\void}{\hat \gamma(M)}$.
+    But this is a contradiction, and so we are done.
+  \item \rn{Sum-E}. We want to show that $\hterm{C}{\hat\gamma(\scase{C}{M}{x}{P}{Q})}$, where $\hat\gamma(\scase{C}{M}{x}{P}{Q}) = \scase{C}{\hat\gamma(M)}{x}{\hat\gamma(P)}{\hat\gamma(Q)}$.
+    By the induction hypothesis, we know the following:
+    \begin{itemize}
+    \item for any $\gamma : \cdot \to \Gamma$ satisfying $\hterm{\Gamma}{\gamma}$, that $\hterm{A+B}{\hat\gamma(M)}$,
+    \item for any $\gamma_A : \cdot \to \Gamma, x:A$ satisfying $\hterm{\Gamma, x:A}{\gamma_A}$, that $\hterm{C}{\hat\gamma_A(P)}$, and
+    \item for any $\gamma_B : \cdot \to \Gamma, x:B$ satisfying $\hterm{\Gamma, x:B}{\gamma_B}$, that $\hterm{C}{\hat\gamma_B(Q)}$.
+    \end{itemize}
+
+    From $\hterm{A+B}{\hat\gamma(M)}$, without loss of generality, we know that $\steps{\hat\gamma(M)}{\inl N}$ for some $N$ such that $\hterm{A}{N}$.
+    Let $\gamma_A = \gamma[x \mapsto N]$.
+    It follows that $\hterm{\Gamma,x:A}{\gamma_A}$, so $\hterm{C}{\hat\gamma_A(P)}$.
+    But $\hat\gamma_A(P) = \subst{N}{x}{\hat\gamma(P)}$ and $\steps{\hat\gamma(\scase{C}{M}{x}{P}{Q})}{\subst{N}{x}{\hat\gamma(P)}}$, so the result follows by head expansion (Lemma~\ref{lemma:closed-hexp-sums}).\qedhere
+  \end{itemize}
+\end{proof}
+
+\subsection{In an open setting}
+
+In the open setting, things are a bit trickier.
+We begin by extending the grammar of evaluation contexts and the associated judgments to cope with sums.
+First, we introduce the new evaluation context form:
+\[
+  \E \triangleq \dotsb \mid \scase{C}{\E}{x}{P}{Q}.
+\]
+Next, we introduce the typing rule for the new evaluation context:
+\[
+  \infer[\rn{$\E$-Sum}]{
+    \hasC{\scase{C}{\E}{x}{P}{Q}}{\Gamma}{D}{\Gamma'}{C}
+  }{
+    \hasC{\E}{\Gamma}{D}{\Gamma'}{A + B}
+    &
+    \hasEF{\Gamma', x:A}{P}{C}
+    &
+    \hasEF{\Gamma', x:B}{Q}{C}
+  }
+\]
+Finally, we add a rule to specify when such a context is normalizing:
+\[
+  \infer[\rn{$\E$-Sum-Norm}]{
+    \bnorm{\scase{C}{\E}{x}{P}{Q}}
+  }{
+    \bnorm{\E}
+    &
+    \bnorm{P}
+    &
+    \bnorm{Q}
+  }
+\]
 
 \bibliographystyle{plainnat}
 \bibliography{ctt}
