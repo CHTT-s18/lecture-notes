@@ -396,11 +396,18 @@ We now prove the additional cases for the FTLR:
 
 In the open setting, things are a bit trickier.
 We begin by extending the grammar of evaluation contexts and the associated judgments to cope with sums.
-First, we introduce the new evaluation context form:
+First, we introduce the new evaluation context forms:
 \[
-  \E \triangleq \dotsb \mid \scase{C}{\E}{x}{P}{Q}.
+  \E \triangleq \dotsb \mid \vcase{C}{\E} \mid \scase{C}{\E}{x}{P}{Q}.
 \]
-Next, we introduce the typing rule for the new evaluation context:
+Next, we introduce the typing rules for the new evaluation contexts:
+\[
+  \infer[\rn{$\E$-$\void$}]{
+    \hasC{\vcase{C}{\E}}{\Gamma}{D}{\Gamma'}{C}
+  }{
+    \hasC{\E}{\Gamma}{D}{\Gamma'}{\void}
+  }
+\]
 \[
   \infer[\rn{$\E$-Sum}]{
     \hasC{\scase{C}{\E}{x}{P}{Q}}{\Gamma}{D}{\Gamma'}{C}
@@ -412,7 +419,14 @@ Next, we introduce the typing rule for the new evaluation context:
     \hasEF{\Gamma', x:B}{Q}{C}
   }
 \]
-Finally, we add a rule to specify when such a context is normalizing:
+Finally, we add a rule to specify when such contexts are normalizing:
+\[
+  \infer[\rn{$\E$-$\void$-Norm}]{
+    \bnorm{\vcase{C}{\E}}
+  }{
+    \bnorm{\E}
+  }
+\]
 \[
   \infer[\rn{$\E$-Sum-Norm}]{
     \bnorm{\scase{C}{\E}{x}{P}{Q}}
@@ -498,6 +512,10 @@ We turn our attention to expanding the proof of the work-horse lemma (\cref{W2:l
         Because $x$ is in head position of $N$, we know $\bnf{NN'}$ and that $NN'$ is not an injection.
         But $\steps{\fillin{\E}{x}}{NN'}$, so $\bnorm{\fillin{\E}{x}}$.
         From this, we conclude that $\hnorm{\Gamma}{A+B}{\fillin{\E}{x}}$.
+      \item If $\E = \hasC{\vcase{A+B}{\E'}}{\Gamma}{C}{\Gamma}{A+B}$ by \rn{$\E$-$\void$}, then we know $\hasC{\E'}{\Gamma}{C}{\Gamma}{\void}$, and by the induction hypothesis, that $\hnorm{\Gamma}{\void}{\E'{x}}$.
+        By definition of $\hnorm{\Gamma}{\void}{\cdot}$, we know that $\bnorm{\fillin{\E'}{x}}$.
+        Let $N$ be its normal form, then $\steps{\fillin{\E}{x}}{\bnf{\vcase{A+B}{N}}}$.
+        We remark that this normal form is not an injection and conclude $\hnorm{\Gamma}{A+B}{\fillin{\E}{x}}$.
       \item If $\E = \hasC{\scase{D}{\E'}{y}{P}{Q}}{\Gamma}{C}{\Gamma}{A + B}$ by \rn{$\E$-Sum}, then for some $F$ and $G$, we have $\hasC{\E'}{\Gamma}{C}{\Gamma}{F + G}$, $\hasEF{\Gamma, y:F}{P}{A+B}$, and $\hasEF{\Gamma, y:G}{Q}{A+B}$.
         By the induction hypothesis, we know that $\hnorm{\Gamma}{F + G}{\fillin{\E'}{x}}$, and by definition of $\hnorm{\Gamma}{F + G}{\cdot}$, that $\bnorm{\fillin{\E'}{x}}$.
         Because the variable $x$ occupies the head position of $\fillin{\E'}{x}$, we know that $\steps{\fillin{\E'}{x}}{\bnf{N}}$ and that $N$ is not of the form $\inl N'$ or $\inr N'$.
@@ -513,7 +531,7 @@ We turn our attention to expanding the proof of the work-horse lemma (\cref{W2:l
 Finally, we ready to expand our proof of the fundamental theorem (\cref{W2:thm:hnorm}) to handle sums:
 
 \begin{theorem}[FTLR]
-  If $\hasEF{\Gamma}{M}{A}$ and $\hnorm{\Gamma}{\Delta}{\gamma}$, then $\hnorm{A}{\Delta}{\hat\gamma(M)}$.
+  If $\hasEF{\Gamma}{M}{A}$ and $\hnorm{\Delta}{\Gamma}{\gamma}$, then $\hnorm{\Delta}{A}{\hat\gamma(M)}$.
 \end{theorem}
 
 \begin{proof}
@@ -522,12 +540,16 @@ Finally, we ready to expand our proof of the fundamental theorem (\cref{W2:thm:h
   \begin{itemize}
   \item \rn{Sum-L-I}. We consider $\hasEF{\Gamma}{\inl M}{A + B}$.
     The injection $\hat\gamma(\inl{M}) = \inl{\hat\gamma(M)}$ is a normal form, and so $\bnorm{\inl{\hat\gamma(M)}}$.
-    We have $\steps{\hat\gamma(\inl{M})}{\inl{\hat\gamma(M)}}$ reflexively, and we know $\hnorm{A}{\Delta}{\hat\gamma(M)}$ by the induction hypothesis.
-    From this, we conclude $\hnorm{A + B}{\Delta}{\hat\gamma({\inl{M}})}$.
+    We have $\steps{\hat\gamma(\inl{M})}{\inl{\hat\gamma(M)}}$ reflexively, and we know $\hnorm{\Delta}{A}{\hat\gamma(M)}$ by the induction hypothesis.
+    From this, we conclude $\hnorm{\Delta}{A + B}{\hat\gamma({\inl{M}})}$.
   \item \rn{Sum-R-I}. Symmetric to the case \rn{Sum-L-I}.
-  \item \rn{\void-E}. We consider $\hasEF{\Gamma}{\vcase{M}}{A}$.
-    By the induction hypothesis, we know $\hnorm{\void}{\Delta}{M}$.
-    To handle this case, I think we need to add a new evaluation context form $\vcase{A}{\E}$.\todo{Add this}
+  \item \rn{\void-E}. We consider $\hasEF{\Gamma}{\vcase{A}{M}}{A}$.
+    By the induction hypothesis, we know $\hnorm{\Delta}{\void}{\hat\gamma(M)}$.
+    By definition of $\hnorm{\Delta}{\void}{\cdot}$, this implies that $\bnorm{\hat\gamma(M)}$.
+    But the only normal forms of type $\void$ are of the form $\fillin{\E'}{x}$ for some $\hasC{\E'}{\Delta}{C}{\Delta}{\void}$ and $\hasEF{\Delta}{x}{C}$.
+    Let $\E = \hasC{\vcase{A}{\E'}}{\Delta}{C}{\Delta}{A}$.
+    Then $\steps{\vcase{A}{M}}{\bnf{\fillin{\E}{x}}}$.
+    By the work-horse lemma (\cref{lemma:open-work-horse}), we know $\hnorm{\Delta}{A}{\fillin{\E}{x}}$, and so we conclude the result by head expansion (\cref{lemma:open-hexp-sums}).
   \item \rn{Sum-E}. We now consider $\hasEF{\Gamma}{\scase{C}{M}{x}{P}{Q}}$.
     By the induction hypothesis, we know:
     \begin{itemize}
@@ -535,7 +557,7 @@ Finally, we ready to expand our proof of the fundamental theorem (\cref{W2:thm:h
     \item for any $\hnorm{\Delta,x:A}{\Gamma,x:A}{\gamma}$, that $\hnorm{\Delta,x:A}{C}{\hat\gamma(P)}$, and
     \item for any $\hnorm{\Delta,x:B}{\Gamma,x:B}{\gamma}$, that $\hnorm{\Delta,x:B}{C}{\hat\gamma(Q)}$.
     \end{itemize}
-    Let $\gamma$ such that $\hnorm{\Gamma}{\Delta}{\gamma}$ be arbitrary.
+    Let $\gamma$ such that $\hnorm{\Delta}{\Gamma}{\gamma}$ be arbitrary.
     Then we know by the work-horse lemma (\cref{lemma:open-work-horse}) that $\bnorm{\hat\gamma(M)}$, and so we fall into one of the following three subcases:
     \begin{enumerate}
     \item $\steps{M}{\inl N}$. Because $\hnorm{\Delta}{A+B}{\hat\gamma(M)}$, we know that $\hnorm{\Delta}{A}{N}$.
@@ -544,8 +566,19 @@ Finally, we ready to expand our proof of the fundamental theorem (\cref{W2:thm:h
       Then by the induction hypothesis, we get $\hnorm{\Delta,x:A}{C}{\hat\gamma'(P)}$, and we conclude the result by head expansion (\cref{lemma:open-hexp-sums}).
     \item $\steps{M}{\inr N}$. This case is symmetric to the previous one.
     \item $\steps{M}{\fillin{\E'}{z}}$ for some evaluation context $\E'$ and variable $z:W \in \Gamma$.
-      Let $\E = \scase{C}{\E'}{x}{P}{Q}$ and $\gamma' = \update{\gamma}{x}{x}$.
-      Then $\hnorm{\Delta,x:A}{\Gamma,x:A}{\gamma'}$, so we TBC.
+      Let $\E = \scase{C}{\E'}{x}{\hat\gamma(P)}{\hat\gamma(Q)}$.
+      If we could show that $\bnorm{\E}$, then by the work-horse lemma (\cref{lemma:open-work-horse}), we would know that $\hnorm{\Gamma}{C}{\fillin{\E}{z}}$.
+      From this, we could use the fact that $\steps{\scase{C}{M}{x}{P}{Q}}{\fillin{\E}{z}}$ and conclude the result by head expansion.
+      To show that $\bnorm{\E}$, we it is sufficient to show that $\bnorm{\hat\gamma(P)}$ and $\bnorm{\hat\gamma(Q)}$, because we already know that $\bnorm{\E'}$.
+      Let $\gamma' = \update{\gamma}{x}{x}$, then $\gamma'(y) = \gamma(y)$ for all $y \in \dom(\gamma)$ and $\gamma'(x) = x$.
+      We claim $\hnorm{\Delta,x:A}{\Gamma,x:A}{\gamma'}$.
+      Indeed, for all $y \in \dom(\gamma')$ such that $y \neq x$, we know that $\hnorm{\Delta,x:A}{A}{\gamma'(y)}$ by functoriality of $\hnorm{({-})}{A}{y}$ and the hypothesis that $\hnorm{\Delta}{\Gamma}{\gamma}$.
+      As for $\gamma'(x)$, we know that $\hnorm{\Delta,x:A}{A}{x}$ by the work-horse lemma (\cref{lemma:open-work-horse}) using the evaluation context $\hasC{\cdot}{\Delta,x:A}{A}{\Delta,x:A}{A}$.
+      So applying the induction hypothesis on $\gamma'$ and $P$, we get that $\hnorm{\Delta,x:A}{C}{\hat\gamma'(P)}$.
+      By the work-horse lemma, we then get that $\bnorm{\hat\gamma'(P)}$.
+      But $\hat\gamma'(P) = \hat\gamma(P)$, so $\bnorm{\hat\gamma(P)}$.
+      An analogous argument gives us that $\bnorm{\hat\gamma(Q)}$.
+      This gives us that $\bnorm{\E}$, so we are done.\qedhere
     \end{enumerate}
   \end{itemize}
 \end{proof}
