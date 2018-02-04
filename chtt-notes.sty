@@ -1,11 +1,16 @@
 \NeedsTeXFormat{LaTeX2e}[1994/06/01]
 \ProvidesPackage{chtt-notes}[2018/02/02 CHTT Course Notes]
 
+\PassOptionsToPackage{utf8}{inputenc}
+\PassOptionsToPackage{centercolon}{mathtools}
+
 \RequirePackage{amsmath}
 \RequirePackage{amssymb}
 \RequirePackage{amsthm}
 \RequirePackage{fancyhdr}
+\RequirePackage{inputenc}
 \RequirePackage{mathpartir}
+\RequirePackage{mathtools}
 \RequirePackage{microtype}
 \RequirePackage{natbib}
 \RequirePackage{proof}
@@ -95,9 +100,16 @@
 \newcommand{\false}{\vfalse}
 \newcommand{\ifexpr}[3]{\ensuremath{\mathrm{if}(#1; #2; #3)}}
 \newcommand{\ifexprtyp}[4]{\ensuremath{\mathrm{if}_{#1}(#2; #3; #4)}}
+\newcommand{\letbein}[3]{\ensuremath{\mathrm{let}\ \langle#1\rangle\ \mathrm{be}\ #2\ \mathrm{in}\ #3}}
 
 \newcommand{\subst}[3]{[#1/#2]#3}
 \newcommand{\update}[3]{[#1 \mid #2 \mapsto #3]}
+
+% System T
+\newcommand{\natz}{\ensuremath{\mathsf{z}}}
+\newcommand{\natsop}{\mathsf{s}}
+\newcommand{\nats}[1]{\natsop(#1)}
+\newcommand{\natrec}[5]{\ensuremath{\mathsf{rec}_{#1}\{#2; #3.#4\}(#5)}}
 
 \DeclareMathOperator{\dom}{dom}
 
