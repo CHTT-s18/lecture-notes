@@ -425,6 +425,131 @@ Finally, we add a rule to specify when such a context is normalizing:
   }
 \]
 
+We must now turn our attention to what the definition of hereditary normalization for sums ought to be.
+Consider the rule \rn{Sum-E} and the induction hypothesis it would give us when proving the FTLR:
+\begin{enumerate}
+\item $\hnorm{\Gamma}{A + B}{M}$, and
+\item if $\hnorm{\Gamma}{A}{N}$, then $\hnorm{\Gamma}{C}{\subst{N}{x}{P}}$, and
+\item if $\hnorm{\Gamma}{B}{N}$, then $\hnorm{\Gamma}{C}{\subst{N}{x}{Q}}$.
+\end{enumerate}
+Further considering how the proof might go, we see that we would proceed by case analysis on the reduction $\steps{\hat\gamma(M)}{\bnf N}$: either $N$ is an injection, or it is in head normal form, that is, of the form $\fillin{\E}{z}$ for some variable $z$.
+We are then lead to the following definition:
+\begin{align*}
+  \hnorm{\Gamma}{\void}{M} &\triangleq \bnorm{M},\\
+  \hnorm{\Gamma}{A+B}{M} &\triangleq \left\{\parbox{0.5\linewidth}{\begin{enumerate}
+      \item $\bnorm{M}$, and
+      \item if $\steps{M}{\inl{N}}$, then $\hnorm{\Gamma}{A}{N}$, and
+      \item if $\steps{M}{\inr{N}}$, then $\hnorm{\Gamma}{B}{N}$.
+      \end{enumerate}}\right.
+\end{align*}
+(Before proceeding, think about where the proof(s) will break down if, instead of requiring $\bnorm{M}$, we had a definition analogous to $\hterm{\void}{M}$ and said that $\hnorm{\Gamma}{\void}{M}$ never held.)
+
+We again begin by completing the proof of the head expansion lemma to deal with sums.
+
+\begin{lemma}[Head expansion with sums]
+  \label{lemma:open-hexp-sums}
+  If $\hnorm{\Gamma}{T}{M'}$ and $\step{M}{M'}$, then $\hnorm{\Gamma}{T}{M}$.
+\end{lemma}
+
+\begin{proof}
+  The proof is by induction on the structure of $T$.
+  We add the missing cases:
+  \begin{itemize}
+  \item $\void$. By $\hnorm{\Gamma}{\void}{M'}$, we have $\bnorm{M'}$.
+    Because $\step{M}{M'}$, it then follows that $\bnorm{M}$, and so we conclude $\hnorm{\Gamma}{\void}{M}$.
+  \item $A + B$. By $\hnorm{\Gamma}{A + B}{M'}$, we have $\bnorm{M'}$.
+    Because $\step{M}{M'}$, it then follows that $\bnorm{M}$.
+    Assume, without loss of generality, that $\steps{M}{\inl{N}}$.
+    Then because the $\step{}{}$ relation is deterministic, it must be because $\steps{\step{M}{M'}}{\inl N}$.
+    By the hypothesis that $\hnorm{\Gamma}{A+B}{M'}$, we know that $\hnorm{\Gamma}{A}{N}$.
+    From this, we are justified in concluding that $\hnorm{\Gamma}{A+B}{M}$.\qedhere
+  \end{itemize}
+\end{proof}
+
+We turn our attention to expanding the proof of the work-horse lemma (\cref{W2:l5,W2:l2}).
+
+\begin{lemma}[Work-horse lemma]\leavevmode
+  \label{lemma:open-work-horse}
+  \begin{enumerate}
+  \item If $\hasC{\E}{\Gamma}{C}{\Gamma}{D}$ is an evaluation context such that $\bnorm{\E}$ and $\Gamma \vdash x:C$, then $\hnorm{\Gamma}{D}{\fillin{\E}{x}}$.
+  \item If $\hnorm{\Gamma}{A}{M}$, then $\bnorm{M}$.
+  \end{enumerate}
+\end{lemma}
+
+\begin{proof}
+  The proof is by induction on $A$.
+  We add the missing cases:
+  \begin{itemize}
+  \item $\void$. We show the two parts in turn.
+    \begin{enumerate}
+    \item An induction on $\E$ gives us that $\bnorm{\fillin{\E}{x}}$, from which we conclude the result.
+    \item Immediate by definition of $\hnorm{\Gamma}{\void}{M}$.
+    \end{enumerate}
+  \item $A + B$. We show the two parts in turn.
+    \begin{enumerate}
+    \item We proceed by induction on the typing of $\E$.
+      \begin{itemize}
+      \item If $\E = \hasC{\cdot}{\Gamma}{A + B}{\Gamma}{A + B}$, then the result is immediate from the fact that $\bnf{x}$ and that neither $\steps{x}{\inl N}$ nor $\steps{x}{\inr N}$.
+      \item If $\E = \hasC{\E' M}{\Gamma}{C}{\Gamma}{A+B}$ because $\hasEF{\Gamma}{M}{A_1}$ and $\hasC{\E'}{\Gamma}{C}{\Gamma}{A_1 \to A+B}$, then we know by the induction hypothesis that $\hnorm{\Gamma}{A_1 \to A + B}{\fillin{\E'}{x}}$.
+        By applying the induction hypothesis to this, we know that $\bnorm{\fillin{\E'}{x}}$.
+        Let $N$ be the normal form of $\fillin{\E'}{x}$, that's to say, let $N$ be such that $\steps{\fillin{\E'}{x}}{\bnf{N}}$.
+        We know that $x$ must be in head position of $N$.
+        By the hypothesis that $\bnorm{\E M}$, we know that $\bnorm{M}$, and so let $N'$ be its normal form.
+        Because $x$ is in head position of $N$, we know $\bnf{NN'}$ and that $NN'$ is not an injection.
+        But $\steps{\fillin{\E}{x}}{NN'}$, so $\bnorm{\fillin{\E}{x}}$.
+        From this, we conclude that $\hnorm{\Gamma}{A+B}{\fillin{\E}{x}}$.
+      \item If $\E = \hasC{\scase{D}{\E'}{y}{P}{Q}}{\Gamma}{C}{\Gamma}{A + B}$ by \rn{$\E$-Sum}, then for some $F$ and $G$, we have $\hasC{\E'}{\Gamma}{C}{\Gamma}{F + G}$, $\hasEF{\Gamma, y:F}{P}{A+B}$, and $\hasEF{\Gamma, y:G}{Q}{A+B}$.
+        By the induction hypothesis, we know that $\hnorm{\Gamma}{F + G}{\fillin{\E'}{x}}$, and by definition of $\hnorm{\Gamma}{F + G}{\cdot}$, that $\bnorm{\fillin{\E'}{x}}$.
+        Because the variable $x$ occupies the head position of $\fillin{\E'}{x}$, we know that $\steps{\fillin{\E'}{x}}{\bnf{N}}$ and that $N$ is not of the form $\inl N'$ or $\inr N'$.
+        Observe that $\fillin{\E}{x} = \scase{D}{\fillin{\E'}{x}}{y}{P}{Q}$, and so $\steps{\fillin{\E}{x}}{\bnf{\scase{D}{N}{y}{P}{Q}}}$.
+        Thus, $\bnorm{\fillin{\E}{x}}$ and $\fillin{\E}{x}$ does not normalize to an injection.
+        From this, we conclude $\hnorm{\Gamma}{A+B}{\fillin{\E}{x}}$.
+      \end{itemize}
+    \item Immediate by definition of $\hnorm{\Gamma}{A+B}{M}$.\qedhere
+    \end{enumerate}
+  \end{itemize}
+\end{proof}
+
+Finally, we ready to expand our proof of the fundamental theorem (\cref{W2:thm:hnorm}) to handle sums:
+
+\begin{theorem}[FTLR]
+  If $\hasEF{\Gamma}{M}{A}$ and $\hnorm{\Gamma}{\Delta}{\gamma}$, then $\hnorm{A}{\Delta}{\hat\gamma(M)}$.
+\end{theorem}
+
+\begin{proof}
+  The proof is by induction on derivation of $\hasEF{\Gamma}{M}{A}$.
+  We add the missing cases:
+  \begin{itemize}
+  \item \rn{Sum-L-I}. We consider $\hasEF{\Gamma}{\inl M}{A + B}$.
+    The injection $\hat\gamma(\inl{M}) = \inl{\hat\gamma(M)}$ is a normal form, and so $\bnorm{\inl{\hat\gamma(M)}}$.
+    We have $\steps{\hat\gamma(\inl{M})}{\inl{\hat\gamma(M)}}$ reflexively, and we know $\hnorm{A}{\Delta}{\hat\gamma(M)}$ by the induction hypothesis.
+    From this, we conclude $\hnorm{A + B}{\Delta}{\hat\gamma({\inl{M}})}$.
+  \item \rn{Sum-R-I}. Symmetric to the case \rn{Sum-L-I}.
+  \item \rn{\void-E}. We consider $\hasEF{\Gamma}{\vcase{M}}{A}$.
+    By the induction hypothesis, we know $\hnorm{\void}{\Delta}{M}$.
+    To handle this case, I think we need to add a new evaluation context form $\vcase{A}{\E}$.\todo{Add this}
+  \item \rn{Sum-E}. We now consider $\hasEF{\Gamma}{\scase{C}{M}{x}{P}{Q}}$.
+    By the induction hypothesis, we know:
+    \begin{itemize}
+    \item for any $\hnorm{\Delta}{\Gamma}{\gamma}$, that $\hnorm{\Delta}{A+B}{\hat\gamma(M)}$,
+    \item for any $\hnorm{\Delta,x:A}{\Gamma,x:A}{\gamma}$, that $\hnorm{\Delta,x:A}{C}{\hat\gamma(P)}$, and
+    \item for any $\hnorm{\Delta,x:B}{\Gamma,x:B}{\gamma}$, that $\hnorm{\Delta,x:B}{C}{\hat\gamma(Q)}$.
+    \end{itemize}
+    Let $\gamma$ such that $\hnorm{\Gamma}{\Delta}{\gamma}$ be arbitrary.
+    Then we know by the work-horse lemma (\cref{lemma:open-work-horse}) that $\bnorm{\hat\gamma(M)}$, and so we fall into one of the following three subcases:
+    \begin{enumerate}
+    \item $\steps{M}{\inl N}$. Because $\hnorm{\Delta}{A+B}{\hat\gamma(M)}$, we know that $\hnorm{\Delta}{A}{N}$.
+      It then follows that $\steps{\hat\gamma(\scase{C}{M}{x}{P}{Q})}{\subst{N}{x}{\hat\gamma(P)}}$.
+      Because $\hnorm{\Delta}{A}{N}$ and $\hnorm{\Delta}{\Gamma}{\gamma}$, we have $\hnorm{\Delta,x:A}{\Gamma,x:A}{\gamma'}$, where $\gamma' = \update{\gamma}{x}{N}$.
+      Then by the induction hypothesis, we get $\hnorm{\Delta,x:A}{C}{\hat\gamma'(P)}$, and we conclude the result by head expansion (\cref{lemma:open-hexp-sums}).
+    \item $\steps{M}{\inr N}$. This case is symmetric to the previous one.
+    \item $\steps{M}{\fillin{\E'}{z}}$ for some evaluation context $\E'$ and variable $z:W \in \Gamma$.
+      Let $\E = \scase{C}{\E'}{x}{P}{Q}$ and $\gamma' = \update{\gamma}{x}{x}$.
+      Then $\hnorm{\Delta,x:A}{\Gamma,x:A}{\gamma'}$, so we TBC.
+    \end{enumerate}
+  \end{itemize}
+\end{proof}
+
 \bibliographystyle{plainnat}
 \bibliography{ctt}
 
