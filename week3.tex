@@ -24,7 +24,6 @@ When we write \hnorm{\Delta}{A}{M}:
 
 
 We define hereditary normalization as follows:
-
 \begin{align*}
 \hnorm{\Delta}{b}{M} &\triangleq \bnorm{M} \\
 \hnorm{\Delta}{\fn{A_1}{A_2}}{M} &\triangleq  \forall \Delta' \geq \Delta. \  \text{if} \ \hnorm{\Delta'}{A_1}{M_1}\  \text{then} \ \hnorm{\Delta'}{A_2}{M M_1}
@@ -51,20 +50,20 @@ Review from last time:
 
 \begin{theorem}[Fundamental theorem of logical relations (FTLR)]
 \label{FTLR}
- If \hasEF{\Gamma}{M}{A} and $\gamma: \Delta \to \Gamma$, then $\hnorm{\Gamma}{\Delta}{\delta}$ implies $\hnorm{\Delta}{A}{\hat{\gamma}(M)}$.
+If \hasEF{\Gamma}{M}{A} and $\gamma: \Delta \to \Gamma$, then $\hnorm{\Gamma}{\Delta}{\gamma}$ implies $\hnorm{\Delta}{A}{\hat{\gamma}(M)}$.
  \end{theorem}
 
  \begin{corollary}
   If \hasEF{\Gamma}{M}{A} then \bnorm{M}. i.e. well-typed terms are normalizing.
  \end{corollary}
 
-It is important to note that these considerations are \textit{behavioral}, that is, they pertain to the behavior of terms. This is much deeper than structural considerations. However, the important thing about the setup here is that the structure of a term results in specific behavior. The point is that we can know that a term normalizes (a behavioral question) by knowing only that it has a type (a structural question).
+ It is important to note that these considerations are \textit{behavioral}, that is, they pertain to the behavior of terms. This is much deeper than structural considerations. However, the important thing about the setup here is that the structure of a term results in specific behavior. The point is that we can know that a term normalizes (a behavioral question) by knowing only that it has a type (a structural question).
 
-In order to prove the Theorem \ref{FTLR}, we need to show: if \hasEF{\Delta}{x}{A}, then \hnorm{\Delta}{A}{x}. It follows that \hnorm{\Gamma}{\Gamma}{id} and $\hat{id}(M) = M$.
+In order to prove the Theorem \ref{FTLR}, we need to show: if \hasEF{\Delta}{x}{A}, then \hnorm{\Delta}{A}{x}. It follows that $\hnorm{\Gamma}{\Gamma}{id}$ and $\hat{id}(M) = M$.
 
-Informally, we need to show that x M is hereditarily normalizing whenever M is hereditarily normalizing. We also need to show that \hnorm{\fn{A_1}{A_2}}{\Delta}{M} implies \bnorm{M} (Lemma 9 from last week). These two proofs rely on each other via mutual induction.
+Informally, we need to show that $xM$ is hereditarily normalizing whenever $M$ is hereditarily normalizing. We also need to show that $\hnorm{\Delta}{\fn{A_1}{A_2}}{M}$ implies \bnorm{M} (Lemma 9 from last week). These two proofs rely on each other via mutual induction.
 
-The problem is that in the function case, we need an argument for M, which we don't have, because in our negative formulation we can only reason about M by applying it something. The question is, what do we apply it to? Our idea is to allocate a fresh variable. We have to do so at type smaller than \fn{A_1}{A_2} so that the induction hypothesis will hold, and conveniently, $A_1$, the argument type of M, is such a type. Consider M x, which is of type $A_2$, and note that the induction hypothesis applies! Then we can conclude that \bnorm{M x}, so therefore \bnorm{M} by head expansion.
+The problem is that in the function case, we need an argument for $M$, which we don't have, because in our negative formulation we can only reason about $M$ by applying it something. The question is, what do we apply it to? Our idea is to allocate a fresh variable. We have to do so at type smaller than $\fn{A_1}{A_2}$ so that the induction hypothesis will hold, and conveniently, $A_1$, the argument type of $M$, is such a type. Consider $Mx$, which is of type $A_2$, and note that the induction hypothesis applies! Then we can conclude that \bnorm{M x}, so therefore \bnorm{M} by head expansion.
 
 In order to allocate a variable, we need to move from $\Delta$ (which does not include the fresh variable) to $\Delta' = \Delta, x: A_1$ (which does). But now we have a problem, \textit{stability}: Do facts from the old world $\Delta$ still hold in the new world $\Delta'$? What we need is to know that for a given proposition P, \hnorm{\Delta}{A}{P} implies \hnorm{\Delta'}{A}{P} for all $\Delta' \geq \Delta$
 
@@ -191,7 +190,7 @@ A first attempt:
 \[
 \hnorm{\Delta}{\booltype}{M} \triangleq \steps{M}{\true} \ \text{or} \ \steps{M}{\false}
 \]
-But this makes no sense because $M$ is open. M may well be (for example) $x$, or $x N$, or even $\ifexpr{x N}{P}{Q}$.
+But this makes no sense because $M$ is open. $M$ may well be (for example) $x$, or $x N$, or even $\ifexpr{x N}{P}{Q}$.
 
 This shows a constraint regarding our definition. We must validate:
 \begin{lemma}[HT for products]
