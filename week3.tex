@@ -6,7 +6,7 @@
 % The following command will let you cross-reference labels
 % in the files week1.tex, week2.tex, ..., week\@week.tex,
 % where if l is a label in "weekN.tex", then you can access
-% the label using \ref{WN:l}.
+% the label using \cref{WN:l}.
 \doXRs
 
 \begin{document}
@@ -318,11 +318,9 @@ The closed setting is again relatively straightforward.
 We define the corresponding hereditary termination predicates:
 \begin{align*}
   \hterm{\void}{M} &\triangleq \text{(never)},\\
-  \hterm{A+B}{M} &\triangleq \left\{
-                   \begin{array}{r l l l}
-                     \text{either} & \steps{M}{\inl N} & \text{and} & \hterm{A}{N},\\
-                     \text{or} & \steps{M}{\inr N} & \text{and} & \hterm{B}{N}.\\
-                   \end{array} \right.
+  \hterm{A+B}{M} &\triangleq \left\{\;\parbox{0.5\linewidth}{%
+                   either $\steps{M}{\inl N}$ and $\hterm{A}{N}$,\\%
+  \phantom{eith}or $\steps{M}{\inr N}$ and $\hterm{B}{N}$.}\right.
 \end{align*}
 In particular, for any choice of $M$, $\hterm{void}{M}$ is a contradiction.
 We remark that this is a \textit{positive} formulation.
@@ -341,7 +339,7 @@ We could, however, read off a Church encoding for sums:
   \forall C. (A \to C) \to (B \to C) \to C.
 \]
 
-We expand the proof of the head-expansion lemma (see Lemma~\ref{W2:lem:hexp}) to account for these new clauses:
+We expand the proof of the head-expansion lemma (see \cref{W2:lem:hexp}) to account for these new clauses:
 
 \begin{lemma}[Head expansion with sums]
   \label{lemma:closed-hexp-sums}
@@ -387,7 +385,7 @@ We now prove the additional cases for the FTLR:
     From $\hterm{A+B}{\hat\gamma(M)}$, without loss of generality, we know that $\steps{\hat\gamma(M)}{\inl N}$ for some $N$ such that $\hterm{A}{N}$.
     Let $\gamma_A = \gamma[x \mapsto N]$.
     It follows that $\hterm{\Gamma,x:A}{\gamma_A}$, so $\hterm{C}{\hat\gamma_A(P)}$.
-    But $\hat\gamma_A(P) = \subst{N}{x}{\hat\gamma(P)}$ and $\steps{\hat\gamma(\scase{C}{M}{x}{P}{Q})}{\subst{N}{x}{\hat\gamma(P)}}$, so the result follows by head expansion (Lemma~\ref{lemma:closed-hexp-sums}).\qedhere
+    But $\hat\gamma_A(P) = \subst{N}{x}{\hat\gamma(P)}$ and $\steps{\hat\gamma(\scase{C}{M}{x}{P}{Q})}{\subst{N}{x}{\hat\gamma(P)}}$, so the result follows by head expansion (\cref{lemma:closed-hexp-sums}).\qedhere
   \end{itemize}
 \end{proof}
 
@@ -581,6 +579,144 @@ Finally, we ready to expand our proof of the fundamental theorem (\cref{W2:thm:h
     \end{enumerate}
   \end{itemize}
 \end{proof}
+
+\begin{remark}
+  We are now in a perfect position to show the above results for a positive formulation of products:
+  \begin{mathpar}
+    \letbein{\,}{M}{N}\\
+    \letbein{x,y}{M}{N_{x,y}}
+  \end{mathpar}
+\end{remark}
+
+\section{Natural numbers}
+
+We now consider a fragment of Gödel's System T; we refer the reader to \cite[Chapter~9]{Harper:16} for the full system.
+\citeauthor{Godel:58} proved that normalization of system T is equivalent to the consistency of Peano Arithmetic.
+The types and terms are given by the following grammar:
+\begin{align*}
+  A &::= \nat \mid A_1 \to A_2\\
+  M &::= \natz \mid \nats M \mid \natrec{A}{P}{x}{Q}{M}.
+\end{align*}
+The statics of this fragment are:
+\[
+  \infer[\rn{Var}]{\hasEF{\Gamma,x:A}{x}{A}}{\mathstrut}
+  \qquad
+  \infer[\rn{$\nat$-$\natz$-I}]{\hasEF{\Gamma}{\natz}{\nat}}{\mathstrut}
+  \qquad
+  \infer[\rn{$\nat$-$\natsop$-I}]{
+    \hasEF{\Gamma}{\nats M}{\nat}
+  }{
+    \hasEF{\Gamma}{M}{\nat}\mathstrut
+  }
+\]
+\[
+  \infer[\rn{$\nat$-E}]{
+    \hasEF{\Gamma}{\natrec{A}{P}{x}{Q}{M}}{A}
+  }{
+    \hasEF{\Gamma}{M}{\nat}
+    &
+    \hasEF{\Gamma}{P}{A}
+    &
+    \hasEF{\Gamma,x:A}{Q}{A}
+  }
+\]
+The dynamics of this fragment are:
+\[
+  \infer[\rn{$\natz$-Val}]{\valueJ \natz}{}
+  \qquad
+  \infer[\rn{$\natsop$-Val}]{
+    \valueJ{\nats M}
+  }{
+    \valueJ M
+  }
+  \qquad
+  \infer[\rn{$\natsop$-Step}]{
+    \step{\nats M}{\nats{M'}}
+  }{
+    \step{M}{M'}
+  }
+\]
+\[
+  \infer[\rn{$\natrecop$-Step}]{
+    \step{\natrec{A}{P}{x}{Q}{M}}{\natrec{A}{P}{x}{Q}{M'}}
+  }{
+    \step{M}{M'}
+  }
+\]
+\[
+  \infer[\rn{$\natrecop$-$\natz$}]{\step{\natrec{A}{P}{x}{Q}{\natz}}{P}}{}
+  \qquad
+  \infer[\rn{$\natrecop$-$\natsop$}]{
+    \step{\natrec{A}{P}{x}{Q}{\nats M}}{\subst{\natrec{A}{P}{x}{Q}{M}}{x}{Q}}
+  }{
+    \valueJ{\nats M}
+  }
+\]
+
+As before, our goal is to show termination in the closed setting and normalization in the open setting.
+Explicitly, we want to show:
+\begin{enumerate}
+\item If $M : A$, then $\bterm M$.\label{enum:desiderata1}
+\item If $\hasEF{\Gamma}{M}{A}$, then $\bnorm M$.
+\end{enumerate}
+
+\subsection{In a closed setting}
+\label{sec:nat-closed-setting}
+
+We are going to show a stronger property than \cref{enum:desiderata1} or hereditary termination.
+What we will show is that:
+\begin{center}
+  If $\hasEF{\Gamma}{M}{A}$ and $\hterm{\Gamma}{\gamma}$, then $\hterm{A}{\hat\gamma(M)}$.
+\end{center}
+
+Our key desideratum is that $\hterm{\nat}{M}$ imply $\bterm{M}$.
+Seeing that $\nat$ is a positive type, we do the obvious thing:
+\[
+  \hterm{\nat}{M} \triangleq \left\{\;\parbox{0.5\linewidth}{%
+      either $\steps{M}{\natz}$,\\%
+      \phantom{eith}or $\steps{M}{\nats{M'}}$ and $\hterm{\nat}{M'}$.%
+    }\right.
+\]
+We should be sceptical of this definition!
+Indeed, this definition is circular, and not all circular definitions make sense, so we need to be careful.
+
+A potentially useful way of thinking about the definition of $\hterm{A}{M}$ is that it is recursively defined along two axes.
+It has a ``vertical'' inductive structure on the type $A$, and when $A$ is $\nat$, it has a ``horizontal'' structure at that level.
+
+We can formally define $\hterm{\nat}{\cdot}$ to be the \textit{strongest} predicate $P$ on terms such that:
+\begin{enumerate}
+\item if $\steps{M}{\natz}$, then $P(M)$, and
+\item if $\steps{M}{\nats N}$ and $P(N)$, then $P(M)$.
+\end{enumerate}
+Equivalently, one could define the corresponding functional $F$ and define
+\[ \htermop_{\nat} = \bigcup_{i \geq 0} F^{(i)}(\emptyset), \]
+where $F^{(0)}$ never holds, and $F^{(k+1)}$ is defined in terms of $F^{(k)}$.
+
+We remark that this definition is \textit{not} mathematical induction!
+We are reasoning about a program's computation, not natural numbers.
+
+In showing the result at the beginning of this subsection, you will need to curry-out the $M$ in the rule \rn{$\nat$-E} to get:
+\[
+  \infer[\rn{$\nat$-E$^\prime$}]{
+    \hasEF{\Gamma,z:\nat}{\natrec{A}{P}{x}{Q}{z}}{A}
+  }{
+    \hasEF{\Gamma}{P}{A}
+    &
+    \hasEF{\Gamma,x:A}{Q}{A}
+  }
+\]
+This case will then be proven using the horizontal induction principle.
+
+\subsection{In an open setting}
+
+One follows the same development, using the definition
+\[
+  \hnorm{\Gamma}{\nat}{M} \triangleq \left\{\parbox{0.5\linewidth}{\begin{enumerate}
+      \item $\bnorm{M}$, and
+      \item if $\steps{M}{\natz}$, then (true), and
+      \item if $\steps{M}{\nats{N}}$, then $\hnorm{\Gamma}{\nat}{N}$.
+      \end{enumerate}}\right.
+\]
 
 \bibliographystyle{plainnat}
 \bibliography{ctt}
