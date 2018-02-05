@@ -59,7 +59,7 @@ If \hasEF{\Gamma}{M}{A} and $\gamma: \Delta \to \Gamma$, then $\hnorm{\Gamma}{\D
 
  It is important to note that these considerations are \textit{behavioral}, that is, they pertain to the behavior of terms. This is much deeper than structural considerations. However, the important thing about the setup here is that the structure of a term results in specific behavior. The point is that we can know that a term normalizes (a behavioral question) by knowing only that it has a type (a structural question).
 
-In order to prove the Theorem \ref{FTLR}, we need to show: if \hasEF{\Delta}{x}{A}, then \hnorm{\Delta}{A}{x}. It follows that $\hnorm{\Gamma}{\Gamma}{id}$ and $\hat{id}(M) = M$.
+In order to prove Theorem \ref{FTLR}, we need to show: if \hasEF{\Delta}{x}{A}, then \hnorm{\Delta}{A}{x}.
 
 Informally, we need to show that $xM$ is hereditarily normalizing whenever $M$ is hereditarily normalizing. We also need to show that $\hnorm{\Delta}{\fn{A_1}{A_2}}{M}$ implies \bnorm{M} (Lemma 9 from last week). These two proofs rely on each other via mutual induction.
 
@@ -67,7 +67,7 @@ The problem is that in the function case, we need an argument for $M$, which we 
 
 In order to allocate a variable, we need to move from $\Delta$ (which does not include the fresh variable) to $\Delta' = \Delta, x: A_1$ (which does). But now we have a problem, \textit{stability}: Do facts from the old world $\Delta$ still hold in the new world $\Delta'$? What we need is to know that for a given proposition P, \hnorm{\Delta}{A}{P} implies \hnorm{\Delta'}{A}{P} for all $\Delta' \geq \Delta$
 
-These worlds,  are ordered by a relation $\geq$.  This is called ``functoriality'' or ``monotonicity''. We also need $\geq$ to be transitive so that once a fact is established in a given world, it is also established in \textit{all} future worlds. In our context, this is going to mean that we can allocate a fresh variable without altering the behavior of a given program.
+These worlds are ordered by a relation $\geq$. We also need $\geq$ to be transitive so that once a fact is established in a given world, it is also established in \textit{all} future worlds. Furthermore,  if $\Delta' \geq \Delta$, then \hnorm{\Delta}{A}{M} implies \hnorm{\Delta'}{A}{M}; this property is called ``functoriality'' or ``monotonicity''. In our context, this is going to mean that we can allocate a fresh variable without altering the behavior of a given program.
 
 
 \begin{exercise}[Adding products]
@@ -193,9 +193,9 @@ A first attempt:
 But this makes no sense because $M$ is open. $M$ may well be (for example) $x$, or $x N$, or even $\ifexpr{x N}{P}{Q}$.
 
 This shows a constraint regarding our definition. We must validate:
-\begin{lemma}[HT for products]
+\begin{lemma}[HN for booleans]
 \leavevmode
-\label{ht-prods}
+\label{hn-bools}
 \begin{enumerate}
 \item \hnorm{\Delta}{\booltype}{\true} and \hnorm{\Delta}{\booltype}{\false}
 \item If \hnorm{\Delta}{\booltype}{\hat M} and \hnorm{\Delta}{A}{\hat P} and \hnorm{\Delta}{A}{\hat Q}, then \hnorm{\Delta}{A}{\ifexpr{\hat M}{\hat P}{\hat Q}}.
@@ -204,15 +204,15 @@ This shows a constraint regarding our definition. We must validate:
 
 If we choose a definition of hereditary termination that meets these criteria, we will be done. But what definition should that be? Let us discover it.
 
-What do we know about $\hat M$?
+  By the hypothesis to Lemma 7.2 and the workhorse lemma, we know that
+   $\bnorm{\hat M}$. The key fact is that for any $M$ such that $\bnorm{M}$,
+   you have that $\steps{M}{N}$ for some $N$ that is head irreducible, that is,
+   some $N$ that is in head normal form. In our proof of the work-horse lemma,
+   we will want proceed by case analysis on the head normal form of $\hat M$,
+   and so it is sufficient for us to require that $\hnorm{\Delta}{\bool}{M}$ if
+   and only if $\bnorm{M}$.
 
-\begin{enumerate}
-\item \hnorm{\Delta}{\booltype}{M} implies \bnorm{M} (by workhorse lemma)
-\end{enumerate}
-
-We want to show that \bnorm{\hat M}. We know \bnorm{M}. From this fact, we can conclude that \steps{M}{N}, and N does not reduce. If we knew \bnorm{\hat M}, we would know that \steps{\hat M}{N}, and N does not reduce. \todo{why are these the same N?}
-
-By definition, we know \bnorm{\hat{M}}. By workhorse lemma, we conclude \bnorm{\hat{P}} and \bnorm{\hat{Q}} (since we assumed that \hnorm{\Delta}{A}{\hat P} and \hnorm{\Delta}{A}{\hat Q}). As a reminder, the workhorse lemma is:
+By workhorse lemma, we conclude \bnorm{\hat{P}} and \bnorm{\hat{Q}} (since we assumed that \hnorm{\Delta}{A}{\hat P} and \hnorm{\Delta}{A}{\hat Q}). As a reminder, the workhorse lemma is:
 
 \begin{lemma}[Workhorse lemma, duplicated for reference]\label{lem:workhorse}
 \leavevmode %make items align
@@ -222,14 +222,14 @@ By definition, we know \bnorm{\hat{M}}. By workhorse lemma, we conclude \bnorm{\
 \end{enumerate}
 \end{lemma}
 
-Now, since \bnorm{\hat{M}}, there must exist N such that \steps{M}{N} where $N$ does not reduce. We consider the cases for N. It will be easy to satisfy part 1 of lemma \ref{ht-prods}, but we must choose carefully so that we can show part 2: \hnorm{\booltype}{A}{\ifexpr{\hat M}{\hat P}{\hat Q}}
+We consider the cases for N. It will be easy to satisfy part 1 of lemma \ref{hn-bools}, but we must choose carefully so that we can show part 2: \hnorm{\Delta}{A}{\ifexpr{\hat M}{\hat P}{\hat Q}}.
 
 \textbf{case}: $N = \true$. We will need to choose \hnorm{\Delta}{A}{}
 so that we can show \hnorm{\Delta}{A}{\ifexpr{\hat M}{\hat P}{\hat Q}}.
 Since \steps{\hat M}{\true}, we know that the whole if expression
-reduces to $\hat{P}$, where \hnorm{\Delta}{A}{\hat P} (by assumption). Therefore, we have \hnorm{\Delta}{A}{\ifexpr{\hat M}{\hat P}{\hat Q}}.
+reduces to $\hat{P}$, where \hnorm{\Delta}{A}{\hat P} (by assumption). Therefore, we have \hnorm{\Delta}{A}{\ifexpr{\hat M}{\hat P}{\hat Q}} by head expansion.
 
-\textbf{case}: $N = \false$. This case is similar to the case for $N = \true$ with $\hat Q$ instead of $\hat P$.
+\textbf{case}: $N = \false$. This case is similar to the case for $N = \true$ but with $\hat Q$ instead of $\hat P$.
 
 \textbf{case}: otherwise: what do we know about $N$? $N$ does not reduce, yet $N \neq \true$ and $N \neq \false$. How can this be, given that \hasEF{\Delta}{N}{\booltype}? One possibility is that $N = x$. This is possible if \hasEF{\Delta}{x}{\booltype}. Another case is $N = x R$; this is possible if \hasEF{\Delta}{x}{\fn{A}{\booltype}} and \hasEF{\Delta}{R}{A}. In general, N can be any evaluation context that starts with a variable (otherwise it would have been head-reducible)! So $N = \E \{ x \}$. \textbf{We will need to require that \bnorm{\E}}.
 
