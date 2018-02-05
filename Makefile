@@ -22,6 +22,6 @@ print-%  :
 	@mv $(*).pdf pdfs/
 
 clean:
-	@rm -rf pdfs/ auto/ *.pdf *.aux *.bbl *.blg *.log *.fls *fdb_latexmk *.out
+	@rm -rf pdfs/ auto/ *.pdf *.aux *.bbl *.blg *.log *.fls *fdb_latexmk *.synctex.gz *.out
 
 .PHONY: clean all
