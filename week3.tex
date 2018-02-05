@@ -59,7 +59,7 @@ If \hasEF{\Gamma}{M}{A} and $\gamma: \Delta \to \Gamma$, then $\hnorm{\Gamma}{\D
 
  It is important to note that these considerations are \textit{behavioral}, that is, they pertain to the behavior of terms. This is much deeper than structural considerations. However, the important thing about the setup here is that the structure of a term results in specific behavior. The point is that we can know that a term normalizes (a behavioral question) by knowing only that it has a type (a structural question).
 
-In order to prove Theorem \ref{FTLR}, we need to show: if \hasEF{\Delta}{x}{A}, then \hnorm{\Delta}{A}{x}.
+In order to prove \cref{FTLR}, we need to show: if \hasEF{\Delta}{x}{A}, then \hnorm{\Delta}{A}{x}.
 
 Informally, we need to show that $xM$ is hereditarily normalizing whenever $M$ is hereditarily normalizing. We also need to show that $\hnorm{\Delta}{\fn{A_1}{A_2}}{M}$ implies \bnorm{M} (Lemma 9 from last week). These two proofs rely on each other via mutual induction.
 
@@ -75,8 +75,8 @@ These worlds are ordered by a relation $\geq$. We also need $\geq$ to be transit
 Add ``negative'' products to the language and prove termination and normalization. The products look like this:
 
 \begin{tabular}{ll}
-\exprpair{M_1}{M_2} & val\\
-M.1, M.2 & projections\\
+\exprpair{M_1}{M_2} & $\valueJ{}$\\
+\outl{M}, \outr{M} & projections\\
 \step{\exprpair{M_1}{M_2}.1}{M_1}\\
 \step{\exprpair{M_1}{M_2}.1}{M_1}\\
 \step{\exprpair{M_1}{M_2}.2}{M_2}\\
@@ -94,8 +94,6 @@ Consider this for negative and positive types. The negative formulation takes th
         \item let \emptypair \  be $M$ in $N$
         \item let \exprpair{x}{y} be $M$ in $N_{x, y}$
 \end{itemize}
-
-\todo{do this exercise}
 \end{exercise}
 
 \section{Booleans}
@@ -153,7 +151,6 @@ Show hereditary termination for positive products.
 \hterm{\unittype}{M} &\triangleq \steps{M}{\emptypair}\\
 \hterm{\pairtype{A_1}{A_1}}{M} &\triangleq \steps{M}{\exprpair{M_1}{M_2}} \ \text{such that} \  \hterm{A_1}{M_1} \text{and} \  \hterm{A_2}{M_2}\\
 \end{align*}
-\todo{do this.}
 \end{exercise}
 
 As an aside, is it possible to give a \textit{negative} formulation of \booltype? It would look like this:
@@ -179,10 +176,9 @@ These are also called Church booleans! This is exactly how one encodes the boole
 
 \subsection{Open terms}
 We need to show normalization for open terms in the presence of booleans. The fundamental theorem of logical relations says:
-
-\[
-If \hasEF{\Gamma}{M}{A} \ \text{and} \ \gamma : \Delta \to \Gamma \ then \  \hnorm{\Delta}{\Gamma}{\gamma} \ implies \ \hnorm{\Delta}{A}{\hat\gamma(M)}
-\]
+\begin{center}
+  If $\hasEF{\Gamma}{M}{A}$ and $\gamma : \Delta \to \Gamma$, then $\hnorm{\Delta}{\Gamma}{\gamma}$ implies $\hnorm{\Delta}{A}{\hat\gamma(M)}$.
+\end{center}
 
 Now we need to define \hnorm{\booltype}{\Delta}{M} so that we are able to prove the above. How should we do it?
 
@@ -212,19 +208,20 @@ If we choose a definition of hereditary termination that meets these criteria, w
    and so it is sufficient for us to require that $\hnorm{\Delta}{\bool}{M}$ if
    and only if $\bnorm{M}$.
 
-By workhorse lemma, we conclude \bnorm{\hat{P}} and \bnorm{\hat{Q}} (since we assumed that \hnorm{\Delta}{A}{\hat P} and \hnorm{\Delta}{A}{\hat Q}). As a reminder, the workhorse lemma is:
+By workhorse lemma, we conclude \bnorm{\hat{P}} and \bnorm{\hat{Q}} (since we assumed that \hnorm{\Delta}{A}{\hat P} and \hnorm{\Delta}{A}{\hat Q}. As a reminder, the workhorse lemma is:
 
-\begin{lemma}[Workhorse lemma, duplicated for reference]\label{lem:workhorse}
+\begin{lemma*}[Workhorse lemma, duplicated for reference]
 \leavevmode %make items align
 \begin{enumerate}
 \item \text{If} \hnorm{\Delta}{A}{M} \text{then} \bnorm{M}.
 \item If \bnorm{\E} then \hnorm{\Delta}{A}{\ap{\E}{\{x\}}} where \hasEF{\Delta}{x}{C} and \hasEF{\Delta}{\E}{C \leadsto A}.
 \end{enumerate}
-\end{lemma}
+\end{lemma*}
 
-We consider the cases for N. It will be easy to satisfy part 1 of lemma \ref{hn-bools}, but we must choose carefully so that we can show part 2: \hnorm{\Delta}{A}{\ifexpr{\hat M}{\hat P}{\hat Q}}.
+\begin{proof}
+We consider the cases for N. It will be easy to satisfy part 1 of \cref{hn-bools}, but we must choose carefully so that we can show part 2: \hnorm{\Delta}{A}{\ifexpr{\hat M}{\hat P}{\hat Q}}.
 
-\textbf{case}: $N = \true$. We will need to choose \hnorm{\Delta}{A}{}
+\textbf{case}: $N = \true$. We will need to choose \hnorm{\Delta}{A}{\cdot}
 so that we can show \hnorm{\Delta}{A}{\ifexpr{\hat M}{\hat P}{\hat Q}}.
 Since \steps{\hat M}{\true}, we know that the whole if expression
 reduces to $\hat{P}$, where \hnorm{\Delta}{A}{\hat P} (by assumption). Therefore, we have \hnorm{\Delta}{A}{\ifexpr{\hat M}{\hat P}{\hat Q}} by head expansion.
@@ -244,10 +241,11 @@ What we are really interested in is showing:
 But \step{\ifexpr{\E \{ x \}}{\hat P}{\hat Q}}{\E \{ x \}}, so we have the result we need by applying the head expansion lemma.
 
 We conclude that the following definition of hereditary normalization is the right one:
-
 \[
-\hnorm{\Delta}{\booltype}{M} \triangleq \bnorm{M}
+  \hnorm{\Delta}{\booltype}{M} \triangleq \bnorm{M}.\qedhere
 \]
+\end{proof}
+
 
 \section{Adding Sum Types}
 
