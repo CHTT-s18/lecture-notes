@@ -71,7 +71,7 @@ Theorem~\ref{thm:hterm}, which relies on a lemma known as \emph{head expansion} 
 Let's now return to proving our ultimate goal, namely that hereditary termination implies termination of terms in the STLC:
 
 \begin{theorem}[Termination]\label{thm:term}
-  If $\hterm{A}{M}$ then $\termb{M}$.
+  If $\hterm{A}{M}$ then $\bterm{M}$.
 \end{theorem}
 
 \begin{proofattempt}
@@ -81,14 +81,14 @@ Let's now return to proving our ultimate goal, namely that hereditary terminatio
   \item $A = b$\\
     Suppose $\hterm{b}{M}$. Done by definition of hereditary termination.
   \item $A = \fn{A_1}{A_2}$\\
-    Suppose $\hterm{\fn{A_1}{A_2}}{M}$. We need to show $\termb{M}$. We are stuck here.
+    Suppose $\hterm{\fn{A_1}{A_2}}{M}$. We need to show $\bterm{M}$. We are stuck here.
   \end{itemize}
 \end{proofattempt}
 
 The question is what we should do at this point.  One possibility is to basically ``give up''
 and weaken the theorem to expect termination to hold only for observables, i.e., for terms of
 the base type.  Alternatively, we could strengthen the induction hypothesis even further by
-changing the defintion of $\hterm{A}{M}$ to also insist on $\termb{M}$.
+changing the defintion of $\hterm{A}{M}$ to also insist on $\bterm{M}$.
 
 Another option is to change the definition of hereditary termination entirely and use a
 \emph{positive} formulation rather than a \emph{negative} one.  Whereas our current negative

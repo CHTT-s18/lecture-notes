@@ -136,7 +136,7 @@ In this section, we prove termination for closed interpretations in the presence
 
 This is a \textit{positive} interpretation because \underline{if} is itself positive. We have not formulated \underline{if} in a style of ``if you were to do something with an \underline{if}, this is how it would behave\ldots''.
 
-By our updated definition of hereditary termination, if \hterm{\booltype}{M} then \termb{M} (since \booltype{} is a base type). Head expansion is also straightforward because of the way we defined the dynamic semantics; one can always back evaluation up a step.
+By our updated definition of hereditary termination, if \hterm{\booltype}{M} then \bterm{M} (since \booltype{} is a base type). Head expansion is also straightforward because of the way we defined the dynamic semantics; one can always back evaluation up a step.
 
 The proof of the fundamental theorem of linear relations needs to be updated for \booltype, but this is easy. We need to show that if \hasEF{\Gamma}{M}{A} and \hterm{\Gamma}{\gamma} then \hterm{A}{\hat\gamma(M)}. Specifically:
 \[
@@ -145,7 +145,7 @@ The proof of the fundamental theorem of linear relations needs to be updated for
 
 By case analysis on the typing judgement, we see that either $M = \true$ or $M = \false$. In either case, $M$ contains no variables, so $\hat\gamma(M)) = M$. By definition of the dynamic semantics, $M$ is a value.
 
-A corollary: if $M : A$ then \termb{M}.
+A corollary: if $M : A$ then \bterm{M}.
 
 \begin{exercise}
 Show hereditary termination for positive products.
