@@ -95,6 +95,32 @@ By IH, we have $\htermF{[A/X]B'}{\ap{\erase{M}}{\downarrow}}{\delta[Z \mapsto C]
 \end{itemize}
 \end{proof}
 
+\begin{lemma}[Head expansion]\label{lem:head_exp}
+If $\hasTF{\Theta}{A}$, $\delta : \Theta$, $\eta : \Theta$, then $\htermF{A}{-}{\delta}{\eta}$ is a type candidate. 
+\end{lemma}
+\begin{proof}
+Induction on $A$.
+\begin{itemize}
+\setlength\itemsep{1em}
+\item $A = X$\\
+Suppose $\htermF{A}{M'}{\delta}{\eta}$ and $\step{M}{M'}$. We need to show that $\htermF{A}{M}{\delta}{\eta}$.
+By assumption, we have $\eta(X)(M')$. Since $\eta$ is a candidate assignment, $\eta(X)$ is closed under head expansion,
+and so $\eta(X)(M)$ holds.
+\item $A = \fn{A_1}{A_2}$\\
+Suppose $\htermF{\fn{A_1}{A_2}}{M'}{\delta}{\eta}$ and $\step{M}{M'}$. 
+We need to show that $\htermF{\fn{A_1}{A_2}}{M}{\delta}{\eta}$. Suppose $\htermF{A_1}{N}{\delta}{\eta}$. 
+It suffices to show that $\htermF{A_2}{\ap{M}{N}}{\delta}{\eta}$. Instantiating the assumption, we get
+$\htermF{A_2}{\ap{M'}{N}}{\delta}{\eta}$. Since $\step{\ap{M}{N}}{\ap{M'}{N}}$, by IH, we have our result.
+\item $A = \all{X}{B}$\\
+Suppose $\htermF{\all{X}{B}}{M'}{\delta}{\eta}$ and $\step{M}{M'}$. 
+We need to show $\htermF{\all{X}{B}}{M}{\delta}{\eta}$. Let $C$ be a closed type, $T$ a type candidate. 
+It suffices to show $\htermF{B}{\ap{\erase{M}}{\downarrow}}{\delta[X \mapsto C]}{\eta[X \mapsto T]}$.
+Instantiating the assumption with $C$ and $T$, we have 
+$\htermF{B}{\ap{\erase{M'}}{\downarrow}}{\delta[X \mapsto C]}{\eta[X \mapsto T]}$. 
+Since $\step{\ap{\erase{M}}{\downarrow}}{\ap{\erase{M'}}{\downarrow}}$, by IH, we have our result.
+\end{itemize}
+\end{proof}
+
 \begin{theorem}[FTLR for System F]
 If $\hasEF{\Theta;\Omega}{M}{A}$, and 
 \begin{enumerate}
@@ -133,10 +159,10 @@ that $\htermFF{B}{\hat\gamma(\erase{M})}{\delta'}{\eta'}{\Theta'}$, which follow
 Fix $\delta : \Theta, \eta : \Theta$ and $\htermF{\Gamma}{\gamma}{\delta}{\eta}$. We need to show that 
 $\htermF{[C/X]B}{\hat\gamma(\erase{\tap{M}{C}})}{\delta}{\eta}$, or that
 $\htermF{[C/X]B}{\ap{\hat\gamma(\erase{M})}{\downarrow}}{\delta}{\eta}$. By compositionality, it suffices to show that
-$\htermF{B}{\ap{\hat\gamma(\erase{M})}{\downarrow}}{\delta[X \mapsto C]}{\eta[X \mapsto \htermF{A}{-}{\delta}{\eta}]}$.
-By IH, we have $\htermF{\all{X}{B}}{\hat\gamma(\erase{M})}{\delta}{\eta}$. Instantiating the RHS with $A$ and 
-$\htermF{A}{-}{\delta}{\eta}$ (which by Lemma \ref{stc} is a type candidate), we get
-$\htermF{B}{\ap{\hat\gamma(\erase{M})}{\downarrow}}{\delta[X \mapsto C]}{\eta[X \mapsto \htermF{A}{-}{\delta}{\eta}]}$.
+$\htermF{B}{\ap{\hat\gamma(\erase{M})}{\downarrow}}{\delta[X \mapsto C]}{\eta[X \mapsto \htermF{C}{-}{\delta}{\eta}]}$.
+By IH, we have $\htermF{\all{X}{B}}{\hat\gamma(\erase{M})}{\delta}{\eta}$. Instantiating the RHS with $C$ and 
+$\htermF{C}{-}{\delta}{\eta}$ (which by Lemma \ref{lem:head_exp} is a type candidate), we get
+$\htermF{B}{\ap{\hat\gamma(\erase{M})}{\downarrow}}{\delta[X \mapsto C]}{\eta[X \mapsto \htermF{C}{-}{\delta}{\eta}]}$.
 \end{itemize}
 \end{proof}
 
