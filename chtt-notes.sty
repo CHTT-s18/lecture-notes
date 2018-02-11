@@ -46,10 +46,17 @@
 
 \newcommand{\hterm}[2]{\ensuremath{\mathsf{HT}_{#1}(#2)}}
 \newcommand{\htermp}[2]{\ensuremath{\mathsf{HT}^+_{#1}(#2)}}
-\newcommand{\termb}[1]{\ensuremath{{#1} \; \mathsf{term}_{\beta}}}
+\newcommand{\bterm}[1]{\ensuremath{{#1} \; \mathsf{term}_{\beta}}}
 \newcommand{\hv}[2]{\ensuremath{\mathsf{HV}_{#1}(#2)}}
 \newcommand{\hvcbn}[2]{\ensuremath{\mathsf{HV}^{\mathsf{cbn}}_{#1}(#2)}}
 \newcommand{\hvcbv}[2]{\ensuremath{\mathsf{HV}^{\mathsf{cbv}}_{#1}(#2)}}
+
+% system F
+
+\newcommand{\htermFF}[5]{\ensuremath{\mathsf{HT}_{#1}(#2)[#3;#4 : #5]}}
+\newcommand{\htermF}[4]{\ensuremath{\mathsf{HT}_{#1}(#2)[#3;#4]}}
+\newcommand{\erase}[1]{\ensuremath{|#1|}}
+\newcommand{\ans}{\ensuremath{\mathsf{ans}}}
 
 \newcommand{\contrb}[2]{#1 \mathrel{\text{contr}_\beta} #2}
 \newcommand{\bnf}[1]{#1 \mathrel{\text{nf}_\beta}}
@@ -71,6 +78,7 @@
 \newcommand{\fillin}[2]{\ensuremath{#1\{#2\}}}
 
 \newcommand{\fn}[2]{\ensuremath{#1 \to #2}}
+\newcommand{\all}[2]{\ensuremath{\forall #1. #2}}
 \newcommand{\nat}{\ensuremath{\mathsf{nat}}}
 \newcommand{\void}{\ensuremath{\mathsf{void}}}
 \newcommand{\bool}{\ensuremath{\mathsf{bool}}}
@@ -78,7 +86,10 @@
 \newcommand{\vfalse}{\ensuremath{\mathsf{false}}}
 \newcommand{\tp}{\ensuremath{\mathsf{T}}}
 \newcommand{\ap}[2]{\ensuremath{#1\ #2}}
+\newcommand{\tap}[2]{\ensuremath{#1\ [#2]}}
 \newcommand{\lam}[3]{\ensuremath{\lambda #1 {:} #2.\, #3}}
+\newcommand{\alam}[1]{\ensuremath{\lambda _.\, #1}}
+\newcommand{\tlam}[2]{\ensuremath{\Lambda #1.\, #2}}
 \newcommand{\inl}[1]{\ensuremath{1\cdot#1}}
 \newcommand{\inr}[1]{\ensuremath{2\cdot#1}}
 \newcommand{\scasev}[6]{\ensuremath{\mathsf{case}_{#1}\ #2\ \{\inl{#3} \hookrightarrow #4 \mid \inr{#5} \hookrightarrow #6\}}}

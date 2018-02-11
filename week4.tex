@@ -1,0 +1,175 @@
+\documentclass{article}
+\usepackage{chtt-notes}
+\scribes{Yue Niu and Charles}
+\week{4}
+\doXRs
+
+\begin{document}
+
+\maketitle
+\section{Girard's Method}
+
+Recall hereditary termination we discovered through several trials: 
+\[
+\htermFF{A}{M}{\delta}{\eta}{\Theta}
+\]
+Read as $M$ is hereditarily terminating at $A$, where $delta$ is a closing type variable substitution and $\eta$ is 
+a candidate assingment, all with respect to $\Theta$. Since it's usually clear from context, we drop $\Theta$ unless it's
+required. 
+
+To make precise the argument of type candidates, we need to make precise what they mean: 
+
+\emph{Type candidates} are any collection $\mathcal{C}$ of \emph{closed, erased} terms such that:
+\begin{enumerate}
+\item $\mathcal{C}$ is closed under head expansion, and possibly 
+\item $T \in \mathcal{C}$ and $T(M) \implies \bterm{M}$
+\end{enumerate}
+
+Before presenting the FTLR for system F, we will need the following lemma: 
+\begin{lemma}[Compositionality]
+$\htermF{[A/X]B}{M}{\delta}{\eta}$ iff $\htermF{B}{M}{\delta[X \mapsto A]}{\eta[X \mapsto \htermF{A}{-}{\delta}{\eta}]}$
+\end{lemma}
+
+\begin{proof}
+Induction on $B$.
+\begin{itemize}
+\setlength\itemsep{1em}
+\item $B = X$\\
+For the forward direction, suppose $\htermF{[A/X]X}{M}{\delta}{\eta}$. We need to show that  
+$\htermF{X}{M}{\delta[X \mapsto A]}{\eta[X \mapsto \htermF{A}{-}{\delta}{\eta}]}$. By definition, it sufficese to show
+$(\eta[X \mapsto \htermF{A}{-}{\delta}{\eta}])(X)(M)$, or that $\htermF{A}{M}{\delta}{\eta}$, which follows from the 
+assumption.\\
+
+For the backward direction, suppose $\htermF{X}{M}{\delta[X \mapsto A]}{\eta[X \mapsto \htermF{A}{-}{\delta}{\eta}]}$. 
+We need to show that $\htermF{[A/X]X}{M}{\delta}{\eta}$, or $\htermF{A}{M}{\delta}{\eta}$, which follows by unfolding
+the assumption. 
+
+\item $B = X'$ where $X \ne X'$\\ 
+For the forward direction, suppose $\htermF{[A/X]X'}{M}{\delta}{\eta}$. We need to show that  
+$\htermF{X'}{M}{\delta[X \mapsto A]}{\eta[X \mapsto \htermF{A}{-}{\delta}{\eta}]}$. By definition, it sufficese to show
+$(\eta[X \mapsto \htermF{A}{-}{\delta}{\eta}])(X')(M)$. Since $ X \ne X'$, 
+it suffices to show $\eta(X')(M)$, which holds by assumption. \\
+
+For the backward direction, suppose $\htermF{X'}{M}{\delta[X \mapsto A]}{\eta[X \mapsto \htermF{A}{-}{\delta}{\eta}]}$. 
+We need to show that $\htermF{[A/X]X'}{M}{\delta}{\eta}$, or $\htermF{X'}{M}{\delta}{\eta}$. By definition, it suffices
+to show that $\eta(X')(M)$. By assumption, we know $(\eta[X \mapsto \htermF{A}{-}{\delta}{\eta}])(X')(M)$ holds. Since
+$X \ne X'$, $(\eta[X \mapsto \htermF{A}{-}{\delta}{\eta}])(X') = \eta(X')$, and we have that $\eta(X')(M)$ holds.
+
+\item $B = \fn{A_1}{A_2}$\\
+For the forward direction, suppose $\htermF{[A/X]B}{M}{\delta}{\eta}$. We need to show that  
+$\htermF{B}{M}{\delta[X \mapsto A]}{\eta[X \mapsto \htermF{A}{-}{\delta}{\eta}]}$. 
+Suppose $\htermF{A_1}{N}{\delta[X \mapsto A]}{\eta[X \mapsto \htermF{A}{-}{\delta}{\eta}]}$. It suffices to show
+then $\htermF{A_2}{\ap{M}{N}}{\delta[X \mapsto A]}{\eta[X \mapsto \htermF{A}{-}{\delta}{\eta}]}$. 
+By IH, we have $\htermF{[A/X]XA_1}{N}{\delta}{\eta}$. Further, from assumption we get
+$\htermF{\fn{[A/X]A_1}{[A/X]A_2}}{M}{\delta}{\eta}$. By the definition of hereditary termination, we get 
+$\htermF{[A/X]A_2}{\ap{M}{N}}{\delta}{\eta}$, and the result follows from the IH.
+
+For the backward direction, suppose 
+$\htermF{\fn{A_1}{A_2}}{M}{\delta[X \mapsto A]}{\eta[X \mapsto \htermF{A}{-}{\delta}{\eta}]}$. 
+We need to show that $\htermF{[A/X]\fn{A_1}{A_2}}{M}{\delta}{\eta}$, 
+or $\htermF{\fn{[A/X]A_1}{[A/X]A_2}}{M}{\delta}{\eta}$. Suppose $\htermF{[A/X]A_1}{N}{\delta}{\eta}$. 
+It suffices to show $\htermF{[A/X]A_2}{\ap{M}{N}}{\delta}{\eta}$. By IH, we have 
+$\htermF{A_1}{N}{\delta[X \mapsto A]}{\eta[X \mapsto \htermF{A}{-}{\delta}{\eta}]}$.
+Along with the assumption, we get $\htermF{A_2}{\ap{M}{N}}{\delta[X \mapsto A]}{\eta[X \mapsto \htermF{A}{-}{\delta}{\eta}]}$, and the result follows from IH.
+
+\item $B = \all{Z}{B'}$\\
+For the forward direction, suppose $\htermF{[A/X]\all{Z}{B'}}{M}{\delta}{\eta}$. We need to show that  
+$\htermF{\all{Z}{B'}}{M}{\delta[X \mapsto A]}{\eta[X \mapsto \htermF{A}{-}{\delta}{\eta}]}$. Let $C$ be a closed type, 
+and $T$ a type candidate. Letting $\delta' = \delta[X \mapsto A]$ and 
+$\eta' = \eta[X \mapsto \htermF{A}{-}{\delta}{\eta}]$, it sufficese to show
+$\htermF{B'}{\ap{\erase{M}}{\downarrow}}{\delta'[Z \mapsto C]}{\eta'[Z \mapsto T]}$. By the assumption (and 
+capture-avoiding substitution), we have $\htermF{\all{Z}{[A/X]B'}}{M}{\delta}{\eta}$. 
+Now instantiate the RHS definition with $C$ and $T$, obtaining 
+$\htermF{[A/X]B'}{\ap{\erase{M}}{\downarrow}}{\delta[Z \mapsto C]}{\eta[Z \mapsto T]}$. 
+Let $\delta'' = \delta[Z \mapsto C]$ and $\eta'' = \eta[Z \mapsto T]$. By IH, we have 
+$\htermF{B'}{\ap{\erase{M}}{\downarrow}}{\delta''[X \mapsto A]}{\eta''[X \mapsto \htermF{A}{-}{\delta''}{\eta''}]}$, 
+which is what was needed. \footnote{ is the interpretation of $Z$ irrelevant when considering $A$?}\\
+
+For the backward direction, suppose 
+$\htermF{\all{Z}{B'}}{M}{\delta[X \mapsto A]}{\eta[X \mapsto \htermF{A}{-}{\delta}{\eta}]}$.
+We need to show that $\htermF{[A/X]\all{Z}{B'}}{M}{\delta}{\eta}$, or $\htermF{\all{Z}{[A/X]B'}}{M}{\delta}{\eta}$. 
+Let $C$ be a closed type, and $T$ a type candidate. By definition, it suffices
+to show $\htermF{[A/X]B'}{\ap{\erase{M}}{\downarrow}}{\delta[Z \mapsto C]}{\eta[Z \mapsto T]}$. 
+Instantiating the assumption with $C$ and $T$, we have $\htermF{B'}{\ap{\erase{M}}{\downarrow}}{\delta[X \mapsto A][Z \mapsto C]}{\eta[X \mapsto \htermF{A}{-}{\delta}{\eta}][Z \mapsto T]}$. 
+By IH, we have $\htermF{[A/X]B'}{\ap{\erase{M}}{\downarrow}}{\delta[Z \mapsto C]}{\eta[Z \mapsto T]}$. \footnote{There needs to be a weakening of the interpretation in order to apply the IH.}
+\end{itemize}
+\end{proof}
+
+\begin{theorem}[FTLR for System F]
+If $\hasEF{\Theta;\Omega}{M}{A}$, and 
+\begin{enumerate}
+\item $\delta : \Theta$ is a closing type substitution 
+\item $\eta : \Theta$ is a candidate assignment 
+\item $\gamma : \cdot \to \Gamma$ is a closig term substitution
+\item $\htermF{\Gamma}{\gamma}{\delta}{\eta}$
+\end{enumerate}
+then $\htermF{A}{\hat\gamma(\erase{M})}{\delta}{\eta}$.
+\end{theorem}
+
+\begin{proof}
+Induction on typing.
+\begin{itemize}
+\setlength\itemsep{1em}
+\item $\inferrule{
+  \hasEF{\Theta, X; \Gamma}{M}{B}
+  }{
+  \hasEF{\Theta; \Gamma}{\tlam{X}{M}}{\all{X}{B}}
+  }$\\
+Fix $\delta : \Theta, \eta : \Theta$ and $\htermF{\Gamma}{\gamma}{\delta}{\eta}$. We need to show that 
+$\htermFF{\all{X}{B}}{\hat\gamma(\erase{\tlam{X}{M}})}{\delta}{\eta}{\Theta}$, or that
+$\htermFF{\all{X}{B}}{\alam{\hat\gamma(\erase{M})}}{\delta}{\eta}{\Theta}$.
+Let $C$ be a closed type, $T$ a type candidate, 
+$\delta' = \delta[X \mapsto C]$, $\eta' = \eta[X \mapsto T]$, and $\Theta' = \Theta,X$. 
+We need to show that $\htermFF{B}{\ap{\alam{\hat\gamma(\erase{M})}}{\downarrow}}{\delta'}{\eta'}{\Theta'}$. 
+By head expansion, it suffices to show
+that $\htermFF{B}{\hat\gamma(\erase{M})}{\delta'}{\eta'}{\Theta'}$, which follows from IH. 
+
+\item $\inferrule{
+  \hasEF{\Theta;\Gamma}{M}{\all{X}{B}}\\
+  \hasTF{\Theta}{C}
+  }{
+  \hasEF{\Theta;\Gamma}{\tap{M}{C}}{[C/X]B}
+  }$\\
+Fix $\delta : \Theta, \eta : \Theta$ and $\htermF{\Gamma}{\gamma}{\delta}{\eta}$. We need to show that 
+$\htermF{[C/X]B}{\hat\gamma(\erase{\tap{M}{C}})}{\delta}{\eta}$, or that
+$\htermF{[C/X]B}{\ap{\hat\gamma(\erase{M})}{\downarrow}}{\delta}{\eta}$. By compositionality, it suffices to show that
+$\htermF{B}{\ap{\hat\gamma(\erase{M})}{\downarrow}}{\delta[X \mapsto C]}{\eta[X \mapsto \htermF{A}{-}{\delta}{\eta}]}$.
+By IH, we have $\htermF{\all{X}{B}}{\hat\gamma(\erase{M})}{\delta}{\eta}$. Instantiating the RHS with $A$ and 
+$\htermF{A}{-}{\delta}{\eta}$ (which by Lemma \ref{stc} is a type candidate), we get
+$\htermF{B}{\ap{\hat\gamma(\erase{M})}{\downarrow}}{\delta[X \mapsto C]}{\eta[X \mapsto \htermF{A}{-}{\delta}{\eta}]}$.
+\end{itemize}
+\end{proof}
+
+\begin{corollary}
+$\htermF{\ans}{M}{\emptyset}{\emptyset} \implies \bterm{M}$.
+\end{corollary}
+
+In order to extend this to all types, we need to stipulate termination for all type candidates and formulate hereditary
+termination positively. 
+
+\section{Equality}
+
+The plan from now on:
+\begin{enumerate}
+\item Equality: formal vs semantic
+\item Parametricity / data abstraction by ``binarizing'' Girard's method
+\item Propositions as types and dependent types
+\item CTT / HDTT
+\end{enumerate}
+
+Recall definitional (structural) equality (equivalence) in formal type theory, originating from Gentzen's inversion 
+principles. D.E. can be charaterized as follows:
+\begin{enumerate}
+\item RST (is a equivalence relation)
+\item Compatible with the term formers (is a congruence)
+\item ``Calculates'' via beta-reduction (but is not directed)
+\end{enumerate}
+
+D.E. is a very strong ``equality'', and doesn't support hypothetical reasoning. For instance, if we defined plus in 
+G{\"o}del's T (by recursion on one of the arguments), 
+we will not be able to prove $\hasEEF{x : \nat, y : \nat}{x + y}{y + x}{\nat}$, even though for all numerals
+$\bar n, \bar m$, we \emph{can} derive $\hasEEF{}{\bar n + \bar m}{\bar m + \bar n}{\nat}$.
+\bibliographystyle{plainnat}
+\bibliography{ctt}
+
+\end{document}
