@@ -26,7 +26,7 @@ To make precise the argument of type candidates, we need to make precise what th
 \end{enumerate}
 
 Before presenting the FTLR for system F, we will need the following lemma: 
-\begin{lemma}[Compositionality]
+\begin{lemma}[Compositionality]\label{lem:comp}
 $\htermF{[A/X]B}{M}{\delta}{\eta}$ iff $\htermF{B}{M}{\delta[X \mapsto A]}{\eta[X \mapsto \htermF{A}{-}{\delta}{\eta}]}$
 \end{lemma}
 
