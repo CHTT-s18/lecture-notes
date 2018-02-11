@@ -5,8 +5,13 @@
 % The following command will let you cross-reference labels
 % in the files week1.tex, week2.tex, \ldots, week\@week.tex,
 % where if l is a label in ``weekN.tex'', then you can access
-% the label using \ref{WN:l}.
+% the label using \cref{WN:l}.
 \doXRs
+
+% General remark: Using \cref{label} will fill in the appropriate
+% environment name. For example,
+% ``\begin{lemma}\label{lem:foo} ...\end{lemma} By \cref{lem:foo}''
+% will produce ``Lemma 15 ... By lemma~15''
 
 \begin{document}
 \maketitle

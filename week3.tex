@@ -6,7 +6,7 @@
 % The following command will let you cross-reference labels
 % in the files week1.tex, week2.tex, ..., week\@week.tex,
 % where if l is a label in "weekN.tex", then you can access
-% the label using \ref{WN:l}.
+% the label using \cref{WN:l}.
 \doXRs
 
 \begin{document}
@@ -24,7 +24,6 @@ When we write \hnorm{\Delta}{A}{M}:
 
 
 We define hereditary normalization as follows:
-
 \begin{align*}
 \hnorm{\Delta}{b}{M} &\triangleq \bnorm{M} \\
 \hnorm{\Delta}{\fn{A_1}{A_2}}{M} &\triangleq  \forall \Delta' \geq \Delta. \  \text{if} \ \hnorm{\Delta'}{A_1}{M_1}\  \text{then} \ \hnorm{\Delta'}{A_2}{M M_1}
@@ -51,24 +50,24 @@ Review from last time:
 
 \begin{theorem}[Fundamental theorem of logical relations (FTLR)]
 \label{FTLR}
- If \hasEF{\Gamma}{M}{A} and $\gamma: \Delta \to \Gamma$, then $\hnorm{\Gamma}{\Delta}{\delta}$ implies $\hnorm{\Delta}{A}{\hat{\gamma}(M)}$.
+If \hasEF{\Gamma}{M}{A} and $\gamma: \Delta \to \Gamma$, then $\hnorm{\Gamma}{\Delta}{\gamma}$ implies $\hnorm{\Delta}{A}{\hat{\gamma}(M)}$.
  \end{theorem}
 
  \begin{corollary}
   If \hasEF{\Gamma}{M}{A} then \bnorm{M}. i.e. well-typed terms are normalizing.
  \end{corollary}
 
-It is important to note that these considerations are \textit{behavioral}, that is, they pertain to the behavior of terms. This is much deeper than structural considerations. However, the important thing about the setup here is that the structure of a term results in specific behavior. The point is that we can know that a term normalizes (a behavioral question) by knowing only that it has a type (a structural question).
+ It is important to note that these considerations are \textit{behavioral}, that is, they pertain to the behavior of terms. This is much deeper than structural considerations. However, the important thing about the setup here is that the structure of a term results in specific behavior. The point is that we can know that a term normalizes (a behavioral question) by knowing only that it has a type (a structural question).
 
-In order to prove the Theorem \ref{FTLR}, we need to show: if \hasEF{\Delta}{x}{A}, then \hnorm{\Delta}{A}{x}. It follows that \hnorm{\Gamma}{\Gamma}{id} and $\hat{id}(M) = M$.
+In order to prove \cref{FTLR}, we need to show: if \hasEF{\Delta}{x}{A}, then \hnorm{\Delta}{A}{x}.
 
-Informally, we need to show that x M is hereditarily normalizing whenever M is hereditarily normalizing. We also need to show that \hnorm{\fn{A_1}{A_2}}{\Delta}{M} implies \bnorm{M} (Lemma 9 from last week). These two proofs rely on each other via mutual induction.
+Informally, we need to show that $xM$ is hereditarily normalizing whenever $M$ is hereditarily normalizing. We also need to show that $\hnorm{\Delta}{\fn{A_1}{A_2}}{M}$ implies \bnorm{M} (Lemma 9 from last week). These two proofs rely on each other via mutual induction.
 
-The problem is that in the function case, we need an argument for M, which we don't have, because in our negative formulation we can only reason about M by applying it something. The question is, what do we apply it to? Our idea is to allocate a fresh variable. We have to do so at type smaller than \fn{A_1}{A_2} so that the induction hypothesis will hold, and conveniently, $A_1$, the argument type of M, is such a type. Consider M x, which is of type $A_2$, and note that the induction hypothesis applies! Then we can conclude that \bnorm{M x}, so therefore \bnorm{M} by head expansion.
+The problem is that in the function case, we need an argument for $M$, which we don't have, because in our negative formulation we can only reason about $M$ by applying it something. The question is, what do we apply it to? Our idea is to allocate a fresh variable. We have to do so at type smaller than $\fn{A_1}{A_2}$ so that the induction hypothesis will hold, and conveniently, $A_1$, the argument type of $M$, is such a type. Consider $Mx$, which is of type $A_2$, and note that the induction hypothesis applies! Then we can conclude that \bnorm{M x}, so therefore \bnorm{M} by head expansion.
 
 In order to allocate a variable, we need to move from $\Delta$ (which does not include the fresh variable) to $\Delta' = \Delta, x: A_1$ (which does). But now we have a problem, \textit{stability}: Do facts from the old world $\Delta$ still hold in the new world $\Delta'$? What we need is to know that for a given proposition P, \hnorm{\Delta}{A}{P} implies \hnorm{\Delta'}{A}{P} for all $\Delta' \geq \Delta$
 
-These worlds,  are ordered by a relation $\geq$.  This is called ``functoriality'' or ``monotonicity''. We also need $\geq$ to be transitive so that once a fact is established in a given world, it is also established in \textit{all} future worlds. In our context, this is going to mean that we can allocate a fresh variable without altering the behavior of a given program.
+These worlds are ordered by a relation $\geq$. We also need $\geq$ to be transitive so that once a fact is established in a given world, it is also established in \textit{all} future worlds. Furthermore,  if $\Delta' \geq \Delta$, then \hnorm{\Delta}{A}{M} implies \hnorm{\Delta'}{A}{M}; this property is called ``functoriality'' or ``monotonicity''. In our context, this is going to mean that we can allocate a fresh variable without altering the behavior of a given program.
 
 
 \begin{exercise}[Adding products]
@@ -76,8 +75,8 @@ These worlds,  are ordered by a relation $\geq$.  This is called ``functoriality
 Add ``negative'' products to the language and prove termination and normalization. The products look like this:
 
 \begin{tabular}{ll}
-\exprpair{M_1}{M_2} & val\\
-M.1, M.2 & projections\\
+\exprpair{M_1}{M_2} & $\valueJ{}$\\
+\outl{M}, \outr{M} & projections\\
 \step{\exprpair{M_1}{M_2}.1}{M_1}\\
 \step{\exprpair{M_1}{M_2}.1}{M_1}\\
 \step{\exprpair{M_1}{M_2}.2}{M_2}\\
@@ -95,8 +94,6 @@ Consider this for negative and positive types. The negative formulation takes th
         \item let \emptypair \  be $M$ in $N$
         \item let \exprpair{x}{y} be $M$ in $N_{x, y}$
 \end{itemize}
-
-\todo{do this exercise}
 \end{exercise}
 
 \section{Booleans}
@@ -154,7 +151,6 @@ Show hereditary termination for positive products.
 \hterm{\unittype}{M} &\triangleq \steps{M}{\emptypair}\\
 \hterm{\pairtype{A_1}{A_1}}{M} &\triangleq \steps{M}{\exprpair{M_1}{M_2}} \ \text{such that} \  \hterm{A_1}{M_1} \text{and} \  \hterm{A_2}{M_2}\\
 \end{align*}
-\todo{do this.}
 \end{exercise}
 
 As an aside, is it possible to give a \textit{negative} formulation of \booltype? It would look like this:
@@ -180,10 +176,9 @@ These are also called Church booleans! This is exactly how one encodes the boole
 
 \subsection{Open terms}
 We need to show normalization for open terms in the presence of booleans. The fundamental theorem of logical relations says:
-
-\[
-If \hasEF{\Gamma}{M}{A} \ \text{and} \ \gamma : \Delta \to \Gamma \ then \  \hnorm{\Delta}{\Gamma}{\gamma} \ implies \ \hnorm{\Delta}{A}{\hat\gamma(M)}
-\]
+\begin{center}
+  If $\hasEF{\Gamma}{M}{A}$ and $\gamma : \Delta \to \Gamma$, then $\hnorm{\Delta}{\Gamma}{\gamma}$ implies $\hnorm{\Delta}{A}{\hat\gamma(M)}$.
+\end{center}
 
 Now we need to define \hnorm{\booltype}{\Delta}{M} so that we are able to prove the above. How should we do it?
 
@@ -191,12 +186,12 @@ A first attempt:
 \[
 \hnorm{\Delta}{\booltype}{M} \triangleq \steps{M}{\true} \ \text{or} \ \steps{M}{\false}
 \]
-But this makes no sense because $M$ is open. M may well be (for example) $x$, or $x N$, or even $\ifexpr{x N}{P}{Q}$.
+But this makes no sense because $M$ is open. $M$ may well be (for example) $x$, or $x N$, or even $\ifexpr{x N}{P}{Q}$.
 
 This shows a constraint regarding our definition. We must validate:
-\begin{lemma}[HT for products]
+\begin{lemma}[HN for booleans]
 \leavevmode
-\label{ht-prods}
+\label{hn-bools}
 \begin{enumerate}
 \item \hnorm{\Delta}{\booltype}{\true} and \hnorm{\Delta}{\booltype}{\false}
 \item If \hnorm{\Delta}{\booltype}{\hat M} and \hnorm{\Delta}{A}{\hat P} and \hnorm{\Delta}{A}{\hat Q}, then \hnorm{\Delta}{A}{\ifexpr{\hat M}{\hat P}{\hat Q}}.
@@ -205,32 +200,33 @@ This shows a constraint regarding our definition. We must validate:
 
 If we choose a definition of hereditary termination that meets these criteria, we will be done. But what definition should that be? Let us discover it.
 
-What do we know about $\hat M$?
+  By the hypothesis to Lemma 7.2 and the workhorse lemma, we know that
+   $\bnorm{\hat M}$. The key fact is that for any $M$ such that $\bnorm{M}$,
+   you have that $\steps{M}{N}$ for some $N$ that is head irreducible, that is,
+   some $N$ that is in head normal form. In our proof of the work-horse lemma,
+   we will want proceed by case analysis on the head normal form of $\hat M$,
+   and so it is sufficient for us to require that $\hnorm{\Delta}{\bool}{M}$ if
+   and only if $\bnorm{M}$.
 
-\begin{enumerate}
-\item \hnorm{\Delta}{\booltype}{M} implies \bnorm{M} (by workhorse lemma)
-\end{enumerate}
+By workhorse lemma, we conclude \bnorm{\hat{P}} and \bnorm{\hat{Q}} (since we assumed that \hnorm{\Delta}{A}{\hat P} and \hnorm{\Delta}{A}{\hat Q}. As a reminder, the workhorse lemma is:
 
-We want to show that \bnorm{\hat M}. We know \bnorm{M}. From this fact, we can conclude that \steps{M}{N}, and N does not reduce. If we knew \bnorm{\hat M}, we would know that \steps{\hat M}{N}, and N does not reduce. \todo{why are these the same N?}
-
-By definition, we know \bnorm{\hat{M}}. By workhorse lemma, we conclude \bnorm{\hat{P}} and \bnorm{\hat{Q}} (since we assumed that \hnorm{\Delta}{A}{\hat P} and \hnorm{\Delta}{A}{\hat Q}). As a reminder, the workhorse lemma is:
-
-\begin{lemma}[Workhorse lemma, duplicated for reference]\label{lem:workhorse}
+\begin{lemma*}[Workhorse lemma, duplicated for reference]
 \leavevmode %make items align
 \begin{enumerate}
 \item \text{If} \hnorm{\Delta}{A}{M} \text{then} \bnorm{M}.
 \item If \bnorm{\E} then \hnorm{\Delta}{A}{\ap{\E}{\{x\}}} where \hasEF{\Delta}{x}{C} and \hasEF{\Delta}{\E}{C \leadsto A}.
 \end{enumerate}
-\end{lemma}
+\end{lemma*}
 
-Now, since \bnorm{\hat{M}}, there must exist N such that \steps{M}{N} where $N$ does not reduce. We consider the cases for N. It will be easy to satisfy part 1 of lemma \ref{ht-prods}, but we must choose carefully so that we can show part 2: \hnorm{\booltype}{A}{\ifexpr{\hat M}{\hat P}{\hat Q}}
+\begin{proof}
+We consider the cases for N. It will be easy to satisfy part 1 of \cref{hn-bools}, but we must choose carefully so that we can show part 2: \hnorm{\Delta}{A}{\ifexpr{\hat M}{\hat P}{\hat Q}}.
 
-\textbf{case}: $N = \true$. We will need to choose \hnorm{\Delta}{A}{}
+\textbf{case}: $N = \true$. We will need to choose \hnorm{\Delta}{A}{\cdot}
 so that we can show \hnorm{\Delta}{A}{\ifexpr{\hat M}{\hat P}{\hat Q}}.
 Since \steps{\hat M}{\true}, we know that the whole if expression
-reduces to $\hat{P}$, where \hnorm{\Delta}{A}{\hat P} (by assumption). Therefore, we have \hnorm{\Delta}{A}{\ifexpr{\hat M}{\hat P}{\hat Q}}.
+reduces to $\hat{P}$, where \hnorm{\Delta}{A}{\hat P} (by assumption). Therefore, we have \hnorm{\Delta}{A}{\ifexpr{\hat M}{\hat P}{\hat Q}} by head expansion.
 
-\textbf{case}: $N = \false$. This case is similar to the case for $N = \true$ with $\hat Q$ instead of $\hat P$.
+\textbf{case}: $N = \false$. This case is similar to the case for $N = \true$ but with $\hat Q$ instead of $\hat P$.
 
 \textbf{case}: otherwise: what do we know about $N$? $N$ does not reduce, yet $N \neq \true$ and $N \neq \false$. How can this be, given that \hasEF{\Delta}{N}{\booltype}? One possibility is that $N = x$. This is possible if \hasEF{\Delta}{x}{\booltype}. Another case is $N = x R$; this is possible if \hasEF{\Delta}{x}{\fn{A}{\booltype}} and \hasEF{\Delta}{R}{A}. In general, N can be any evaluation context that starts with a variable (otherwise it would have been head-reducible)! So $N = \E \{ x \}$. \textbf{We will need to require that \bnorm{\E}}.
 
@@ -245,10 +241,11 @@ What we are really interested in is showing:
 But \step{\ifexpr{\E \{ x \}}{\hat P}{\hat Q}}{\E \{ x \}}, so we have the result we need by applying the head expansion lemma.
 
 We conclude that the following definition of hereditary normalization is the right one:
-
 \[
-\hnorm{\Delta}{\booltype}{M} \triangleq \bnorm{M}
+  \hnorm{\Delta}{\booltype}{M} \triangleq \bnorm{M}.\qedhere
 \]
+\end{proof}
+
 
 \section{Adding Sum Types}
 
@@ -319,11 +316,9 @@ The closed setting is again relatively straightforward.
 We define the corresponding hereditary termination predicates:
 \begin{align*}
   \hterm{\void}{M} &\triangleq \text{(never)},\\
-  \hterm{A+B}{M} &\triangleq \left\{
-                   \begin{array}{r l l l}
-                     \text{either} & \steps{M}{\inl N} & \text{and} & \hterm{A}{N},\\
-                     \text{or} & \steps{M}{\inr N} & \text{and} & \hterm{B}{N}.\\
-                   \end{array} \right.
+  \hterm{A+B}{M} &\triangleq \left\{\;\parbox{0.5\linewidth}{%
+                   either $\steps{M}{\inl N}$ and $\hterm{A}{N}$,\\%
+  \phantom{eith}or $\steps{M}{\inr N}$ and $\hterm{B}{N}$.}\right.
 \end{align*}
 In particular, for any choice of $M$, $\hterm{void}{M}$ is a contradiction.
 We remark that this is a \textit{positive} formulation.
@@ -342,7 +337,7 @@ We could, however, read off a Church encoding for sums:
   \forall C. (A \to C) \to (B \to C) \to C.
 \]
 
-We expand the proof of the head-expansion lemma (see Lemma~\ref{W2:lem:hexp}) to account for these new clauses:
+We expand the proof of the head-expansion lemma (see \cref{W2:lem:hexp}) to account for these new clauses:
 
 \begin{lemma}[Head expansion with sums]
   \label{lemma:closed-hexp-sums}
@@ -388,7 +383,7 @@ We now prove the additional cases for the FTLR:
     From $\hterm{A+B}{\hat\gamma(M)}$, without loss of generality, we know that $\steps{\hat\gamma(M)}{\inl N}$ for some $N$ such that $\hterm{A}{N}$.
     Let $\gamma_A = \gamma[x \mapsto N]$.
     It follows that $\hterm{\Gamma,x:A}{\gamma_A}$, so $\hterm{C}{\hat\gamma_A(P)}$.
-    But $\hat\gamma_A(P) = \subst{N}{x}{\hat\gamma(P)}$ and $\steps{\hat\gamma(\scase{C}{M}{x}{P}{Q})}{\subst{N}{x}{\hat\gamma(P)}}$, so the result follows by head expansion (Lemma~\ref{lemma:closed-hexp-sums}).\qedhere
+    But $\hat\gamma_A(P) = \subst{N}{x}{\hat\gamma(P)}$ and $\steps{\hat\gamma(\scase{C}{M}{x}{P}{Q})}{\subst{N}{x}{\hat\gamma(P)}}$, so the result follows by head expansion (\cref{lemma:closed-hexp-sums}).\qedhere
   \end{itemize}
 \end{proof}
 
@@ -396,11 +391,18 @@ We now prove the additional cases for the FTLR:
 
 In the open setting, things are a bit trickier.
 We begin by extending the grammar of evaluation contexts and the associated judgments to cope with sums.
-First, we introduce the new evaluation context form:
+First, we introduce the new evaluation context forms:
 \[
-  \E \triangleq \dotsb \mid \scase{C}{\E}{x}{P}{Q}.
+  \E \triangleq \dotsb \mid \vcase{C}{\E} \mid \scase{C}{\E}{x}{P}{Q}.
 \]
-Next, we introduce the typing rule for the new evaluation context:
+Next, we introduce the typing rules for the new evaluation contexts:
+\[
+  \infer[\rn{$\E$-$\void$}]{
+    \hasC{\vcase{C}{\E}}{\Gamma}{D}{\Gamma'}{C}
+  }{
+    \hasC{\E}{\Gamma}{D}{\Gamma'}{\void}
+  }
+\]
 \[
   \infer[\rn{$\E$-Sum}]{
     \hasC{\scase{C}{\E}{x}{P}{Q}}{\Gamma}{D}{\Gamma'}{C}
@@ -412,7 +414,14 @@ Next, we introduce the typing rule for the new evaluation context:
     \hasEF{\Gamma', x:B}{Q}{C}
   }
 \]
-Finally, we add a rule to specify when such a context is normalizing:
+Finally, we add a rule to specify when such contexts are normalizing:
+\[
+  \infer[\rn{$\E$-$\void$-Norm}]{
+    \bnorm{\vcase{C}{\E}}
+  }{
+    \bnorm{\E}
+  }
+\]
 \[
   \infer[\rn{$\E$-Sum-Norm}]{
     \bnorm{\scase{C}{\E}{x}{P}{Q}}
@@ -423,6 +432,288 @@ Finally, we add a rule to specify when such a context is normalizing:
     &
     \bnorm{Q}
   }
+\]
+
+We must now turn our attention to what the definition of hereditary normalization for sums ought to be.
+Consider the rule \rn{Sum-E} and the induction hypothesis it would give us when proving the FTLR:
+\begin{enumerate}
+\item $\hnorm{\Gamma}{A + B}{M}$, and
+\item if $\hnorm{\Gamma}{A}{N}$, then $\hnorm{\Gamma}{C}{\subst{N}{x}{P}}$, and
+\item if $\hnorm{\Gamma}{B}{N}$, then $\hnorm{\Gamma}{C}{\subst{N}{x}{Q}}$.
+\end{enumerate}
+Further considering how the proof might go, we see that we would proceed by case analysis on the reduction $\steps{\hat\gamma(M)}{\bnf N}$: either $N$ is an injection, or it is in head normal form, that is, of the form $\fillin{\E}{z}$ for some variable $z$.
+We are then lead to the following definition:
+\begin{align*}
+  \hnorm{\Gamma}{\void}{M} &\triangleq \bnorm{M},\\
+  \hnorm{\Gamma}{A+B}{M} &\triangleq \left\{\parbox{0.5\linewidth}{\begin{enumerate}
+      \item $\bnorm{M}$, and
+      \item if $\steps{M}{\inl{N}}$, then $\hnorm{\Gamma}{A}{N}$, and
+      \item if $\steps{M}{\inr{N}}$, then $\hnorm{\Gamma}{B}{N}$.
+      \end{enumerate}}\right.
+\end{align*}
+(Before proceeding, think about where the proof(s) will break down if, instead of requiring $\bnorm{M}$, we had a definition analogous to $\hterm{\void}{M}$ and said that $\hnorm{\Gamma}{\void}{M}$ never held.)
+
+We again begin by completing the proof of the head expansion lemma to deal with sums.
+
+\begin{lemma}[Head expansion with sums]
+  \label{lemma:open-hexp-sums}
+  If $\hnorm{\Gamma}{T}{M'}$ and $\step{M}{M'}$, then $\hnorm{\Gamma}{T}{M}$.
+\end{lemma}
+
+\begin{proof}
+  The proof is by induction on the structure of $T$.
+  We add the missing cases:
+  \begin{itemize}
+  \item $\void$. By $\hnorm{\Gamma}{\void}{M'}$, we have $\bnorm{M'}$.
+    Because $\step{M}{M'}$, it then follows that $\bnorm{M}$, and so we conclude $\hnorm{\Gamma}{\void}{M}$.
+  \item $A + B$. By $\hnorm{\Gamma}{A + B}{M'}$, we have $\bnorm{M'}$.
+    Because $\step{M}{M'}$, it then follows that $\bnorm{M}$.
+    Assume, without loss of generality, that $\steps{M}{\inl{N}}$.
+    Then because the $\step{}{}$ relation is deterministic, it must be because $\steps{\step{M}{M'}}{\inl N}$.
+    By the hypothesis that $\hnorm{\Gamma}{A+B}{M'}$, we know that $\hnorm{\Gamma}{A}{N}$.
+    From this, we are justified in concluding that $\hnorm{\Gamma}{A+B}{M}$.\qedhere
+  \end{itemize}
+\end{proof}
+
+We turn our attention to expanding the proof of the work-horse lemma (\cref{W2:l5,W2:l2}).
+
+\begin{lemma}[Work-horse lemma]\leavevmode
+  \label{lemma:open-work-horse}
+  \begin{enumerate}
+  \item If $\hasC{\E}{\Gamma}{C}{\Gamma}{D}$ is an evaluation context such that $\bnorm{\E}$ and $\Gamma \vdash x:C$, then $\hnorm{\Gamma}{D}{\fillin{\E}{x}}$.
+  \item If $\hnorm{\Gamma}{A}{M}$, then $\bnorm{M}$.
+  \end{enumerate}
+\end{lemma}
+
+\begin{proof}
+  The proof is by induction on $A$.
+  We add the missing cases:
+  \begin{itemize}
+  \item $\void$. We show the two parts in turn.
+    \begin{enumerate}
+    \item An induction on $\E$ gives us that $\bnorm{\fillin{\E}{x}}$, from which we conclude the result.
+    \item Immediate by definition of $\hnorm{\Gamma}{\void}{M}$.
+    \end{enumerate}
+  \item $A + B$. We show the two parts in turn.
+    \begin{enumerate}
+    \item We proceed by induction on the typing of $\E$.
+      \begin{itemize}
+      \item If $\E = \hasC{\cdot}{\Gamma}{A + B}{\Gamma}{A + B}$, then the result is immediate from the fact that $\bnf{x}$ and that neither $\steps{x}{\inl N}$ nor $\steps{x}{\inr N}$.
+      \item If $\E = \hasC{\E' M}{\Gamma}{C}{\Gamma}{A+B}$ because $\hasEF{\Gamma}{M}{A_1}$ and $\hasC{\E'}{\Gamma}{C}{\Gamma}{A_1 \to A+B}$, then we know by the induction hypothesis that $\hnorm{\Gamma}{A_1 \to A + B}{\fillin{\E'}{x}}$.
+        By applying the induction hypothesis to this, we know that $\bnorm{\fillin{\E'}{x}}$.
+        Let $N$ be the normal form of $\fillin{\E'}{x}$, that's to say, let $N$ be such that $\steps{\fillin{\E'}{x}}{\bnf{N}}$.
+        We know that $x$ must be in head position of $N$.
+        By the hypothesis that $\bnorm{\E M}$, we know that $\bnorm{M}$, and so let $N'$ be its normal form.
+        Because $x$ is in head position of $N$, we know $\bnf{NN'}$ and that $NN'$ is not an injection.
+        But $\steps{\fillin{\E}{x}}{NN'}$, so $\bnorm{\fillin{\E}{x}}$.
+        From this, we conclude that $\hnorm{\Gamma}{A+B}{\fillin{\E}{x}}$.
+      \item If $\E = \hasC{\vcase{A+B}{\E'}}{\Gamma}{C}{\Gamma}{A+B}$ by \rn{$\E$-$\void$}, then we know $\hasC{\E'}{\Gamma}{C}{\Gamma}{\void}$, and by the induction hypothesis, that $\hnorm{\Gamma}{\void}{\E'{x}}$.
+        By definition of $\hnorm{\Gamma}{\void}{\cdot}$, we know that $\bnorm{\fillin{\E'}{x}}$.
+        Let $N$ be its normal form, then $\steps{\fillin{\E}{x}}{\bnf{\vcase{A+B}{N}}}$.
+        We remark that this normal form is not an injection and conclude $\hnorm{\Gamma}{A+B}{\fillin{\E}{x}}$.
+      \item If $\E = \hasC{\scase{D}{\E'}{y}{P}{Q}}{\Gamma}{C}{\Gamma}{A + B}$ by \rn{$\E$-Sum}, then for some $F$ and $G$, we have $\hasC{\E'}{\Gamma}{C}{\Gamma}{F + G}$, $\hasEF{\Gamma, y:F}{P}{A+B}$, and $\hasEF{\Gamma, y:G}{Q}{A+B}$.
+        By the induction hypothesis, we know that $\hnorm{\Gamma}{F + G}{\fillin{\E'}{x}}$, and by definition of $\hnorm{\Gamma}{F + G}{\cdot}$, that $\bnorm{\fillin{\E'}{x}}$.
+        Because the variable $x$ occupies the head position of $\fillin{\E'}{x}$, we know that $\steps{\fillin{\E'}{x}}{\bnf{N}}$ and that $N$ is not of the form $\inl N'$ or $\inr N'$.
+        Observe that $\fillin{\E}{x} = \scase{D}{\fillin{\E'}{x}}{y}{P}{Q}$, and so $\steps{\fillin{\E}{x}}{\bnf{\scase{D}{N}{y}{P}{Q}}}$.
+        Thus, $\bnorm{\fillin{\E}{x}}$ and $\fillin{\E}{x}$ does not normalize to an injection.
+        From this, we conclude $\hnorm{\Gamma}{A+B}{\fillin{\E}{x}}$.
+      \end{itemize}
+    \item Immediate by definition of $\hnorm{\Gamma}{A+B}{M}$.\qedhere
+    \end{enumerate}
+  \end{itemize}
+\end{proof}
+
+Finally, we ready to expand our proof of the fundamental theorem (\cref{W2:thm:hnorm}) to handle sums:
+
+\begin{theorem}[FTLR]
+  If $\hasEF{\Gamma}{M}{A}$ and $\hnorm{\Delta}{\Gamma}{\gamma}$, then $\hnorm{\Delta}{A}{\hat\gamma(M)}$.
+\end{theorem}
+
+\begin{proof}
+  The proof is by induction on derivation of $\hasEF{\Gamma}{M}{A}$.
+  We add the missing cases:
+  \begin{itemize}
+  \item \rn{Sum-L-I}. We consider $\hasEF{\Gamma}{\inl M}{A + B}$.
+    The injection $\hat\gamma(\inl{M}) = \inl{\hat\gamma(M)}$ is a normal form, and so $\bnorm{\inl{\hat\gamma(M)}}$.
+    We have $\steps{\hat\gamma(\inl{M})}{\inl{\hat\gamma(M)}}$ reflexively, and we know $\hnorm{\Delta}{A}{\hat\gamma(M)}$ by the induction hypothesis.
+    From this, we conclude $\hnorm{\Delta}{A + B}{\hat\gamma({\inl{M}})}$.
+  \item \rn{Sum-R-I}. Symmetric to the case \rn{Sum-L-I}.
+  \item \rn{\void-E}. We consider $\hasEF{\Gamma}{\vcase{A}{M}}{A}$.
+    By the induction hypothesis, we know $\hnorm{\Delta}{\void}{\hat\gamma(M)}$.
+    By definition of $\hnorm{\Delta}{\void}{\cdot}$, this implies that $\bnorm{\hat\gamma(M)}$.
+    But the only normal forms of type $\void$ are of the form $\fillin{\E'}{x}$ for some $\hasC{\E'}{\Delta}{C}{\Delta}{\void}$ and $\hasEF{\Delta}{x}{C}$.
+    Let $\E = \hasC{\vcase{A}{\E'}}{\Delta}{C}{\Delta}{A}$.
+    Then $\steps{\vcase{A}{M}}{\bnf{\fillin{\E}{x}}}$.
+    By the work-horse lemma (\cref{lemma:open-work-horse}), we know $\hnorm{\Delta}{A}{\fillin{\E}{x}}$, and so we conclude the result by head expansion (\cref{lemma:open-hexp-sums}).
+  \item \rn{Sum-E}. We now consider $\hasEF{\Gamma}{\scase{C}{M}{x}{P}{Q}}$.
+    By the induction hypothesis, we know:
+    \begin{itemize}
+    \item for any $\hnorm{\Delta}{\Gamma}{\gamma}$, that $\hnorm{\Delta}{A+B}{\hat\gamma(M)}$,
+    \item for any $\hnorm{\Delta,x:A}{\Gamma,x:A}{\gamma}$, that $\hnorm{\Delta,x:A}{C}{\hat\gamma(P)}$, and
+    \item for any $\hnorm{\Delta,x:B}{\Gamma,x:B}{\gamma}$, that $\hnorm{\Delta,x:B}{C}{\hat\gamma(Q)}$.
+    \end{itemize}
+    Let $\gamma$ such that $\hnorm{\Delta}{\Gamma}{\gamma}$ be arbitrary.
+    Then we know by the work-horse lemma (\cref{lemma:open-work-horse}) that $\bnorm{\hat\gamma(M)}$, and so we fall into one of the following three subcases:
+    \begin{enumerate}
+    \item $\steps{M}{\inl N}$. Because $\hnorm{\Delta}{A+B}{\hat\gamma(M)}$, we know that $\hnorm{\Delta}{A}{N}$.
+      It then follows that $\steps{\hat\gamma(\scase{C}{M}{x}{P}{Q})}{\subst{N}{x}{\hat\gamma(P)}}$.
+      Because $\hnorm{\Delta}{A}{N}$ and $\hnorm{\Delta}{\Gamma}{\gamma}$, we have $\hnorm{\Delta,x:A}{\Gamma,x:A}{\gamma'}$, where $\gamma' = \update{\gamma}{x}{N}$.
+      Then by the induction hypothesis, we get $\hnorm{\Delta,x:A}{C}{\hat\gamma'(P)}$, and we conclude the result by head expansion (\cref{lemma:open-hexp-sums}).
+    \item $\steps{M}{\inr N}$. This case is symmetric to the previous one.
+    \item $\steps{M}{\fillin{\E'}{z}}$ for some evaluation context $\E'$ and variable $z:W \in \Gamma$.
+      Let $\E = \scase{C}{\E'}{x}{\hat\gamma(P)}{\hat\gamma(Q)}$.
+      If we could show that $\bnorm{\E}$, then by the work-horse lemma (\cref{lemma:open-work-horse}), we would know that $\hnorm{\Gamma}{C}{\fillin{\E}{z}}$.
+      From this, we could use the fact that $\steps{\scase{C}{M}{x}{P}{Q}}{\fillin{\E}{z}}$ and conclude the result by head expansion.
+      To show that $\bnorm{\E}$, we it is sufficient to show that $\bnorm{\hat\gamma(P)}$ and $\bnorm{\hat\gamma(Q)}$, because we already know that $\bnorm{\E'}$.
+      Let $\gamma' = \update{\gamma}{x}{x}$, then $\gamma'(y) = \gamma(y)$ for all $y \in \dom(\gamma)$ and $\gamma'(x) = x$.
+      We claim $\hnorm{\Delta,x:A}{\Gamma,x:A}{\gamma'}$.
+      Indeed, for all $y \in \dom(\gamma')$ such that $y \neq x$, we know that $\hnorm{\Delta,x:A}{A}{\gamma'(y)}$ by functoriality of $\hnorm{({-})}{A}{y}$ and the hypothesis that $\hnorm{\Delta}{\Gamma}{\gamma}$.
+      As for $\gamma'(x)$, we know that $\hnorm{\Delta,x:A}{A}{x}$ by the work-horse lemma (\cref{lemma:open-work-horse}) using the evaluation context $\hasC{\cdot}{\Delta,x:A}{A}{\Delta,x:A}{A}$.
+      So applying the induction hypothesis on $\gamma'$ and $P$, we get that $\hnorm{\Delta,x:A}{C}{\hat\gamma'(P)}$.
+      By the work-horse lemma, we then get that $\bnorm{\hat\gamma'(P)}$.
+      But $\hat\gamma'(P) = \hat\gamma(P)$, so $\bnorm{\hat\gamma(P)}$.
+      An analogous argument gives us that $\bnorm{\hat\gamma(Q)}$.
+      This gives us that $\bnorm{\E}$, so we are done.\qedhere
+    \end{enumerate}
+  \end{itemize}
+\end{proof}
+
+\begin{remark}
+  We are now in a perfect position to show the above results for a positive formulation of products:
+  \begin{mathpar}
+    \letbein{\,}{M}{N}\\
+    \letbein{x,y}{M}{N_{x,y}}
+  \end{mathpar}
+\end{remark}
+
+\section{Natural numbers}
+
+We now consider a fragment of Gödel's System T; we refer the reader to \cite[Chapter~9]{Harper:16} for the full system.
+\citeauthor{Godel:58} proved that normalization of system T is equivalent to the consistency of Peano Arithmetic.
+The types and terms are given by the following grammar:
+\begin{align*}
+  A &::= \nat \mid A_1 \to A_2\\
+  M &::= \natz \mid \nats M \mid \natrec{A}{P}{x}{Q}{M}.
+\end{align*}
+The statics of this fragment are:
+\[
+  \infer[\rn{Var}]{\hasEF{\Gamma,x:A}{x}{A}}{\mathstrut}
+  \qquad
+  \infer[\rn{$\nat$-$\natz$-I}]{\hasEF{\Gamma}{\natz}{\nat}}{\mathstrut}
+  \qquad
+  \infer[\rn{$\nat$-$\natsop$-I}]{
+    \hasEF{\Gamma}{\nats M}{\nat}
+  }{
+    \hasEF{\Gamma}{M}{\nat}\mathstrut
+  }
+\]
+\[
+  \infer[\rn{$\nat$-E}]{
+    \hasEF{\Gamma}{\natrec{A}{P}{x}{Q}{M}}{A}
+  }{
+    \hasEF{\Gamma}{M}{\nat}
+    &
+    \hasEF{\Gamma}{P}{A}
+    &
+    \hasEF{\Gamma,x:A}{Q}{A}
+  }
+\]
+The dynamics of this fragment are:
+\[
+  \infer[\rn{$\natz$-Val}]{\valueJ \natz}{}
+  \qquad
+  \infer[\rn{$\natsop$-Val}]{
+    \valueJ{\nats M}
+  }{
+    \valueJ M
+  }
+  \qquad
+  \infer[\rn{$\natsop$-Step}]{
+    \step{\nats M}{\nats{M'}}
+  }{
+    \step{M}{M'}
+  }
+\]
+\[
+  \infer[\rn{$\natrecop$-Step}]{
+    \step{\natrec{A}{P}{x}{Q}{M}}{\natrec{A}{P}{x}{Q}{M'}}
+  }{
+    \step{M}{M'}
+  }
+\]
+\[
+  \infer[\rn{$\natrecop$-$\natz$}]{\step{\natrec{A}{P}{x}{Q}{\natz}}{P}}{}
+  \qquad
+  \infer[\rn{$\natrecop$-$\natsop$}]{
+    \step{\natrec{A}{P}{x}{Q}{\nats M}}{\subst{\natrec{A}{P}{x}{Q}{M}}{x}{Q}}
+  }{
+    \valueJ{\nats M}
+  }
+\]
+
+As before, our goal is to show termination in the closed setting and normalization in the open setting.
+Explicitly, we want to show:
+\begin{enumerate}
+\item If $M : A$, then $\bterm M$.\label{enum:desiderata1}
+\item If $\hasEF{\Gamma}{M}{A}$, then $\bnorm M$.
+\end{enumerate}
+
+\subsection{In a closed setting}
+\label{sec:nat-closed-setting}
+
+We are going to show a stronger property than \cref{enum:desiderata1} or hereditary termination.
+What we will show is that:
+\begin{center}
+  If $\hasEF{\Gamma}{M}{A}$ and $\hterm{\Gamma}{\gamma}$, then $\hterm{A}{\hat\gamma(M)}$.
+\end{center}
+
+Our key desideratum is that $\hterm{\nat}{M}$ imply $\bterm{M}$.
+Seeing that $\nat$ is a positive type, we do the obvious thing:
+\[
+  \hterm{\nat}{M} \triangleq \left\{\;\parbox{0.5\linewidth}{%
+      either $\steps{M}{\natz}$,\\%
+      \phantom{eith}or $\steps{M}{\nats{M'}}$ and $\hterm{\nat}{M'}$.%
+    }\right.
+\]
+We should be sceptical of this definition!
+Indeed, this definition is circular, and not all circular definitions make sense, so we need to be careful.
+
+A potentially useful way of thinking about the definition of $\hterm{A}{M}$ is that it is recursively defined along two axes.
+It has a ``vertical'' inductive structure on the type $A$, and when $A$ is $\nat$, it has a ``horizontal'' structure at that level.
+
+We can formally define $\hterm{\nat}{\cdot}$ to be the \textit{strongest} predicate $P$ on terms such that:
+\begin{enumerate}
+\item if $\steps{M}{\natz}$, then $P(M)$, and
+\item if $\steps{M}{\nats N}$ and $P(N)$, then $P(M)$.
+\end{enumerate}
+Equivalently, one could define the corresponding functional $F$ and define
+\[ \htermop_{\nat} = \bigcup_{i \geq 0} F^{(i)}(\emptyset), \]
+where $F^{(0)}$ never holds, and $F^{(k+1)}$ is defined in terms of $F^{(k)}$.
+
+We remark that this definition is \textit{not} mathematical induction!
+We are reasoning about a program's computation, not natural numbers.
+
+In showing the result at the beginning of this subsection, you will need to curry-out the $M$ in the rule \rn{$\nat$-E} to get:
+\[
+  \infer[\rn{$\nat$-E$^\prime$}]{
+    \hasEF{\Gamma,z:\nat}{\natrec{A}{P}{x}{Q}{z}}{A}
+  }{
+    \hasEF{\Gamma}{P}{A}
+    &
+    \hasEF{\Gamma,x:A}{Q}{A}
+  }
+\]
+This case will then be proven using the horizontal induction principle.
+
+\subsection{In an open setting}
+
+One follows the same development, using the definition
+\[
+  \hnorm{\Gamma}{\nat}{M} \triangleq \left\{\parbox{0.5\linewidth}{\begin{enumerate}
+      \item $\bnorm{M}$, and
+      \item if $\steps{M}{\natz}$, then (true), and
+      \item if $\steps{M}{\nats{N}}$, then $\hnorm{\Gamma}{\nat}{N}$.
+      \end{enumerate}}\right.
 \]
 
 \bibliographystyle{plainnat}

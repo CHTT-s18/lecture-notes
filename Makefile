@@ -21,7 +21,10 @@ print-%  :
 	latexmk -pdf $(*).tex
 	@mv $(*).pdf pdfs/
 
-clean:
-	@rm -rf pdfs/ auto/ *.pdf *.aux *.bbl *.blg *.log *.fls *fdb_latexmk *.out
+install:
+	cp pdfs/* /afs/cs.cmu.edu/user/rwh/www/courses/chtt/pdf/
 
-.PHONY: clean all
+clean:
+	@rm -rf pdfs/ auto/ *.pdf *.aux *.bbl *.blg *.log *.fls *fdb_latexmk *.synctex.gz *.out
+
+.PHONY: clean all install

@@ -1,28 +1,48 @@
 \NeedsTeXFormat{LaTeX2e}[1994/06/01]
 \ProvidesPackage{chtt-notes}[2018/02/02 CHTT Course Notes]
 
+\PassOptionsToPackage{utf8}{inputenc}
+\PassOptionsToPackage{centercolon}{mathtools}
+
 \RequirePackage{amsmath}
 \RequirePackage{amssymb}
 \RequirePackage{amsthm}
 \RequirePackage{fancyhdr}
+\RequirePackage{inputenc}
 \RequirePackage{mathpartir}
+\RequirePackage{mathtools}
 \RequirePackage{microtype}
 \RequirePackage{natbib}
 \RequirePackage{proof}
 \RequirePackage{todonotes}
 \RequirePackage{url}
 \RequirePackage{xcolor}
-\RequirePackage{xr}
+
 
 % Theorems
 \newtheorem{theorem}{Theorem}
+\newtheorem*{theorem*}{Theorem}
 \newtheorem{corollary}[theorem]{Corollary}
+\newtheorem*{corollary*}{Corollary}
 \newtheorem{lemma}[theorem]{Lemma}
+\newtheorem*{lemma*}{Lemma}
 \newtheorem{remark}[theorem]{Remark}
+\newtheorem*{remark*}{Remark}
 \newtheorem{claim}[theorem]{Attempt}
+\newtheorem*{claim*}{Attempt}
 \newtheorem{definition}[theorem]{Definition}
+\newtheorem*{definition*}{Definition}
 \newtheorem{exercise}[theorem]{Exercise}
-\newtheorem*{ulemma}{Lemma}
+\newtheorem*{exercise*}{Exercise}
+
+% \newtheorem{theorem}{Theorem}
+% \newtheorem{corollary}[theorem]{Corollary}
+% \newtheorem{lemma}[theorem]{Lemma}
+% \newtheorem{remark}[theorem]{Remark}
+% \newtheorem{claim}[theorem]{Attempt}
+% \newtheorem{definition}[theorem]{Definition}
+% \newtheorem{exercise}[theorem]{Exercise}
+% \newtheorem*{ulemma}{Lemma}
 
 \newenvironment{proofattempt}{\paragraph{\emph{Proof Attempt}.}}{\hfill\color{red}{X}\par}
 \newenvironment{prfattemptref}[1]{\paragraph{\emph{Proof Attempt of #1}.}}{\hfill\color{red}{X}\par}
@@ -44,8 +64,9 @@
 
 \newcommand{\hasC}[5]{\ensuremath{#1 : (#2 \rhd #3) \leadsto (#4 \rhd #5)}}
 
-\newcommand{\hterm}[2]{\ensuremath{\mathsf{HT}_{#1}(#2)}}
-\newcommand{\htermp}[2]{\ensuremath{\mathsf{HT}^+_{#1}(#2)}}
+\newcommand{\htermop}{\mathsf{HT}}
+\newcommand{\hterm}[2]{\ensuremath{\htermop_{#1}(#2)}}
+\newcommand{\htermp}[2]{\ensuremath{\htermop^+_{#1}(#2)}}
 \newcommand{\bterm}[1]{\ensuremath{{#1} \; \mathsf{term}_{\beta}}}
 \newcommand{\hv}[2]{\ensuremath{\mathsf{HV}_{#1}(#2)}}
 \newcommand{\hvcbn}[2]{\ensuremath{\mathsf{HV}^{\mathsf{cbn}}_{#1}(#2)}}
@@ -92,6 +113,8 @@
 \newcommand{\tlam}[2]{\ensuremath{\Lambda #1.\, #2}}
 \newcommand{\inl}[1]{\ensuremath{1\cdot#1}}
 \newcommand{\inr}[1]{\ensuremath{2\cdot#1}}
+\newcommand{\outl}[1]{\ensuremath{#1 \cdot 1}}
+\newcommand{\outr}[1]{\ensuremath{#1 \cdot 2}}
 \newcommand{\scasev}[6]{\ensuremath{\mathsf{case}_{#1}\ #2\ \{\inl{#3} \hookrightarrow #4 \mid \inr{#5} \hookrightarrow #6\}}}
 \newcommand{\scase}[5]{\ensuremath{\mathsf{case}_{#1}\ #2\ \{\inl{#3} \hookrightarrow #4 \mid \inr{#3} \hookrightarrow #5\}}}
 \newcommand{\vcase}[2]{\ensuremath{\mathsf{case}_{#1}\ #2\ \{\,\}}}
@@ -106,8 +129,19 @@
 \newcommand{\false}{\vfalse}
 \newcommand{\ifexpr}[3]{\ensuremath{\mathrm{if}(#1; #2; #3)}}
 \newcommand{\ifexprtyp}[4]{\ensuremath{\mathrm{if}_{#1}(#2; #3; #4)}}
+\newcommand{\letbein}[3]{\ensuremath{\mathrm{let}\ \langle#1\rangle\ \mathrm{be}\ #2\ \mathrm{in}\ #3}}
 
 \newcommand{\subst}[3]{[#1/#2]#3}
+\newcommand{\update}[3]{[#1 \mid #2 \mapsto #3]}
+
+% System T
+\newcommand{\natz}{\ensuremath{\mathsf{z}}}
+\newcommand{\natsop}{\mathsf{s}}
+\newcommand{\nats}[1]{\natsop(#1)}
+\newcommand{\natrecop}{\mathsf{rec}}
+\newcommand{\natrec}[5]{\ensuremath{\natrecop_{#1}\{#2; #3.#4\}(#5)}}
+
+\DeclareMathOperator{\dom}{dom}
 
 \newcommand{\E}{\mathcal{E}}
 
@@ -128,9 +162,15 @@
 
 % package to customize three basic list environments: enumerate, itemize and description.
 \RequirePackage{enumitem}
-\setitemize{noitemsep, topsep=0pt, leftmargin=*}
-\setenumerate{noitemsep, topsep=0pt, leftmargin=*}
-\setdescription{noitemsep, topsep=0pt, leftmargin=*}
+%%% Let's not do the following indiscriminately, because it gives you overlapping
+%%% subscripts and superscripts when one item has a subscript and the next item
+%%% has a superscript.
+%%% Besides, spacing makes it easier to read text.
+%%% If you really want the following items, add them to the individual instance
+%%% of itemize/enumerate/description. —RAK, 2018-02-02
+% \setitemize{noitemsep, topsep=0pt, leftmargin=*}
+%\setenumerate{noitemsep, topsep=0pt, leftmargin=*}
+%\setdescription{noitemsep, topsep=0pt, leftmargin=*}
 
 % title page, modified from article.cls
 \makeatletter
@@ -182,7 +222,10 @@
   \advance\weekIncludeXR by +1
   \ifnum \weekIncludeXR<\@week
   \repeat}
+
 \makeatother
+
+% Reference management (didn't work at the top)
 
 \RequirePackage{xr-hyper}
 \RequirePackage{hyperref}
