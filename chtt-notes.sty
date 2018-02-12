@@ -44,7 +44,7 @@
 % \newtheorem{exercise}[theorem]{Exercise}
 % \newtheorem*{ulemma}{Lemma}
 
-\newenvironment{proofattempt}{\paragraph{\emph{Proof Attempt}.}}{\hfill\color{red}{X}\par}
+\newenvironment{proofattempt}{\paragraph{\emph{Proof Attempt}.}}{\hfill\color{red}{\textsf{X}}\par}
 \newenvironment{prfattemptref}[1]{\paragraph{\emph{Proof Attempt of #1}.}}{\hfill\color{red}{X}\par}
 
 \newcommand{\redprl}{{\color{red}\textbf{Red}}\textbf{PRL}}
@@ -109,7 +109,7 @@
 \newcommand{\ap}[2]{\ensuremath{#1\ #2}}
 \newcommand{\tap}[2]{\ensuremath{#1\ [#2]}}
 \newcommand{\lam}[3]{\ensuremath{\lambda #1 {:} #2.\, #3}}
-\newcommand{\alam}[1]{\ensuremath{\lambda _.\, #1}}
+\newcommand{\alam}[1]{\ensuremath{\lambda \_.\, #1}}
 \newcommand{\tlam}[2]{\ensuremath{\Lambda #1.\, #2}}
 \newcommand{\inl}[1]{\ensuremath{1\cdot#1}}
 \newcommand{\inr}[1]{\ensuremath{2\cdot#1}}
@@ -178,8 +178,8 @@
 \global\let\@scribes\@empty
 \def\week#1{\def\@week{#1}}
 \def\scribes#1{\def\@scribes{#1}}
-\fancyhead[RO,LE]{\scshape 15-819: Computational Higher Type Theory}
-\fancyhead[LO,RE]{\scshape Lecture Notes Week \@week}
+\fancyhead[RO,L]{\scshape 15-819: Computational Higher Type Theory}
+\fancyhead[LO,R]{\scshape Lecture Notes Week \@week}
 \def\@maketitle{%
   \newpage
   \null
