@@ -191,42 +191,39 @@ leap is a statement not only about our claim, but about the logic in which we ar
 
 \subsection{A Leap of Faith}
 
-% TODO: I don't know if the terminology is correct here. I'm a bit confused myself as to what
-% order each step is working on, how type, type candidate, predicate, and (non)standard interpretation
-% relate to each other.
-
 We said that \htermF{B}{-}{\delta}{\eta} is the standard interpretation of $B$, and that checking
 it is not inductive in nature. Throughout this whole time we have been pestered by the fact that
 we need to pick some specific $B$, and admit that it may be larger than $A$ in the first place.
-For every type $B$ there is a corresponding standard interpretation that may be impossible to check.
+For every type $B$ there is a corresponding standard interpretation.
 That leaves the question open: do there exist non-standard interpretations?
 
-% TODO: what parts of this are actually red? What do the Ts mean, and does the predicate HT
-% belong inside the circle?
+% TODO: Is HT_B supposed to be shaded here? Or in the circle at all?
 
 \begin{center}
 \begin{tikzpicture}[scale=0.5]
 \draw (-3.8,-1) circle (6cm);
-\draw (-6.4,0.6) circle (2.5cm);
+\draw [pattern=north west lines, pattern color=magenta, draw=magenta] (-6.4,0.6) circle (2.5cm);
 \draw [pattern=north west lines, pattern color=magenta, draw=magenta] (-1.2,-0.5) circle (2cm);
 \draw [pattern=north west lines, pattern color=magenta, draw=magenta] (-5.0,-4.4) circle (1.5cm);
 \draw (-1.4,-4.3) circle (1.1cm);
 \draw (-6.4,0.6) node[anchor=center] {$\htermF{B}{-}{\delta}{\eta}$};
 \draw (-1.2,-0.5) node[anchor=center] {$T_2$};
 \draw (-5.0,-4.4) node[anchor=center] {$T_3$};
-\draw (-1.4,-4.3) node[anchor=center] {$T_4$};
+\draw (-1.4,-4.3) node[anchor=center] {$C$};
 \end{tikzpicture}
 \end{center}
 
-% TODO: properly define type candidate
+% TODO: are the following two paragraphs accurate?
 
-% The diagram above is a depiction of predicates we may wish to use within the interpretation.
-% Each circle is the standard interpretation of a type. Some of these circles, indicated in red,
-% are hereditary termination conditions we are able to show, whereas some, such as \htermF{B}{-}{\delta}{\eta},
-% are unable to be shown directly. But since each condition is merely a predicate on an expression,
-% we may indirectly obtain \htermF{B}{-}{\delta}{\eta} by simply taking the \emph{set of all types}.
-% The set of all types is not a type. Logically, we must accept quantification over types, which is
-% a higher-order comprehension principle.
+We know that a type is a collection of terms, and indeed so is a predicate like
+$\htermF{B}{-}{\delta}{\eta}$. In the diagram above, each circle represents some collection of terms.
+The shaded circles are the standard interpretation of some type. On the other hand, $C$ is not.
+Let us call collections of terms \emph{type candidates}, or \emph{possible types}. (We will need
+to impose some other conditions later, but in general not every type candidate is actually a type).
+
+Instead of pursuing $\htermF{B}{-}{\delta}{\eta}$ directly, we will recognize any type candidate
+as the predicate. Since one of the type candidates is $\htermF{B}{-}{\delta}{\eta}$, this is at
+least as strong as the original claim. However, this means we need to quantify over type candidates.
 
 % TODO: have we been assuming second-order all along?
 % TODO: more on Godel (completeness and incompleteness)
