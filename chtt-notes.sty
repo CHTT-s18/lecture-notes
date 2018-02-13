@@ -52,14 +52,14 @@
 % Exact equality
 \newcommand{\eeq}{\ensuremath{\doteq}}
 
-\newcommand{\hasTF}[2]{\ensuremath{#1 \vdash #2\ \mathsf{type}}}
+\newcommand{\hasTF}[2]{\ensuremath{#1 \vdash #2\;\mathsf{type}}}
 \newcommand{\hasEF}[3]{\ensuremath{#1 \vdash #2 : #3}}
-\newcommand{\hasTEF}[3]{\ensuremath{#1 \vdash #2 \equiv #3\ \mathsf{type}}}
+\newcommand{\hasTEF}[3]{\ensuremath{#1 \vdash #2 \equiv #3\;\mathsf{type}}}
 \newcommand{\hasEEF}[4]{\ensuremath{#1 \vdash #2 \equiv #3 : #4}}
 
-\newcommand{\hasTC}[2]{\ensuremath{#1 \gg #2\ \mathsf{type}}}
+\newcommand{\hasTC}[2]{\ensuremath{#1 \gg #2\;\mathsf{type}}}
 \newcommand{\hasEC}[3]{\ensuremath{#1 \gg #2 \in #3}}
-\newcommand{\hasTEC}[3]{\ensuremath{#1 \gg #2 \eeq #3\ \mathsf{type}}}
+\newcommand{\hasTEC}[3]{\ensuremath{#1 \gg #2 \eeq #3\;\mathsf{type}}}
 \newcommand{\hasEEC}[4]{\ensuremath{#1 \gg #2 \eeq #3 : #4}}
 
 \newcommand{\hasC}[5]{\ensuremath{#1 : (#2 \rhd #3) \leadsto (#4 \rhd #5)}}
@@ -95,7 +95,7 @@
 \newcommand{\step}[2]{\ensuremath{#1 \mapsto #2}}
 \newcommand{\steps}[2]{\ensuremath{#1 \mapsto^* #2}}
 \newcommand{\eval}[2]{\ensuremath{#1 \mathrel{\Downarrow} #2}}
-\newcommand{\valueJ}[1]{\ensuremath{#1\ \mathsf{value}}}
+\newcommand{\valueJ}[1]{\ensuremath{#1\;\mathsf{value}}}
 \newcommand{\fillin}[2]{\ensuremath{#1\{#2\}}}
 
 \newcommand{\fn}[2]{\ensuremath{#1 \to #2}}
@@ -106,8 +106,9 @@
 \newcommand{\vtrue}{\ensuremath{\mathsf{true}}}
 \newcommand{\vfalse}{\ensuremath{\mathsf{false}}}
 \newcommand{\tp}{\ensuremath{\mathsf{T}}}
-\newcommand{\ap}[2]{\ensuremath{#1\ #2}}
-\newcommand{\tap}[2]{\ensuremath{#1\ [#2]}}
+\newcommand{\ap}[2]{\ensuremath{#1\,#2}}
+\newcommand{\app}[2]{\ensuremath{#1(#2)}}
+\newcommand{\tap}[2]{\ensuremath{#1\,[#2]}}
 \newcommand{\lam}[3]{\ensuremath{\lambda #1 {:} #2.\, #3}}
 \newcommand{\alam}[1]{\ensuremath{\lambda \_.\, #1}}
 \newcommand{\tlam}[2]{\ensuremath{\Lambda #1.\, #2}}
@@ -115,9 +116,9 @@
 \newcommand{\inr}[1]{\ensuremath{2\cdot#1}}
 \newcommand{\outl}[1]{\ensuremath{#1 \cdot 1}}
 \newcommand{\outr}[1]{\ensuremath{#1 \cdot 2}}
-\newcommand{\scasev}[6]{\ensuremath{\mathsf{case}_{#1}\ #2\ \{\inl{#3} \hookrightarrow #4 \mid \inr{#5} \hookrightarrow #6\}}}
-\newcommand{\scase}[5]{\ensuremath{\mathsf{case}_{#1}\ #2\ \{\inl{#3} \hookrightarrow #4 \mid \inr{#3} \hookrightarrow #5\}}}
-\newcommand{\vcase}[2]{\ensuremath{\mathsf{case}_{#1}\ #2\ \{\,\}}}
+\newcommand{\scasev}[6]{\ensuremath{\mathsf{case}_{#1}\,#2\,\{\inl{#3} \hookrightarrow #4 \mid \inr{#5} \hookrightarrow #6\}}}
+\newcommand{\scase}[5]{\ensuremath{\mathsf{case}_{#1}\,#2\,\{\inl{#3} \hookrightarrow #4 \mid \inr{#3} \hookrightarrow #5\}}}
+\newcommand{\vcase}[2]{\ensuremath{\mathsf{case}_{#1}\,#2\,\{\,\}}}
 
 \newcommand{\emptypair}{\ensuremath{\langle \rangle}}
 \newcommand{\exprpair}[2]{\ensuremath{\langle #1, #2\rangle}}
@@ -129,7 +130,7 @@
 \newcommand{\false}{\vfalse}
 \newcommand{\ifexpr}[3]{\ensuremath{\mathrm{if}(#1; #2; #3)}}
 \newcommand{\ifexprtyp}[4]{\ensuremath{\mathrm{if}_{#1}(#2; #3; #4)}}
-\newcommand{\letbein}[3]{\ensuremath{\mathrm{let}\ \langle#1\rangle\ \mathrm{be}\ #2\ \mathrm{in}\ #3}}
+\newcommand{\letbein}[3]{\ensuremath{\mathrm{let}\,\langle#1\rangle\,\mathrm{be}\,#2\,\mathrm{in}\,#3}}
 
 \newcommand{\subst}[3]{[#1/#2]#3}
 \newcommand{\update}[3]{[#1 \mid #2 \mapsto #3]}
