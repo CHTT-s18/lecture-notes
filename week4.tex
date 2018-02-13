@@ -197,15 +197,13 @@ we need to pick some specific $B$, and admit that it may be larger than $A$ in t
 For every type $B$ there is a corresponding standard interpretation.
 That leaves the question open: do there exist non-standard interpretations?
 
-% TODO: Is HT_B supposed to be shaded here? Or in the circle at all?
-
 \begin{center}
 \begin{tikzpicture}[scale=0.5]
 \draw (-3.8,-1) circle (6cm);
-\draw (-6.4,0.6) circle (2.5cm);
+\draw [pattern=north west lines, pattern color=magenta, draw=magenta] (-6.4,0.6) circle (2.5cm);
 \draw [pattern=north west lines, pattern color=magenta, draw=magenta] (-1.2,-0.5) circle (2cm);
 \draw [pattern=north west lines, pattern color=magenta, draw=magenta] (-5.0,-4.4) circle (1.5cm);
-\draw [pattern=north west lines, pattern color=magenta, draw=magenta] (-1.4,-4.3) circle (1.1cm);
+\draw (-1.4,-4.3) circle (1.1cm);
 \draw (-6.4,0.6) node[anchor=center] {$\hterm{B}{-}$};
 \draw (-1.2,-0.5) node[anchor=center] {$T_2$};
 \draw (-5.0,-4.4) node[anchor=center] {$T_3$};
@@ -219,8 +217,8 @@ Some of the circles, including $T_1$ and $T_2$, are standard interpretations of 
 On the other hand, $C$ is not. Let us call collections of terms \emph{type candidates}, or
 \emph{possible types}. (We will need
 to impose some other conditions later, but in general not every type candidate is actually a type).
-So each circle above is a type candidate. Of these, the shaded ones are capable of being inductively
-checked in our proof, whereas $\hterm{B}{-}$ cannot. Now that we have this larger picture of the
+So each circle above is a type candidate. Of these, the shaded ones are actually standard interpretations,
+though some are not inductively checkable. Now that we have this larger picture of the
 world, can we somehow indirectly reach $\hterm{B}{-}$?
 
 Instead of pursuing $\hterm{B}{-}$ directly, we can recognize \emph{any type candidate}
