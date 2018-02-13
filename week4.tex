@@ -70,8 +70,8 @@ So far, we have expressed the claim that
 that is,
 \[(\hasEF{\Gamma}{M}{A}~\text{and}~\hterm{\Gamma}{\gamma})~\text{imply}~\hterm{A}{\hat\gamma(M)} \]
 
-\newcommand{\eraseone}[1]{\ensuremath{{|#1|}^1}}
-\newcommand{\erasetwo}[1]{\ensuremath{{|#1|}^2}}
+\newcommand{\eraseone}[1]{\ensuremath{{|#1|}^{\textrm{I}}}}
+\newcommand{\erasetwo}[1]{\ensuremath{{|#1|}^{\textrm{II}}}}
 Now that we have type lambdas and variables, we recognize that semantics about expressions should
 need to specially account for type lambda abstraction and application. We should instead \emph{erase}
 this polymorphic type information before reasoning about hereditary termination, etc. There are
