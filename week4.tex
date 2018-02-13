@@ -29,8 +29,8 @@ function:
 \[ \texttt{id} : \all{X}{\fn{X}{X}} \]
 
 To begin, consider the following syntax for types, incorporating variables, a positive answer type
-\texttt{ans}, functions, and a universal type quantifier.
-\[ A \Coloneqq X~|~\texttt{ans}~|~\fn{A_1}{A_2}~|~\all{X}{A} \]
+\ans, functions, and a universal type quantifier.
+\[ A \Coloneqq X~|~\ans~|~\fn{A_1}{A_2}~|~\all{X}{A} \]
 
 The expressions are defined correspondingly, with a mechanism for type lambdas:
 \[ M \Coloneqq x~|~\ap{M_1}{M_2}~|~\lam{x}{A}{M}~|~\tlam{X}{M}~|~\tap{M}{A}~|~\uparrow~|~\downarrow \]
@@ -38,8 +38,8 @@ The expressions are defined correspondingly, with a mechanism for type lambdas:
 The typing judgment is defined as follows:
 \begin{mathpar}
   \inferrule{ }{\hasEF{\Gamma, x : A}{x}{A}}\and
-  \inferrule{ }{\hasEF{\Gamma}{\uparrow}{\texttt{ans}}}\and
-  \inferrule{ }{\hasEF{\Gamma}{\downarrow}{\texttt{ans}}}\and
+  \inferrule{ }{\hasEF{\Gamma}{\uparrow}{\ans}}\and
+  \inferrule{ }{\hasEF{\Gamma}{\downarrow}{\ans}}\and
   \inferrule{
     \hasEF{\Gamma, x : A_1}{A_2}{M_2}
   }{\hasEF{\Gamma}{\lam{x}{A_1}{M_2}}{\fn{A_1}{A_2}}} \and
@@ -110,10 +110,10 @@ erasure into account.
 
 \begin{proofattempt}
 \begin{itemize}
-\item $\hterm{x}{M}$.
+\item $\hterm{X}{M}$.
       We're not sure how to proceed here yet. Moving on for a moment...
 
-\item $\hterm{\texttt{ans}}{M} \iff \stepbs{M}{\uparrow}$ or $\stepbs{M}{\downarrow}$.
+\item $\hterm{\ans}{M} \iff \stepbs{M}{\uparrow}$ or $\stepbs{M}{\downarrow}$.
       This is straightforward.
 
 \item $\hterm{\fn{A_1}{A_2}}{M} \iff \hterm{A_1}{M_1} \implies \hterm{A_2}{\ap{M}{M_2}}$.
@@ -202,63 +202,77 @@ That leaves the question open: do there exist non-standard interpretations?
 \begin{center}
 \begin{tikzpicture}[scale=0.5]
 \draw (-3.8,-1) circle (6cm);
-\draw [pattern=north west lines, pattern color=magenta, draw=magenta] (-6.4,0.6) circle (2.5cm);
+\draw (-6.4,0.6) circle (2.5cm);
 \draw [pattern=north west lines, pattern color=magenta, draw=magenta] (-1.2,-0.5) circle (2cm);
 \draw [pattern=north west lines, pattern color=magenta, draw=magenta] (-5.0,-4.4) circle (1.5cm);
-\draw (-1.4,-4.3) circle (1.1cm);
-\draw (-6.4,0.6) node[anchor=center] {$\htermF{B}{-}{\delta}{\eta}$};
+\draw [pattern=north west lines, pattern color=magenta, draw=magenta] (-1.4,-4.3) circle (1.1cm);
+\draw (-6.4,0.6) node[anchor=center] {$\hterm{B}{-}$};
 \draw (-1.2,-0.5) node[anchor=center] {$T_2$};
 \draw (-5.0,-4.4) node[anchor=center] {$T_3$};
 \draw (-1.4,-4.3) node[anchor=center] {$C$};
 \end{tikzpicture}
 \end{center}
 
-% TODO: are the following two paragraphs accurate?
-
 We know that a type is a collection of terms, and indeed so is a predicate like
-$\htermF{B}{-}{\delta}{\eta}$. In the diagram above, each circle represents some collection of terms.
-The shaded circles are the standard interpretation of some type. On the other hand, $C$ is not.
-Let us call collections of terms \emph{type candidates}, or \emph{possible types}. (We will need
+$\hterm{B}{-}$. In the diagram above, each circle represents some collection of terms.
+Some of the circles, including $T_1$ and $T_2$, are standard interpretations of types.
+On the other hand, $C$ is not. Let us call collections of terms \emph{type candidates}, or
+\emph{possible types}. (We will need
 to impose some other conditions later, but in general not every type candidate is actually a type).
+So each circle above is a type candidate. Of these, the shaded ones are capable of being inductively
+checked in our proof, whereas $\hterm{B}{-}$ cannot. Now that we have this larger picture of the
+world, can we somehow indirectly reach $\hterm{B}{-}$?
 
-Instead of pursuing $\htermF{B}{-}{\delta}{\eta}$ directly, we will recognize any type candidate
-as the predicate. Since one of the type candidates is $\htermF{B}{-}{\delta}{\eta}$, this is at
-least as strong as the original claim. However, this means we need to quantify over type candidates.
+Instead of pursuing $\hterm{B}{-}$ directly, we can recognize \emph{any type candidate}
+as the predicate. Since one of the type candidates is $\hterm{B}{-}$, this is at
+least as strong as the original claim. And instead of ever explicitly substituting $B$, we need only
+to define convenient properties holding over all type candidates to use in the proof.
 
-% TODO: have we been assuming second-order all along?
-% TODO: more on Godel (completeness and incompleteness)
+However, this means we need to quantify over \emph{all} type candidates, appealing to the existence
+of the set of all type candidates. This is an appeal to a higher-ordered logic, which we have not
+seen so far in the proof!
 
 Let's step back for a minute. Types themselves are ``sets'' (quantifications) over terms.
 Previously we proved the termination of G\"odel's T using the hereditary termination predicates,
-which are second-order over terms. According to G\"odel's second incompleteness theorem, Peano
+which are second-order quantifications over terms, each corresponding to a type in T.
+Now, according to G\"odel's second incompleteness theorem, first-order Peano
 arithmetic (and System T, which contains it) cannot prove its own consistency (computationally
 speaking, its termination), so the second-order proof was the best we could do.
 
-Now, System F operates on types the way that System T operates on terms. It has become clear that
-to prove termination for System F requires us to move one order higher, to third-order comprehension.
+By analogy, System F operates on types the way that System T operates on terms, allowing us to
+abstract over and apply them. It has become clear that proving termination for System F requires us
+to move one level higher, to third-order comprehension.
 We must produce the set of all type candidates in order to finish the proof, which can only be
 done in third-order logic.
+
+There is a question of whether this is bending the axioms. Were we examining the
+logical system itself, this might be a sore point, as a higher-order comprehension principle is
+a controversial assumption. However, having already completed the termination proof for System T,
+we are content with accepting it. We are computer scientists seeking to prove a fact about the real
+System F, and will be happy with a proof in third-order logic.
 
 With this machinery in place, we are finally ready to redefine the problematic case one last time:
 
 $\htermF{\all{X}{A}}{M}{\delta}{\eta} \iff $ for all closed $B$, for all type candidates $T$,
 $\htermF{A}{M(\downarrow)}{\delta[X \mapsto B]}{\eta[X \mapsto T]}$.
 
-Here, we quantify over all type candidates, among which is $T_B$, the type candidate corresponding
+Here, we quantify over all type candidates, among which is $\hterm{B}{-}$, the type candidate corresponding
 to the interpretation of $B$. Note the consequence of this claim on the nature of a polymorphic
 computation. For an expression to be polymorphic it must be uniform in \emph{non-expressible properties}
 of the system. Some of these properties, like quantification over all type candidates, can only
-be stated in a higher-order logic.
+be stated in a higher-order logic. We \emph{demand more} of programs than is evidently required.
+This makes our understanding of polymorphism much richer than
+``generics'' in conventional programming languages.
 
 \section{Girard's Method}
 
-Recall hereditary termination we discovered through several trials:
+The new definition of hereditary termination, as we discovered through several trials, is:
 \[
 \htermFF{A}{M}{\delta}{\eta}{\Theta}
 \]
-Read as $M$ is hereditarily terminating at $A$, where $delta$ is a closing type variable substitution and $\eta$ is
-a candidate assingment, all with respect to $\Theta$. Since it's usually clear from context, we drop $\Theta$ unless it's
-required.
+read as: $M$ is hereditarily terminating at $A$, where $\delta$ is a closing type variable substitution
+and $\eta$ is a candidate assignment, all with respect to $\Theta$. Since it's usually clear from
+context, we drop $\Theta$ unless it's required.
 
 To make precise the argument of type candidates, we need to make precise what they mean:
 
@@ -279,7 +293,7 @@ Induction on $B$.
 \setlength\itemsep{1em}
 \item $B = X$\\
 For the forward direction, suppose $\htermF{[A/X]X}{M}{\delta}{\eta}$. We need to show that
-$\htermF{X}{M}{\delta[X \mapsto A]}{\eta[X \mapsto \htermF{A}{-}{\delta}{\eta}]}$. By definition, it sufficese to show
+$\htermF{X}{M}{\delta[X \mapsto A]}{\eta[X \mapsto \htermF{A}{-}{\delta}{\eta}]}$. By definition, it suffices to show
 $(\eta[X \mapsto \htermF{A}{-}{\delta}{\eta}])(X)(M)$, or that $\htermF{A}{M}{\delta}{\eta}$, which follows from the
 assumption.\\
 
@@ -289,7 +303,7 @@ the assumption.
 
 \item $B = X'$ where $X \ne X'$\\
 For the forward direction, suppose $\htermF{[A/X]X'}{M}{\delta}{\eta}$. We need to show that
-$\htermF{X'}{M}{\delta[X \mapsto A]}{\eta[X \mapsto \htermF{A}{-}{\delta}{\eta}]}$. By definition, it sufficese to show
+$\htermF{X'}{M}{\delta[X \mapsto A]}{\eta[X \mapsto \htermF{A}{-}{\delta}{\eta}]}$. By definition, it suffices to show
 $(\eta[X \mapsto \htermF{A}{-}{\delta}{\eta}])(X')(M)$. Since $ X \ne X'$,
 it suffices to show $\eta(X')(M)$, which holds by assumption. \\
 
@@ -319,7 +333,7 @@ Along with the assumption, we get $\htermF{A_2}{\ap{M}{N}}{\delta[X \mapsto A]}{
 For the forward direction, suppose $\htermF{[A/X]\all{Z}{B'}}{M}{\delta}{\eta}$. We need to show that
 $\htermF{\all{Z}{B'}}{M}{\delta[X \mapsto A]}{\eta[X \mapsto \htermF{A}{-}{\delta}{\eta}]}$. Let $C$ be a closed type,
 and $T$ a type candidate. Letting $\delta' = \delta[X \mapsto A]$ and
-$\eta' = \eta[X \mapsto \htermF{A}{-}{\delta}{\eta}]$, it sufficese to show
+$\eta' = \eta[X \mapsto \htermF{A}{-}{\delta}{\eta}]$, it suffices to show
 $\htermF{B'}{\ap{\erase{M}}{\downarrow}}{\delta'[Z \mapsto C]}{\eta'[Z \mapsto T]}$. By the assumption (and
 capture-avoiding substitution), we have $\htermF{\all{Z}{[A/X]B'}}{M}{\delta}{\eta}$.
 Now instantiate the RHS definition with $C$ and $T$, obtaining
@@ -369,7 +383,7 @@ If $\hasEF{\Theta;\Omega}{M}{A}$, and
 \begin{enumerate}
 \item $\delta : \Theta$ is a closing type substitution
 \item $\eta : \Theta$ is a candidate assignment
-\item $\gamma : \cdot \to \Gamma$ is a closig term substitution
+\item $\gamma : \cdot \to \Gamma$ is a closing term substitution
 \item $\htermF{\Gamma}{\gamma}{\delta}{\eta}$
 \end{enumerate}
 then $\htermF{A}{\hat\gamma(\erase{M})}{\delta}{\eta}$.
