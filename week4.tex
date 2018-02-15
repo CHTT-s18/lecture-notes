@@ -48,7 +48,7 @@ The typing judgment is defined as follows:
     \hasEF{\Gamma}{M_2}{A_1}
   }{\hasEF{\Gamma}{\ap{M_1}{M_2}}{A_2}} \and
   \inferrule{
-    \hasEF{\Gamma, x}{M}{A}
+    \hasEF{\Gamma, X~\mathsf{type}}{M}{A}
   }{\hasEF{\Gamma}{\tlam{X}{M}}{\all{X}{A}}} \and
   \inferrule{
     \hasEF{\Gamma}{M}{\all{X}{A}}\\
@@ -72,7 +72,7 @@ that is,
 
 \newcommand{\eraseone}[1]{\ensuremath{{|#1|}^{\textrm{I}}}}
 \newcommand{\erasetwo}[1]{\ensuremath{{|#1|}^{\textrm{II}}}}
-Now that we have type lambdas and variables, we recognize that semantics about expressions should
+Now that we have type lambdas and variables, we recognize that semantics about expressions should not
 need to specially account for type lambda abstraction and application. We should instead \emph{erase}
 this polymorphic type information before reasoning about hereditary termination, etc. There are
 two logical approaches to performing erasure:
@@ -333,7 +333,7 @@ $\htermF{\all{Z}{B'}}{M}{\delta[X \mapsto A]}{\eta[X \mapsto \htermF{a}{-}{\delt
 and $T$ a type candidate. Letting $\delta' = \delta[X \mapsto A]$ and
 $\eta' = \eta[X \mapsto \htermF{A}{-}{\delta}{\eta}]$, it suffices to show
 $\htermF{B'}{\ap{\erase{M}}{\downarrow}}{\delta'[Z \mapsto C]}{\eta'[Z \mapsto T]}$.
-Reordering the mappings, we have to show that 
+Reordering the mappings, we have to show that
 $\htermF{B'}{\ap{\erase{M}}{\downarrow}}{\delta''[X \mapsto A]}{\eta''[X \mapsto \htermF{a}{-}{\delta''}{\eta''}]]}$, where $\delta'' = \delta[Z \mapsto C]$ and $\eta'' = \eta[Z \mapsto T]$.
 By the assumption (and
 capture-avoiding substitution), we have $\htermF{\all{Z}{[A/X]B'}}{M}{\delta}{\eta}$.
@@ -341,7 +341,7 @@ Now instantiate the RHS definition with $C$ and $T$, obtaining
 $\htermF{[A/X]B'}{\ap{\erase{M}}{\downarrow}}{\delta[Z \mapsto C]}{\eta[Z \mapsto T]}$.
 By IH, we have
 $\htermF{B'}{\ap{\erase{M}}{\downarrow}}{\delta''[X \mapsto A]}{\eta''[X \mapsto \htermF{A}{-}{\delta''}{\eta''}]}$,
-which is what was needed. 
+which is what was needed.
 
 For the backward direction, suppose
 $\htermF{\all{Z}{B'}}{M}{\delta[X \mapsto A]}{\eta[X \mapsto \htermF{A}{-}{\delta}{\eta}]}$.
@@ -349,7 +349,7 @@ We need to show that $\htermF{[A/X]\all{Z}{B'}}{M}{\delta}{\eta}$, or $\htermF{\
 Let $C$ be a closed type, and $T$ a type candidate. By definition, it suffices
 to show $\htermF{[A/X]B'}{\ap{\erase{M}}{\downarrow}}{\delta[Z \mapsto C]}{\eta[Z \mapsto T]}$.
 Instantiating the assumption with $C$ and $T$, we have $\htermF{B'}{\ap{\erase{M}}{\downarrow}}{\delta[X \mapsto A][Z \mapsto C]}{\eta[X \mapsto \htermF{A}{-}{\delta}{\eta}][Z \mapsto T]}$.
-Swapping $X$ and $Z$ in $\delta$ and $\eta$ as in the forward direction and applying the IH, we have $\htermF{[A/X]B'}{\ap{\erase{M}}{\downarrow}}{\delta[Z \mapsto C]}{\eta[Z \mapsto T]}$. 
+Swapping $X$ and $Z$ in $\delta$ and $\eta$ as in the forward direction and applying the IH, we have $\htermF{[A/X]B'}{\ap{\erase{M}}{\downarrow}}{\delta[Z \mapsto C]}{\eta[Z \mapsto T]}$.
 \end{itemize}
 \end{proof}
 
