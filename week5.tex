@@ -1,0 +1,440 @@
+\documentclass{article}
+\usepackage{chtt-notes}
+\scribes{Farzaneh Derakhshan and Di Wang}
+\week{5}
+% The following command will let you cross-reference labels
+% in the files week1.tex, week2.tex, \ldots, week\@week.tex,
+% where if l is a label in ``weekN.tex'', then you can access
+% the label using \cref{WN:l}.
+\doXRs
+
+% General remark: Using \cref{label} will fill in the appropriate
+% environment name. For example,
+% ``\begin{lemma}\label{lem:foo} ...\end{lemma} By \cref{lem:foo}''
+% will produce ``Lemma 15 ... By lemma~15''
+
+\newcommand{\G}{\Gamma}
+\newcommand{\entails}{\vdash}
+\newcommand{\eapp}[2]{#1~#2}
+\newcommand{\eabs}[3]{\lambda #1:#2.#3}
+\newcommand{\tans}{\mathsf{ans}}
+\newcommand{\tnat}{\mathsf{nat}}
+\newcommand{\eacc}{\uparrow}
+\newcommand{\erej}{\downarrow}
+\newcommand{\ez}{\mathsf{z}}
+\newcommand{\es}[1]{\mathsf{s}(#1)}
+\newcommand{\erec}[5]{\mathsf{rec}_{#1}\{#2;#3.#4\}(#5)}
+\newcommand{\evalto}{\Downarrow}
+\newcommand{\stepto}{\mapsto}
+
+\begin{document}
+\maketitle
+
+\section{Setting the Scene}
+
+Thus far in the course, we have explored \emph{closed term computation} and \emph{open term calculation} for the simply typed lambda calculus (STLC) augmented with inductive types, with the goal to prove that all well-typed programs terminate as well as all well-typed terms normalize.
+We also have studied closed term computation for polymorphism, i.e., the type-level quantification.
+Our exploration led us to rediscover \emph{Tait's method} and \emph{Girard's method}.
+
+From now on, we are going to study \emph{equality}.
+Before developing \emph{behavioral equality} (i.e., \emph{exact equality}) in computational type theory, we first recall traditional \emph{structural equality} (i.e., \emph{definitional equality}) in formal type theory.
+
+\section{Structural Equality}
+
+Recall the STLC augmented with an answer type $\tans$ and a natural number type $\tnat$:
+\[
+\begin{array}{rcl}
+A & \Coloneqq & \tans \mid \tnat \mid A_1 \to A_2 \\
+M & \Coloneqq & {\eacc} \mid {\erej} \mid x \mid \eabs{x}{A}{M} \mid \eapp{M_1}{M_2} \mid \ez \mid \es{M} \mid \erec{A}{M_z}{x}{M_s}{M}
+\end{array}
+\]
+
+The typing judgment is defined as follows:
+\begin{mathpar}
+\inferrule{ }{ \G \entails {\eacc} : \tans }
+\and
+\inferrule{ }{ \G \entails {\erej} : \tans }
+\and
+\inferrule{ }{ \G,x:A \entails x : A}
+\\
+\inferrule{ \G,x:A_1 \entails M : A_2 }{ \G \entails \eabs{x}{A_1}{M} : A_1 \to A_2 }
+\and
+\inferrule{ \G \entails M_1 : A_1 \to A_2 \\ \G \entails M_2 : A_1 }{ \G \entails \eapp{M_1}{M_2} : A_2 }
+\\
+\inferrule{ }{ \G \entails \ez : \tnat }
+\and
+\inferrule{ \G \entails M : \tnat }{ \G \entails \es{M} : \tnat }
+\and
+\inferrule{ \G \entails M : \tnat \\ \G \entails M_z : A \\ \G,x:A \entails M_s : A }{ \G \entails \erec{A}{M_z}{x}{M_s}{M} : A }
+\end{mathpar}
+
+Structural equality for STLC, written $\G \entails M \equiv M' : A$, is the strongest congruence respecting $\beta$-principles:
+
+\begin{mathpar}
+\inferrule{ \G \entails M : A }{ \G \entails M \equiv M : A }
+\and
+\inferrule{ \G \entails M' \equiv M : A }{ \G \entails M \equiv M' : A }
+\and
+\inferrule{ \G \entails M \equiv M' : A \\ \G \entails M' \equiv M'' : A }{ \G \entails M \equiv M'' : A }
+\\
+\inferrule{ \G,x:A_1 \entails M \equiv M' : A_2 }{ \G \entails \eabs{x}{A_1}{M} \equiv \eabs{x}{A_1}{M'} : A_1 \to A_2 }
+\and
+\inferrule{ \G \entails M \equiv M' : A_1 \to A_2 \\ \G \entails N \equiv N' : A_1 }{ \G \entails \eapp{M}{N} \equiv \eapp{M'}{N'} : A_2 }
+\\
+\inferrule{ \G \entails M \equiv M' : \tnat }{ \G \entails \es{M} \equiv \es{M'} : \tnat }
+\and
+\inferrule{ \G,x:A_1 \entails M : A_2 \\ \G \entails N : A_1 }{ \G \entails \eapp{(\eabs{x}{A}{M})}{N} \equiv [N/x]M : A_2 }
+\\
+\inferrule{ \G \entails M \equiv M' : \tnat \\ \G \entails M_z \equiv M_z' : A \\ \G, x : A \entails M_s \equiv M_s' : A }{\G \entails \erec{A}{M_z}{x}{M_s}{M} \equiv \erec{A}{M_z'}{x}{M_s'}{M'} : A}
+\end{mathpar}
+\begin{mathpar}
+\inferrule{ \G \entails M_z : A \\ \G,x:A \entails M_s : A }{ \G \entails \erec{A}{M_z}{x}{M_s}{\ez} \equiv M_z : A }
+\and
+\inferrule{ \G \entails M : \tnat \\ \G \entails M_z : A \\ \G,x:A \entails M_s : A }{ \G \entails \erec{A}{M_z}{x}{M_s}{\es{M}} \equiv [\erec{A}{M_z}{x}{M_s}{M}/x]M_s : A }
+\end{mathpar}
+
+Methodologically, structural equality is intended to be decidable.
+However, this approach never turns out to be efficient and the decidability could be very hard to prove.
+
+\section{Behavioral Equality}
+
+Under structural equality, one will not be able to prove $x : \tnat, y : \tnat \entails x + y \equiv y + x : \tnat$, where plus is defined by recursion on one of its arguments.
+In other words, structural equality is a very strong equality.
+Similar to the exploration of closed term computation, we want to develop a characterization of \emph{behavioral equality} in terms of program behaviors.
+
+Intuitively, we want to ``binarize logical relations'', written $\G \gg M \eeq M' \in A$, with the following fundamental theorem:
+
+\begin{theorem}[FTLR]
+If $\G \entails M \equiv M' : A$, then $\G \gg M \eeq M' \in A$.
+\end{theorem}
+
+Similar to $\G \gg M \in A$, $\G \gg M \eeq M' \in A$ is \emph{extensional} and \emph{functional}.
+In other words, suppose we have a behavioral equality relation for closed terms $M \eeq M' \in A$ where $M,M'$ are programs and $A$ is a type,
+if $\gamma \eeq \gamma' \in \G$ where $\gamma,\gamma'$ are closed substitution mappings (i.e., for all $x \in B \in \G$, $\gamma(x) \eeq \gamma'(x) \in B$), then $\widehat{\gamma}(M) \eeq \widehat{\gamma'}(M') \in A$.
+Now we develop the logical relation $M \eeq M' \in A$, which can be seen as a binary version of hereditary termination relation.
+
+\begin{definition}
+$M \eeq M' \in A$ is defined inductively on the structure of $A$.
+\begin{itemize}
+    \item $M \eeq M' \in \tans$ iff either $M \evalto {\eacc}$ and $M' \evalto {\eacc}$, or $M \evalto {\erej}$ and $M' \evalto {\erej}$.
+    \item $M \eeq M' \in \tnat$ iff either $M \evalto \ez$ and $M' \evalto \ez$, or $M \evalto \es{N}$, $M' \evalto \es{N'}$, and $N \eeq N' \in \tnat$ (following the horizontal induction principle).
+    \item $M \eeq M' \in A_1 \to A_2$ iff $M \evalto \eabs{x}{A_1}{M_1}$, $M' \evalto \eabs{x}{A_1}{M_1'}$,
+    and for all $N,N'$ such that $N \eeq N' \in A_1$, $[N/x]M_1 \eeq [N'/x]M_1' \in A_2$.
+\end{itemize}
+\end{definition}
+
+The first property we want to establish is that $M \eeq M' \in A$ is symmetric and transitive.
+
+\begin{lemma}
+For any type $A$,
+\begin{itemize}
+    \item $M \eeq M' \in A$ implies $M' \eeq M \in A$.
+    \item $M \eeq M' \in A$ and $M' \eeq M'' \in A$ imply $M \eeq M'' \in A$.
+\end{itemize}
+\end{lemma}
+\begin{proof}
+By induction on the structure of $A$:
+\begin{itemize}
+    \item Case $A = \tans$:
+    \begin{itemize}
+        \item Symmetry:
+        By inversion we know that either $M \evalto {\eacc}$, $M' \evalto {\eacc}$, or $M \evalto {\erej}$, $M' \evalto {\erej}$.
+        In either case it is straightforward to show $M' \eeq M \in \tans$.
+        \item Transitivity:
+        By inversion on $M \eeq M' \in \tans$ we know that either $M \evalto {\eacc}$, $M' \evalto {\eacc}$, or $M \evalto {\erej}$, $M' \evalto {\erej}$.
+        If $M,M'$ evaluates to $\eacc$, then by the determinism of evaluation and inversion on $M' \eeq M'' \in \tans$, we know that $M''$ also evaluates to $\eacc$, hence by definition we know $M \eeq M'' \in \tans$.
+        It is similar to prove for the case where $M,M'$ evaluates to $\erej$.
+    \end{itemize}
+    \item Case $A = \tnat$:
+    \begin{itemize}
+        \item Symmetry:
+        By inversion and then a case analysis:
+        \begin{itemize}
+            \item Subcase $M \evalto \ez,M' \evalto \ez$:
+            By definition we know that $M' \eeq M \in \tnat$.
+            \item Subcase $M \evalto \es{N},M' \evalto \es{N'},N \eeq N' \in \tnat$:
+            By induction hypothesis on $N \eeq N' \in \tnat$ we know that $N' \eeq N \in \tnat$.
+            Thus by definition we know that $M' \eeq M \in \tnat$.
+        \end{itemize}
+        \item Transitivity:
+        By inversion on $M \eeq M' \in \tnat$ and then a case analysis:
+        \begin{itemize}
+            \item Subcase $M \evalto \ez, M' \evalto \ez$:
+            By the determinism of evaluation and inversion on $M' \eeq M'' \in \tnat$, we know that $M''$ also evaluates to $\ez$.
+            By definition we have $M \eeq M'' \in \tnat$.
+            \item Subcase $M \evalto \es{N}, M'\evalto \es{N'}, N \eeq N' \in \tnat$:
+            By the determinism of evaluation and inversion on $M' \eeq M'' \in \tnat$, we know that $M''$ evaluates to $\es{N''}$ for some $N''$ and $N' \eeq N'' \in \tnat$.
+            Then by induction hypothesis we know that $N \eeq N'' \in \tnat$.
+            By definition we have $M \eeq M'' \in \tnat$.
+        \end{itemize}
+    \end{itemize}
+    \item Case $A = A_1 \to A_2$:
+    \begin{itemize}
+        \item Symmetry:
+        By inversion we know that $M \evalto \eabs{x}{A_1}{M_1}$, $M' \evalto \eabs{x}{A_1}{M_1'}$ and for all $N,N'$ such that $N \eeq N' \in A_1$, $[N/x]M_1 \eeq [N'/x]M_1' \in A_2$.
+        We are supposed to show that for all $N',N$ such that $N' \eeq N \in A_1$, $[N'/x]M_1' \eeq [N/x]M_1 \in A_2$.
+        By induction hypothesis, we have $N \eeq N' \in A_1$, and it suffices to show that $[N/x]M_1 \eeq [N'/x]M_1' \in A_2$.
+        It follows directly from assumptions.
+        \item Transitivity:
+        By inversion on $M \eeq M' \in A_1 \to A_2$, $M' \eeq M'' \in A_1 \to A_2$, and determinism of evaluation, we know that $M \evalto \eabs{x}{A_1}{M_1}$, $M' \evalto \eabs{x}{A_1}{M_1'}$, $M'' \evalto \eabs{x}{A_1}{M_1''}$, for all $N,N'$ such that $N \eeq N' \in A_1$, $[N/x]M_1 \eeq [N'/x]M_1' \in A_2$,
+        and for all $N',N''$ such that $N' \eeq N'' \in A_1$, $[N'/x]M_1' \eeq [N''/x]M_1'' \in A_2$.
+        We are suppose to show that for all $N,N''$ such that $N \eeq N'' \in A_1$, $[N/x]M_1 \eeq [N''/x]M_1'' \in A_2$.
+        By assumption, we know that $[N/x]M_1 \eeq [N''/x]M_1' \in A_2$.
+        Then it suffices to show that $[N''/x]M_1' \eeq [N''/x]M_1'' \in A_2$.
+        It turns out that we need to prove $N'' \eeq N'' \in A_1$.
+        By induction hypothesis on $N \eeq N'' \in A_1$ for symmetry, we know that $N'' \eeq N \in A_1$.
+        Then by induction hypothesis for transitivity, we have $N'' \eeq N'' \in A_1$.
+        Thus we conclude the proof.
+    \end{itemize}
+\end{itemize}
+\end{proof}
+
+The symmetry and transitivity can also be proved for open behavioral equality.
+
+\begin{lemma} \label{lem:typingsymtran}
+For any typing context $\G$ and type $A$,
+\begin{itemize}
+    \item $\G \gg M \eeq M' \in A$ implies $\G \gg M' \eeq M \in A$.
+    \item $\G \gg M \eeq M' \in A$ and $\G \gg M' \eeq M'' \in A$ imply $\G \gg M \eeq M'' \in A$.
+\end{itemize}
+\end{lemma}
+\begin{proof}
+\begin{itemize}
+    \item Suppose $\gamma \eeq \gamma' \in \G$.
+    It suffices to show $\widehat{\gamma}(M') \eeq \widehat{\gamma'}(M) \in A$.
+    By symmetry we know that $\gamma' \eeq \gamma \in \G$.
+    By assumption we know that $\widehat{\gamma'}(M) \eeq \widehat{\gamma}(M') \in A$.
+    By symmetry again we conclude that $\widehat{\gamma}(M') \eeq \widehat{\gamma'}(M) \in A$.
+    \item Suppose $\gamma \eeq \gamma'' \in \G$.
+    It suffices to show $\widehat{\gamma}(M) \eeq \widehat{\gamma''}(M'') \in A$.
+    By symmetry we know that $\gamma'' \eeq \gamma \in \G$.
+    By transitivity we know that $\gamma \eeq \gamma \in \G$.
+    By assumption we know that $\widehat{\gamma}(M) \eeq \widehat{\gamma}(M') \in A$.
+    By assumption we know that $\widehat{\gamma}(M') \eeq \widehat{\gamma''}(M'') \in A$.
+    By transitivity we conclude that $\widehat{\gamma}(M) \eeq \widehat{\gamma''}(M'') \in A$.
+\end{itemize}
+\end{proof}
+
+Because behavioral equality reasons about behavioral equivalence of programs, and the evaluation of the STLC is deterministic, the equality relation should also be closed under reverse execution.
+
+\begin{lemma}[Head expansion]
+If $M \eeq M' \in A$, $N \stepto^* M$, and $N' \stepto^* M'$, then $N \eeq N' \in A$.
+\end{lemma}
+\begin{proof}
+By induction on the structure of $A$:
+\begin{itemize}
+    \item Case $A = \tans$:
+    By inversion we know that either $M \evalto {\eacc}$, $M' \evalto {\eacc}$, or $M \evalto {\erej}$, $M' \evalto {\erej}$.
+    If $M,M'$ evaluates to $\eacc$, then $N \stepto^* M$ and $N' \stepto^* M'$ imply that $N \evalto {\eacc}$ and $N' \evalto {\eacc}$, thus $N \eeq N' \in \tans$.
+    It is similar to prove for the case where $M,M'$ evaluates to $\erej$.
+    \item Case $A = \tnat$:
+    By inversion and a then a case analysis:
+    \begin{itemize}
+        \item Subcase $M \evalto \ez, M' \evalto \ez$:
+        $N \stepto^* M$ and $N' \stepto^* M'$ imply that $N \evalto \ez$ and $N' \evalto \ez$, thus $N \eeq N' \in \tnat$.
+        \item Subcase $M \evalto \es{M_1}, M' \evalto \es{M_1'}, M_1 \eeq M_1' \in \tnat$:
+        $N \stepto^* M$ and $N' \stepto^* M'$ imply that $N \evalto \es{M_1}$ and $N' \evalto \es{M_1'}$, thus by definition we have $N \eeq N' \in \tnat$.
+    \end{itemize}
+    \item Case $A = A_1 \to A_2$:
+    By inversion we know that $M \evalto \eabs{x}{A_1}{M_1}$, $M' \evalto \eabs{x}{A_1}{M_1'}$, and for all $M_2,M_2'$ such that $M_2 \eeq M_2' \in A_1$, $[M_2/x]M_1 \eeq [M_2'/x]M_1' \in A_2$.
+    $N \stepto^* M$ and $N' \stepto^* M'$ imply that $N \evalto \eabs{x}{A_1}{M_1}$ and $N' \evalto \eabs{x}{A_1}{M_1'}$.
+    By definition we know that $N \eeq N' \in A_1 \to A_2$.
+\end{itemize}
+\end{proof}
+
+Now we turn to prove the fundamental theorem to show that structural equality suffices for behavioral equality.
+We start with a lemma which justifies the positive definition of behavioral equality for function types.
+
+\begin{lemma} \label{lem:negapp}
+$M \eeq M' \in A_1 \to A_2$ and $N \eeq N' \in A_1$ imply $\eapp{M}{N} \eeq \eapp{M'}{N'} \in A_2$.
+\end{lemma}
+\begin{proof}
+By inversion on $M \eeq M' \in A_1 \to A_2$ we know that $M \evalto \eabs{x}{A_1}{M_1}$, $M' \evalto \eabs{x}{A_1}{M_1'}$, and for all $N,N'$ such that $N \eeq N' \in A_1$, $[N/x]M_1 \eeq [N'/x]M_1' \in A_2$.
+Thus we know that $[N/x]M_1 \eeq [N'/x]M_1' \in A_2$.
+Observe that $\eapp{M}{N} \stepto^* \eapp{(\eabs{x}{A_1}{M_1})}{N} \stepto [N/x]M_1$, and $\eapp{M'}{N'} \stepto^* \eapp{(\eabs{x}{A_1}{M_1'})}{N'} \stepto [N'/x]M_1'$.
+Thus by head expansion we conclude that $\eapp{M}{N} \eeq \eapp{M'}{N'} \in A_2$.
+\end{proof}
+
+We show that well-typed terms are behaviorally equal to itself for its type.
+
+\begin{lemma} \label{lem:typingrefl}
+$\G \entails M : A$ implies $\G \gg M \eeq M \in A$.
+\end{lemma}
+\begin{proof}
+We are supposed to show for all $\gamma,\gamma'$ such that $\gamma \eeq \gamma' \in \G$, $\widehat{\gamma}(M) \eeq \widehat{\gamma'}(M) \in A$.
+The proof proceeds by induction on the derivation of $\G \entails M : A$.
+We consider several nontrivial cases.
+\begin{itemize}
+    \item $\inferrule{ \G, x : A_1 \entails M : A_2 }{ \G \entails \eabs{x}{A_1}{M} : A_1 \to A_2 }$\\
+    Observe that $\widehat{\gamma}(\eabs{x}{A_1}{M}) = \eabs{x}{A_1}{\widehat{\gamma}(M)}$.
+    By definition we are supposed to show that for all $N,N'$ such that $N \eeq N' \in A_1$, $[N/x] \widehat{\gamma}(M) \eeq [N'/x] \widehat{\gamma'}(M) \in A_2$.
+    Let $\gamma_x = \gamma[x \mapsto N]$ and $\gamma_x' = \gamma'[x \mapsto N']$.
+    By assumption we know that $\gamma_x \eeq \gamma_x' \in \G,x:A_1$.
+    Thus by induction hypothesis we know that $\widehat{\gamma_x}(M) \eeq \widehat{\gamma_x'}(M) \in A_2$.
+    Observe that $\widehat{\gamma_x}(M) = [N/x]\widehat{\gamma}(M)$ and $\widehat{\gamma_x'}(M) = [N'/x]\widehat{\gamma'}(M)$.
+    Thus we conclude this case.
+    
+    \item $\inferrule{ \G \entails M_1 : A_1 \to A_2 \\ \G \entails M_2 : A_1 }{ \G \entails \eapp{M_1}{M_2} : A_2 }$\\
+    Observe that $\widehat{\gamma}(\eapp{M_1}{M_2}) = \eapp{\widehat{\gamma}(M_1)}{\widehat{\gamma}(M_2)}$.
+    By induction hypothesis we know that $\widehat{\gamma}(M_1) \eeq \widehat{\gamma'}(M_1) \in A_1 \to A_2$ and $\widehat{\gamma}(M_2) \eeq \widehat{\gamma'}(M_2) \in A_1$.
+    By Lemma~\ref{lem:negapp} we conclude that $\eapp{\widehat{\gamma}(M_1)}{\widehat{\gamma}(M_2)} \eeq \eapp{\widehat{\gamma'}(M_1')}{\widehat{\gamma'}(M_2')} \in A_2$.
+    
+    \item $\inferrule{ \G \entails M : \tnat \\ \G \entails M_z :A \\ \G,x:A \entails M_s :A }{ \G \entails \erec{A}{M_z}{x}{M_s}{M} : A }$\\
+    We are supposed to show that
+    \[
+    \erec{A}{\widehat{\gamma}(M_z)}{x}{\widehat{\gamma}(M_s)}{\widehat{\gamma}(M)} \eeq \erec{A}{\widehat{\gamma'}(M_z)}{x}{\widehat{\gamma'}(M_s)}{\widehat{\gamma'}(M)} \in A.
+    \]
+    By induction hypothesis on $\G \entails M : \tnat$ we know that $\widehat{\gamma}(M) \eeq \widehat{\gamma'}(M) \in \tnat$.
+    By horizontal induction on natural numbers:
+    \begin{itemize}
+        \item Subcase $\widehat{\gamma}(M) \evalto \ez, \widehat{\gamma'}(M) \evalto \ez$:
+        Observe that
+        \[
+        \begin{array}{rcl}
+        \erec{A}{\widehat{\gamma}(M_z)}{x}{\widehat{\gamma}(M_s)}{\widehat{\gamma}(M)} & \stepto^* & \widehat{\gamma}(M_z) \\\\
+        \erec{A}{\widehat{\gamma'}(M_z)}{x}{\widehat{\gamma'}(M_s)}{\widehat{\gamma'}(M)} & \stepto^* & \widehat{\gamma'}(M_z).
+        \end{array}
+        \]
+        By induction hypothesis on $\G \entails M_z : A$ we know that $\widehat{\gamma}(M_z) \eeq \widehat{\gamma'}(M_z) \in A$.
+        Thus by head expansion we conclude this subcase.
+        \item Subcase $\widehat{\gamma}(M) \evalto \es{N}, \widehat{\gamma'}(M) \evalto \es{N'}, N \eeq N' \in \tnat$ assuming that
+        \[
+        \erec{A}{\widehat{\gamma}(M_z)}{x}{\widehat{\gamma}(M_s)}{N} \eeq \erec{A}{\widehat{\gamma'}(M_z)}{x}{\widehat{\gamma'}(M_s)}{N'} \in A:
+        \]
+        Observe that
+        \[
+        \begin{array}{rcl}
+        \erec{A}{\widehat{\gamma}(M_z)}{x}{\widehat{\gamma}(M_s)}{\widehat{\gamma}(M)} & \stepto^* & [\erec{A}{\widehat{\gamma}(M_z)}{x}{\widehat{\gamma}(M_s)}{N}/x]\widehat{\gamma}(M_s) \\\\
+        \erec{A}{\widehat{\gamma'}(M_z)}{x}{\widehat{\gamma'}(M_s)}{\widehat{\gamma'}(M)} & \stepto^* & [\erec{A}{\widehat{\gamma'}(M_z)}{x}{\widehat{\gamma'}(M_s)}{N'}/x]\widehat{\gamma'}(M_s).
+        \end{array}
+        \]
+        Let $$\gamma_x = \gamma[x \mapsto \erec{A}{\widehat{\gamma}(M_z)}{x}{\widehat{\gamma}(M_s)}{N}],\ and$$ $$\gamma_x' = \gamma'[x \mapsto \erec{A}{\widehat{\gamma'}(M_z)}{x}{\widehat{\gamma'}(M_s)}{N'}].$$
+        By assumption we know that $\gamma_x \eeq \gamma_x' \in \G,x:A$.
+        Thus by induction hypothesis on $\G,x:A \entails M_s : A$ we know that $\widehat{\gamma_x}(M_s) \eeq \widehat{\gamma_x'}(M_s) \in A$.\\
+        Observe that $$\widehat{\gamma_x}(M_s) = [\erec{A}{\widehat{\gamma}(M_z)}{x}{\widehat{\gamma}(M_s)}{N}/x]\widehat{\gamma}(M_s), \ and$$ $$\widehat{\gamma_x'}(M_s) = [\erec{A}{\widehat{\gamma'}(M_z)}{x}{\widehat{\gamma'}(M_s)}{N'}/x]\widehat{\gamma'}(M_s).$$
+        Hence by head expansion we conclude this subcase.
+    \end{itemize}
+\end{itemize}
+\end{proof}
+
+Now we proceed to prove the fundamental theorem.
+
+\begin{theorem}[FTLR]
+If $\G \entails M \equiv M' : A$, then $\G \gg M \eeq M' \in A$.
+\end{theorem}
+\begin{proof}
+The proof proceeds by induction on the derivation of $\G \entails M \equiv M' : A$.
+We consider several nontrivial cases.
+\begin{itemize}
+    \item $\inferrule{ \G \entails M : A }{ \G \entails M \eeq M : A }$\\
+    We conclude this case by Lemma~\ref{lem:typingrefl}.
+    \item $\inferrule{ \G \entails M' \equiv M : A }{ \G \entails M \equiv M' : A }$\\
+    We conclude this case by induction hypothesis and then Lemma~\ref{lem:typingsymtran}.
+    \item $\inferrule{ \G \entails M \equiv M' : A \\ \G \entails M' \equiv M'' : A }{ \G \entails M \equiv M'' : A }$\\
+    We conclude this case by induction hypothesis and then Lemma~\ref{lem:typingsymtran}.
+    
+    \item $\inferrule{ \G,x:A_1 \entails M : A_2 \\ \G \entails N : A_1 }{ \G \entails \eapp{(\eabs{x}{A_1}{M})}{N} \equiv [N/x]M : A_2 }$\\
+    Suppose $\gamma \eeq \gamma' \in \G$.
+    It suffices to show that $\eapp{(\eabs{x}{A_1}{\widehat{\gamma}(M)})}{\widehat{\gamma}(N)} \eeq [\widehat{\gamma'}(N)/x]\widehat{\gamma'}(M) \in A_2$.
+    By Lemma~\ref{lem:typingrefl} on $\G \entails N : A_1$ we know that $\widehat{\gamma}(N) \eeq \widehat{\gamma'}(N) \in A_1$.
+    Let $\gamma_x = \gamma[x \mapsto \widehat{\gamma}(N)]$ and $\gamma_x' = \gamma'[x \mapsto \widehat{\gamma'}(N)]$.
+    By assumption we know that $\gamma_x \eeq \gamma_x' \in \G,x:A_1$.
+    By Lemma~\ref{lem:typingrefl} on $\G,x:A_1 \entails M : A_2$ we know that $\widehat{\gamma_x}(M) \eeq \widehat{\gamma_x'}(M) \in A_2$.
+    Thus $[\widehat{\gamma}(N)/x]\widehat{\gamma}(M) \eeq [\widehat{\gamma'}(N)/x]\widehat{\gamma'}(M) \in A_2$.
+    Observe that
+    \[
+    \eapp{(\eabs{x}{A_1}{\widehat{\gamma}(M)})}{\widehat{\gamma}(N)} \stepto [\widehat{\gamma}(N)/x]\widehat{\gamma}(M).
+    \]
+    Thus by head expansion we conclude this case.
+    
+    \item $\inferrule{ \G \entails M \equiv M' : A_1 \to A_2 \\ \G \entails N \equiv N' : A_1 }{ \G \entails \eapp{M}{N} \equiv \eapp{M'}{N'} : A_2 }$\\
+    We conclude this case by induction hypothesis and then Lemma~\ref{lem:negapp}.
+    
+    \item $\inferrule{ \G,x:A_1 \entails M \equiv M' : A_2 }{ \G \entails \eabs{x}{A_1}{M} \equiv \eabs{x}{A_1}{M'} : A_1 \to A_2 }$\\
+    Suppose $\gamma \eeq \gamma' \in \G$.
+    It suffices to show that $\eabs{x}{A_1}{\widehat{\gamma}(M)} \eeq \eabs{x}{A_1}{\widehat{\gamma'}(M')} \in A_1 \to A_2$.
+    By definition we are supposed to show that for all $N,N'$ such that $N \eeq N' \in A_1$, $[N/x]\widehat{\gamma}(M) \eeq [N'/x]\widehat{\gamma'}(M') \in A_2$.
+    Let $\gamma_x = \gamma[x \mapsto N]$ and $\gamma_x' = \gamma'[x \mapsto N']$.
+    By assumption we know that $\gamma_x \eeq \gamma_x' \in \G,x:A_1$.
+    Thus by induction hypothesis we know that $\widehat{\gamma_x}(M) \eeq \widehat{\gamma_x'}(M') \in A_2$.
+    Observe that $\widehat{\gamma_x}(M) = [N/x]\widehat{\gamma}(M)$ and $\widehat{\gamma_x'}(M') = [N'/x]\widehat{\gamma'}(M')$.
+    Hence we conclude this case.
+    
+    \item $\inferrule{ \G \entails M \equiv M' : \tnat \\ \G \entails M_z \equiv M_z' : A \\ \G,x:A \entails M_s \equiv M_s' : A }{ \G \entails \erec{A}{M_z}{x}{M_s}{M} \equiv \erec{A}{M_z'}{x}{M_s'}{M'} : A }$\\
+    Suppose $\gamma \eeq \gamma' \in \G$.
+    By induction hypothesis on $\G \entails M \equiv M' : \tnat$ we know that $\widehat{\gamma}(M) \eeq \widehat{\gamma'}(M') \in \tnat$.
+    By horizontal induction on natural numbers:
+    \begin{itemize}
+        \item Subcase $\widehat{\gamma}(M) \evalto \ez,\widehat{\gamma'}(M') \evalto \ez$:
+        Observe that
+        \[
+        \begin{array}{rcl}
+        \erec{A}{\widehat{\gamma}(M_z)}{x}{\widehat{\gamma}(M_s)}{\widehat{\gamma}(M)} & \stepto^* & \widehat{\gamma}(M_z) \\\\
+        \erec{A}{\widehat{\gamma'}(M_z')}{x}{\widehat{\gamma'}(M_s')}{\widehat{\gamma'}(M')} & \stepto^* & \widehat{\gamma'}(M_z').
+        \end{array}
+        \]
+        By induction hypothesis on $\G \entails M_z \equiv M_z' : A$ we know that $\widehat{\gamma}(M_z) \eeq \widehat{\gamma'}(M_z') \in A$.
+        Thus by head expansion we conclude this subcase.
+        \item Subcase $\widehat{\gamma}(M) \evalto \es{N},\widehat{\gamma'}(M') \evalto \es{N'},N \eeq N' \in \tnat$ assuming that
+        \[
+        \erec{A}{\widehat{\gamma}(M_z)}{x}{\widehat{\gamma}(M_s)}{N} \eeq \erec{A}{\widehat{\gamma'}(M_z')}{x}{\widehat{\gamma'}(M_s')}{N'} \in A:
+        \]
+        Observe that
+        \[
+        \begin{array}{rcl}
+        \erec{A}{\widehat{\gamma}(M_z)}{x}{\widehat{\gamma}(M_s)}{\widehat{\gamma}(M)} & \stepto^* & [\erec{A}{\widehat{\gamma}(M_z)}{x}{\widehat{\gamma}(M_s)}{N}/x]\widehat{\gamma}(M_s) \\
+        \erec{A}{\widehat{\gamma'}(M_z')}{x}{\widehat{\gamma'}(M_s')}{\widehat{\gamma'}(M')} & \stepto^* & [\erec{A}{\widehat{\gamma'}(M_z')}{x}{\widehat{\gamma'}(M_s')}{N'}/x]\widehat{\gamma'}(M_s').
+        \end{array}
+        \]
+        Let $$\gamma_x = \gamma[x \mapsto \erec{A}{\widehat{\gamma}(M_z)}{x}{\widehat{\gamma}(M_s)}{N}], \ and$$  $$\gamma_x' = \gamma'[x \mapsto \erec{A}{\widehat{\gamma'}(M_z')}{x}{\widehat{\gamma'}(M_s')}{N'}].$$
+        By assumption we know that $\gamma_x \eeq \gamma_x' \in \G,x:A$.
+        Thus by induction hypothesis on $\G,x:A \entails M_s \equiv M_s' : A$ we know that $\widehat{\gamma_x}(M_s) \eeq \widehat{\gamma_x'}(M_s') \in A$.
+        Observe that $\widehat{\gamma_x}(M_s) = [\erec{A}{\widehat{\gamma}(M_z)}{x}{\widehat{\gamma}(M_s)}{N}/x]\widehat{\gamma}(M_s)$ and $\widehat{\gamma_x'}(M_s') = [\erec{A}{\widehat{\gamma'}(M_z')}{x}{\widehat{\gamma'}(M_s')}{N'}/x]\widehat{\gamma'}(M_s')$.
+        Hence by head expansion we conclude this subcase.
+    \end{itemize}
+    \item $\inferrule{\G \entails M : \tnat \\ \G \entails M_z :A \\  \G,x:A \entails M_s :A }{\G \entails \erec{A}{M_z}{x}{M_s}{\es{M}} \equiv [\erec{A}{M_z}{x}{M_s}{M}/x]M_s : A}$\\
+    Suppose $\gamma \eeq \gamma' \in \G$.
+    It suffices to show that $\erec{A}{\widehat{\gamma}(M_z)}{x}{\widehat{\gamma}(M_s)}{\es{\widehat{\gamma}(M}} \eeq [\erec{A}{\widehat{\gamma'}(M_z)}{x}{\widehat{\gamma'}(M_s)}{\widehat{\gamma'}(M)}/x] \widehat{\gamma'}(M_s) \in A$.
+    By assumption we can derive $\G \entails \erec{A}{M_z}{x}{M_s}{M} : A$.
+    Thus by Lemma~\ref{lem:typingrefl} we know that $\G \gg \erec{A}{M_z}{x}{M_s}{M} \eeq \erec{A}{M_z}{x}{M_s}{M} \in A$.\\
+    Hence $\erec{A}{\widehat{\gamma}(M_z)}{x}{\widehat{\gamma}(M_s)}{\widehat{\gamma}(M)} \eeq \erec{A}{\widehat{\gamma'}(M_z)}{x}{\widehat{\gamma'}(M_s)}{\widehat{\gamma'}(M)} \in A$.
+    Let $\gamma_x = \gamma[x \mapsto \erec{A}{\widehat{\gamma}(M_z)}{x}{\widehat{\gamma}(M_s)}{\widehat{\gamma}(M)}$ and $\gamma_x' = \gamma'[x \mapsto \erec{A}{\widehat{\gamma'}(M_z)}{x}{\widehat{\gamma'}(M_s)}{\widehat{\gamma'}(M)}$.
+    By assumption we know that $\gamma_x \eeq \gamma_x' \in \G,x:A$.
+    By Lemma~\ref{lem:typingrefl} on $\G,x:A \entails M_s : A$ we know that $\widehat{\gamma_x}(M_s) \eeq \widehat{\gamma_x'}(M_s) \in A$.
+    Thus
+    \[
+    [\erec{A}{\widehat{\gamma}(M_z)}{x}{\widehat{\gamma}(M_s)}{\widehat{\gamma}(M)}/x]\widehat{\gamma}(M_s) \eeq [\erec{A}{\widehat{\gamma'}(M_z)}{x}{\widehat{\gamma'}(M_s)}{\widehat{\gamma'}(M)}/x]\widehat{\gamma'}(M_s) \in A.
+    \]
+    Observe that
+    \[
+    \erec{A}{\widehat{\gamma}(M_z)}{x}{\widehat{\gamma}(M_s)}{\es{\widehat{\gamma}(M}} \stepto [\erec{A}{\widehat{\gamma}(M_z)}{x}{\widehat{\gamma}(M_s)}{\widehat{\gamma}(M)}/x]\widehat{\gamma}(M_s).
+    \]
+    Hence by head expansion we conclude this subcase.
+\end{itemize}
+\end{proof}
+
+\section{Discussion}
+
+Suppose we want to prove $x : \tnat \gg M \eeq M' \in A$ in a proof assistant such as RedPRL.
+In other words, we want to show that if $N \eeq N \in \tnat$, then $[N/x]M \eeq [N'/x]M' \in A$.
+By horizontal induction on natural numbers, it suffices to show
+\begin{enumerate}
+    \item If $N \evalto \ez, N' \evalto \ez$, then $[N/x]M \eeq [N'/x]M' \in A$.
+    \item If $N \evalto \es{P}, N' \evalto \es{P'}, P \eeq P' \in \tnat$, and $[P/x]M \eeq [P'/x]M' \in A$, then $[N/x]M \eeq [N'/x]M' \in A$.
+\end{enumerate}
+Intuitively, the second condition can be expressed using the following ``judgment'':
+\[
+[P/x]M \eeq [P'/x]M' \in A \models_{P \eeq P' \in \tnat} [\es{P}/x]M \eeq [\es{P'}/x]M' \in A
+\]
+That is, we can derive a proof of equality from a proof of equality.
+We can even rewrite it as follows informally:
+\[
+P \in \tnat, P' \in \tnat, y : \mathsf{Eq}_{\tnat}(P,P'), z : \mathsf{Eq}_{A}([P/x]M,[P'/x]M') \gg \cdots \in \mathsf{Eq}_A([\es{P}/x]M,[\es{P'}/x]M')
+\]
+$\mathsf{Eq}_A(M,M')$ can be seen as an ``equality type'' whose inhabitants are proofs for equality of $M$ and $M'$ for type $A$.
+This fact motivates the ``propositions-as-types'' principle, which leads to the exploration of dependent type theory.
+
+% \bibliographystyle{plainnat}
+% \bibliography{ctt}
+
+\end{document}

@@ -1,0 +1,384 @@
+\documentclass{article}
+\usepackage{chtt-notes}
+\scribes{Farzaneh Derakhshan and Di Wang}
+\week{6}
+% The following command will let you cross-reference labels
+% in the files week1.tex, week2.tex, \ldots, week\@week.tex,
+% where if l is a label in ``weekN.tex'', then you can access
+% the label using \cref{WN:l}.
+\doXRs
+
+% General remark: Using \cref{label} will fill in the appropriate
+% environment name. For example,
+% ``\begin{lemma}\label{lem:foo} ...\end{lemma} By \cref{lem:foo}''
+% will produce ``Lemma 15 ... By lemma~15''
+
+\newcommand{\G}{\Gamma}
+\newcommand{\entails}{\vdash}
+\newcommand{\eapp}[2]{#1~#2}
+\newcommand{\eabs}[3]{\lambda #1:#2.#3}
+\newcommand{\tans}{\mathsf{ans}}
+\newcommand{\tnat}{\mathsf{nat}}
+\newcommand{\eacc}{\uparrow}
+\newcommand{\erej}{\downarrow}
+\newcommand{\ez}{\mathsf{z}}
+\newcommand{\es}[1]{\mathsf{s}(#1)}
+\newcommand{\erec}[5]{\mathsf{rec}_{#1}\{#2;#3.#4\}(#5)}
+\newcommand{\evalto}{\Downarrow}
+\newcommand{\stepto}{\mapsto}
+
+\begin{document}
+\maketitle
+
+\section{Setting the Scene}
+
+Last week, we talked about structural equality and behavioral equality.
+The development of such reasoning broached the ``propositions-as-types'' principle 
+(e.g., $z : \mathsf{Eq}_{\tnat}(M,N) \gg P(M,N)$ suggests an ``equality type'' 
+$\mathsf{Eq}_{\tnat}(M,N)$), 
+which leads to the exploration of dependent type theory.
+The development reflects the unification of logic and type theory.
+Before delving into dependent types, we will first review the history of the 
+``propositions-as-types'' principle.
+
+\section{Propositions-as-Types}
+
+\subsection{Two Key Players}
+
+We know that computational type theory can be seen as a foundational 
+\emph{theory of truth}, while formal type theory can be viewed as a \emph{theory of 
+proof}.
+Here we discuss some historical context of these theoretical developments.
+
+Brouwer developed a theory of \emph{truth} based on computation, which 
+was carried forward by Church and Martin-L{\"o}f.
+The theory suggests reasoning about truth semantically by constructing 
+programs.
+For example, a proposition $A \supset B$ should mean that there is a computable 
+function from evidence for $A$ to evidence for $B$.
+The theory was derived from an inchoate understanding of algorithms.
+
+Hilbert developed a theory of formal \emph{proof}, followed by Gentzen, who 
+developed structural proof theory.
+Rather than semantic, the theory takes a syntactic approach.
+For example, the judgment $M:A$ is defined inductively and it means that $M$ is a 
+formal \emph{derivation} of $A~\mathsf{true}$.
+This kind of systems are axiomatic and consistency is an important property.
+However, this theory is meaningless with respect to \emph{truth} by design.
+Generally speaking, the development of certain formal systems might need to prove 
+theorems similar to the following one to \emph{access} the truth:
+\begin{quotation}
+	If $M : A$, then $|M| \in A$.
+\end{quotation}
+In other words, formal proof is \emph{at most} a sufficient condition for truth.
+Nevertheless, much effort was devoted to developing formal proof theory.
+
+\subsection{Formal Proof in Logic}
+
+Historically, there were two flavors of proof systems (i.e., type systems):
+(i) Hilbert type systems, which are based on combinators, and
+(ii) Gentzen type systems, which are based on $\lambda$-terms.
+Hilbert's development emphasizes \emph{unconditional truth}.
+An instance of such systems could be three axioms
+\[
+\begin{array}{c} 
+\alpha \supset (\beta \supset \alpha) \\
+(\alpha \supset (\beta \supset \gamma)) \supset (\alpha \supset \beta) \supset 
+(\alpha \supset \gamma) \\
+(\neg \alpha \supset \neg \beta) \supset (\beta \supset \alpha)
+\end{array}
+\]
+with \emph{modus ponens} (i.e., from $\alpha$ and $\alpha \supset \beta$, infer 
+$\beta$).
+
+Different from Hilbert's approach, Gentzen's development is based on 
+\emph{entailment}, which leads to \emph{hypothetical} reasonings.
+An example of entailments could be $A~\mathsf{true} \entails B~\mathsf{true}$, 
+saying that suppose $A~\mathsf{true}$, one can derive $B~\mathsf{true}$.
+Then the introduction and elimination rules for $\supset$ could be expressed as
+\begin{mathpar}
+	\inferrule*[Right=$\supset$-I]{ A~\mathsf{true} \entails B~\mathsf{true} }{ A 
+	\supset 
+	B~\mathsf{true} }
+\and
+\inferrule*[Right=$\supset$-E]{ A \supset B~\mathsf{true} \\ A~\mathsf{true} }{ 
+B~\mathsf{true} }
+\end{mathpar}
+
+An interesting fact was discovered during studying proof simplification.
+If a proof of $B~\mathsf{true}$ is derived from the proof of $A \supset 
+B~\mathsf{true}$ and $A~\mathsf{true}$, then the proof of $A \supset 
+B~\mathsf{true}$ has a hypothetical form---suppose $A~\mathsf{true}$, then 
+derive 
+$B~\mathsf{true}$---therefore one could ``plug in'' the proof of 
+$A~\mathsf{true}$ into the places that require $A~\mathsf{true}$ in the proof of 
+$A \supset B ~\mathsf{true}$, in order to derive a proof of $B~\mathsf{true}$.
+In other words, proof simplification is based on \emph{substitution}.
+Coincidentally, $\lambda$-calculus, developed by Church, is also based on 
+substitution.
+Then a formal correspondence, or the \emph{Church-Gentzen correspondence}, is 
+developed between $\lambda$-terms and formal proofs.
+The correspondence is two-fold:
+\begin{itemize}
+	\item Pre-existing logics correspond to type systems for $\lambda$-terms.
+	\item With Gentzen's input, a notion of proof equivalence is developed.
+\end{itemize}
+
+Nowadays, both formal logics and type systems are given in Gentzen's style, by 
+defining $\G \entails M : A$ (justified entailment) and $\G \entails M \equiv N : A$ 
+(justified equivalence).
+
+\subsection{Brouwerian Conception}
+
+As we already discussed, formal proof theory is only a means of accessing the truth.
+The Brouwerian principle says instead that truth should be based on computation.
+Rather than give an inductive definition of $M:A$, one develops the notion of $M \in 
+A$, which means that $M$ is a construction witness of $A$.
+More specifically, $M \in A$ means that
+\begin{enumerate}
+	\item $M$ evaluates to a value (i.e., a term in a canonical form), and
+	\item the value obeys the specification given by $A$.
+\end{enumerate}
+Similarly, meaning of $M \eeq N \in A$, which stands for equality, is also based on 
+computation.
+
+Based on the theory of truth, a semantic correspondence is developed between 
+propositions and types.
+This is the so-called ``propositions-as-types'' principle or ``proofs-as-programs'' 
+principle.
+Some examples of the correspondence are shown in Table~\ref{Ta:propsastypes}.
+
+\begin{table}[h]
+	\centering
+	\begin{tabular}{cc@{\hspace{5em}}cc}
+		Proposition & Type & Proposition & Type \\ \hline
+		$\top$ & $\mathbf{1}$ &  $A \wedge B$ & $A \times B$ \\
+		$\bot$ & $\mathbf{0}$ & $A \vee B$ & $A + B$ \\
+		$A \supset B$ & $A \to B$ & $\neg A = A \supset \bot$ & $A \to \mathbf{0}$ 
+	\end{tabular}
+	\caption{Propositions-as-types}
+	\label{Ta:propsastypes}
+\end{table}
+
+There is an infamous issue for this theoretical development---there is 
+\emph{not} a proof for the law of excluded middle (i.e., $A \vee \neg A$).
+However, the loss of excluded middle \emph{does} make sense in the computational 
+setting.
+We know that $A \vee \neg A$ corresponds to $A + (A \to \mathbf{0})$.
+If the 
+proposition is true, then the type should have an inhabitant, thus we know the 
+construction witness of either $A$ or $A \to \mathbf{0}$.
+Suppose $A$ represents the ``P versus NP'' problem.
+If we admit excluded middle in the computational setting, then we would get a proof 
+of either $\mathrm{P} = \mathrm{NP}$ or $\mathrm{P} \neq \mathrm{NP}$ right 
+away!
+On the other hand, there are at least two approaches to express the ``truth'' that 
+$A$ is either true or false:
+\begin{enumerate}
+	\item Use a weaker disjunction and in fact, $\neg\neg(A \vee \neg A)$ is provable.
+	\item Make use of open-endedness. See \cite{Howe:91} for more details.
+\end{enumerate}
+
+In the next section, we will explore how the correspondence is extended to 
+quantification ($\forall,\exists$) and equality.
+
+\newcommand{\sfid}{\mathsf{Id}}
+\newcommand{\sfif}{\mathsf{if}}
+\newcommand{\sfIf}{\mathsf{If}}
+\newcommand{\tNat}{\mathsf{Nat}}
+\newcommand{\tBool}{\mathsf{Bool}}
+\newcommand{\ett}{\mathsf{tt}}
+\newcommand{\eff}{\mathsf{ff}}
+
+\section{Formal Dependent Type Theory}
+Our goal is to develop the core {\bf Intentional Type Theory} ({\bf ``ITT"})\footnote{Warning: details are delicate, and we are going to ignore them}. 
+%Where does it come from?Formal Type theory: inductively defined,
+Its key idea is the notion of type-indexed families of types (predicates for relations). People also use ``dependent types"  instead of ``family of types" because it {\it depends} on the family of types. (An example is the family of types $\mathsf{Vec}(M)$ where $M:\tNat$.) In particular, we deal with a type-indexed family which is the identity type $\sfid_{A}(M,N)$ where $M,N \in A$ (The family of types indexed over the type $A \times A$) 
+\footnote{From now on, when we say family, we mean family of types.}. We also deal with the generalized types sigma-type ($\Sigma$) and pi-type ($\Pi$). But first, we need to present the principles that are governing these types.
+\subsection{ Syntactic Judgments:}
+\begin{mathpar}
+ \Gamma \vdash M:A \and \Gamma \vdash M \equiv M':A
+ \end{mathpar}
+ \begin{mathpar}
+\hasTF{\Gamma}{A} \and \Gamma \vdash A \equiv A'
+\end{mathpar}
+
+They look like the judgments we had so far, but a little bit more complicated because of the presence of additional judgment forms which are expressing `` a type is {\it relative to the context} "; For example, in this setting, we can write $\hasTF{N : \tNat}{\mathsf{Vec}(N)}$ to express that $\mathsf{Vec}(N)$ is a valid type in the context of $N : \tNat$.\\
+Also, we have:
+ \begin{mathpar}
+\Gamma \ ctxt \and \Gamma \equiv \Gamma'.
+\end{mathpar}
+\subsection{Axiomatic Structural Properties}  
+
+{\it Reflexivity (R) :}
+\begin{mathpar}
+  \inferrule[(R)]{ }{\hasEF{\Gamma, a : A, \Gamma'}{a}{A}}
+ \end{mathpar}
+Note that $a:\tNat, b:\mathsf{Seq}(a)$ is a context, where the type of $b$ is dependent on $a$; the context is ordered now. In the Reflexivity(R) principle, we implicitly say that $a$ is a type in the context of $\Gamma$. So, we need a Weakening principle to say that if $a$ is a type in the context $\Gamma$, it is also a type in $\Gamma, \Gamma'$. \\
+ {\it Weakening (W) :}
+  \begin{mathpar}
+  \inferrule[(W)]{\hasTF{\Gamma}{A}\\ \hasTF{\Gamma}{B}}{\hasTF{\Gamma, a : A}{B}}
+  \end{mathpar}
+    This principle states that $B$ remains a type, even if we throw extra stuff to $\Gamma$. In other words If $\Gamma $ entails $B$, then $\Gamma, a $ also entails $B$. This holds for every context, so being a little hand-wavy we can generalize the principle to:
+  \begin{mathpar}
+  \inferrule[(W)]{\hasTF{\Gamma}{A}\\ \Gamma \vdash J}{ \Gamma, a : A \vdash J}
+\end{mathpar}
+{\it Permutation (P) :} Order does not matter except when it does! \\
+{\it Contraction (C):} Which is an instance of substitution: 
+\begin{mathpar}
+  \inferrule[(C)]{\Gamma, a: A, b : B, \Gamma' \vdash J }{\Gamma, c:A, [c,c/a,b]\Gamma' \vdash [c,c/a,b] J}
+\end{mathpar}
+{\it Substitution(S):} 
+\begin{mathpar}
+  \inferrule[(S)]{\hasEF{\Gamma}{M}{A}\\ \Gamma, a:A, \Gamma' \vdash J}{\Gamma [M/a] \Gamma' \vdash [M /a]J}
+\end{mathpar}
+This rule states that judgments are stable under substitution; this corresponds to the transitivity of entailment, and is also called {\it cut} in Gentzen's system. \\
+%We can actually get  weakening, contraction and permutation as instances of substitution.
+These basic structural principles correspond to the idea that variables are treated structurally (vs. substructurally---situations where variables have some restrictions on their use, e.g. Weakening is denied in Relevance logic, first introduced by Nuel Belnap\footnote{1960's- University of Pittsburgh}.)\\
+{\it Invariance (I):} 
+\begin{mathpar}
+  \inferrule[(I)]{\hasEF{\Gamma}{M}{A}\\ \Gamma \vdash A \equiv A'}{ \hasEF{\Gamma}{M}{A'}}
+\and
+  \inferrule[(I)]{\hasEF{\Gamma}{M \equiv M'}{A}\\ \Gamma \vdash A \equiv A'}{ \hasEF{\Gamma}{M \equiv M'}{A'}}
+\end{mathpar}
+The idea is that equivalent types are equivalent as class of types; if $A$ is definitionally equivalent to $A'$, then the members of $A$ is equivalent to the members of $A'$. Then the central question is that what is/should be $\Gamma \vdash A \equiv A'$? (Really matters in the {\it dependent type} setting.)
+The relation $\Gamma \vdash A \equiv A'$ should at least be reflexive, symmetric, transitive, and compatible with constructions.
+\\
+
+Now, that we formalized all the structural rules, we look at Booleans as an example.
+% Here, along with the rules $R$, $S$, $T$, and $\equiv$, we also need compatibility with constructions:\\
+% \begin{mathpar}
+%   \inferrule{\hasEF{\Gamma}{M}{A}}{ \hasEF{\Gamma}{ M \equiv M'} {A}}
+% \and
+%   \inferrule{\hasTF{\Gamma}{A}}{ \Gamma \vdash A \equiv A}
+% \end{mathpar}
+\subsection{Booleans} As a simple example, we want to axiomatize Booleans; here is our first aproximation:\\
+\begin{mathpar}
+  \inferrule { \Gamma\ ctxt}{ \hasTF{\Gamma}{\tBool}}
+\and
+  \inferrule {\Gamma\ ctxt }{ \Gamma \vdash \tBool \equiv \tBool}
+\end{mathpar}
+\begin{mathpar}
+  \inferrule { }{ \hasEF{\Gamma}{\ett}{\tBool}}
+\and
+  \inferrule { }{ \hasEF{\Gamma}{\eff}{\tBool}}
+\end{mathpar}\\
+\begin{mathpar}
+  \inferrule { \hasEF{\Gamma}{M}{\tBool} \\ \hasEF{\Gamma}{P}{A}\\ \hasEF{\Gamma}{Q}{A}}{ \hasEF{\Gamma}{\sfif(M;P;Q) }{A}}
+\end{mathpar}\\
+\begin{mathpar}
+  \inferrule { \hasEF{\G}{P}{A} \\ \hasEF{\G}{Q}{A} }{ \hasEF{\Gamma}{\sfif(\eff;P;Q)\equiv Q}{A}}
+\and
+  \inferrule { \hasEF{\G}{P}{A} \\ \hasEF{\G}{Q}{A} }{ \hasEF{\Gamma}{\sfif(\ett;P;Q)\equiv P}{A}}
+\end{mathpar}
+However, this is not good enough, and there are some issues that we are concerned about:
+\begin{itemize}
+    \item {\bf Type Synthesis} (For reasons of decidability): Given the context, we expect to synthesize the type of any term from the term itself. We can do that by adding a label $A$ to the $\sfif$-clause in the above rules, e.g,
+   \begin{mathpar}
+  \inferrule { \hasEF{\Gamma}{M}{\tBool} \\ \hasEF{\Gamma}{P}{A}\\ \hasEF{\Gamma}{Q}{A}}{ \hasEF{\Gamma}{\sfif_A (M;P;Q) }{A}}
+    \end{mathpar}\\ 
+    \item {\bf Dependency} (propositions-as-types): Since we are in the framework of dependent types, the type of something can depend on the type of its terms. So, we generalize the above rules to:\\
+       \begin{mathpar}
+  \inferrule { \hasTF{\Gamma, a : \tBool}{A} \\ \hasEF{\Gamma}{M}{\tBool}\\ \hasEF{\Gamma}{P}{[\ett/a]A}\\ \hasEF{\Gamma}{Q}{[\eff/a]A}}{ \hasEF{\Gamma}{\sfif_{a.A}(M;P;Q) }{[M/a]A}}
+    \end{mathpar}
+    The type of the conditional depends on what we condition on, so we propagate $M$ into $a$. Similarly, when we are in $\hasEF{\Gamma}{P}{[\ett/a]A}$ we know that we are in the ``then" branch, so we propagate $\ett$ in $A$. And when we are in $\hasEF{\Gamma}{Q}{[\eff/a]A}$ we are in the else branch, and we propagate $\eff$ in $A$.\\
+    Another way to read this rule is if $A$ holds for true and $A$ holds for false then $A$ holds for every Boolean (i.e., induction principle for Booleans).
+    \begin{mathpar}
+  \inferrule { \hasEF{\G}{P}{[\ett/a]A} \\ \hasEF{\G}{Q}{[\eff/a]A} }{ \hasEF{\Gamma}{\sfif_{a.A}(\ett;P;Q)\equiv P}{[\ett/a]A}}
+\and
+  \inferrule { \hasEF{\G}{P}{[\ett/a]A} \\ \hasEF{\G}{Q}{[\eff/a]A} }{ \hasEF{\Gamma}{\sfif_{a.A}(\eff;P;Q)\equiv Q}{[\eff/a]A}}
+\end{mathpar}
+
+\item {\bf Large Elims} (mapping into a collection of all types)
+Q: What are examples of $a.A$ (Boolean indexed family of types)?\\
+A: The idea would be to write the type of $\sfif_{a.\_}(M;17;``17")$ as $If(M,Nat,Str)$. But the problem is that in the formal type theory there is a separation between terms and types, so we don't know what sort of thing $\sfIf(M,\tNat,\mathsf{Str})$ is. Thus, we need to extend the syntax with ``Large Elim" (LE). In other words, we have to extend what are the types to include conditional branching on term to form a type. In fact, this is not an isolated thing about Booleans, it is about any positive type with the mapping out property.\\
+\item {\bf Shannon Expansion} It is expressing the idea of universality of Booleans: In other words Bool is inductively defined as the least type containing true and false, with the mapping out property.
+%If $a:Bool >> M \in A$, then $a:Bool>>M=if(a;M[tt/a];M[ff/a]) \in A$.\\
+\end{itemize}
+In the next part of this lecture we consider the notions of $\Pi$, and $\Sigma$ (as generalizations of $\rightarrow$ and $\times$, respectively).\\
+\subsection{ Negative Dependent Types, $\Pi$ and $\Sigma$}
+Here we generalize the negative types to express dependency.
+Previously, we had: 
+  \begin{mathpar}
+  \inferrule {\hasTF{\Gamma}{A} \\ \hasTF{\Gamma}{B} }{ \hasTF{\Gamma}{A \rightarrow B}}
+\and
+   \inferrule {\hasTF{\Gamma}{A} \\ \hasTF{\Gamma}{B} }{ \hasTF{\Gamma}{A \times B}}
+\end{mathpar}
+But, in the dependent framework, we want the type of the result to be dependent on the argument you get: 
+  \begin{mathpar}
+  \inferrule {\hasTF{\Gamma}{A} \\ \hasTF{\Gamma, a : A}{B} }{ \hasTF{\Gamma}{a : A \rightarrow B}}
+\and
+   \inferrule {\hasTF{\Gamma}{A} \\ \hasTF{\Gamma, a : A}{B} }{ \hasTF{\Gamma}{a : A \times B}}
+\end{mathpar}
+More conventionally, $a : A \rightarrow B$ is known as $\Pi a:A.B$, and $a: A \times B$ is known as $\Sigma a:A.B$.
+
+The Introduction rule is the same to what we had for $\rightarrow$, except that we plug in the type of the argument to the type of the result that is dependent on the argument:
+\begin{mathpar}
+  \inferrule {\hasEF{\Gamma, a : A}{M}{B}}{ \hasEF{\Gamma}{\lambda a : A. M}{a : A \rightarrow B}}
+  \end{mathpar} 
+ The following are Elimination and definitional equality rules for $a : A \rightarrow B$: 
+  \begin{mathpar}
+  \inferrule {\hasEF{\Gamma}{M}{a:A \rightarrow B} \\ \hasEF{\Gamma}{N}{A} }{ \hasEF{\Gamma}{M(N)}{[N/a]B}}
+\and
+   \inferrule { \hasEF{\G,a:A}{M}{B} \\ \hasEF{\G}{N}{A} }{ \hasEF{\Gamma}{(\lambda a: A . M)(N) \equiv [N/a] M}  {[N/a] B}}
+\end{mathpar}
+Similarly, we have the following rules for $a: A \times B$: 
+\begin{mathpar}
+  \inferrule {\hasTF{\Gamma}{A}\\ \hasEF{\Gamma}{M}{A} \\ \hasEF{\Gamma}{N}{[M/a]B}\\ \hasTF{\Gamma, a: A}{B}}{ \hasEF{\Gamma}{\mathsf{pair}_{A,a.B}(M,N)}{a : A \times B}}
+  \end{mathpar} 
+  
+  \begin{mathpar}
+  \inferrule {\hasEF{\Gamma}{M}{a: A \times B} }{ \hasEF{\Gamma}{\mathsf{fst}(M)}{A}}
+\and
+   \inferrule {\hasEF{\Gamma}{M}{a: A \times B} }{ \hasEF{\Gamma}{\mathsf{snd}(M)}  {[\mathsf{fst}(M)/a] B}}
+\end{mathpar} 
+
+\begin{mathpar}
+  \inferrule { \hasEF{\G}{M}{A} \\ \hasEF{\G}{N}{[M/a]B} }{ \hasEF{\Gamma}{\mathsf{fst}(\mathsf{pair}_{A,a.B}(M,N)) \equiv M }{A}}
+  \and 
+   \inferrule { \hasEF{\G}{M}{A} \\ \hasEF{\G}{N}{[M/a]B} }{ \hasEF{\Gamma}{\mathsf{snd}(\mathsf{pair}_{A,a.B}(M,N)) \equiv N }{[M/a]B}}
+  \end{mathpar} 
+  
+\subsection{Identity Type}
+Having the background we gained so far, we are going to answer the question of {\it How to internalize some idea of ``equality"?}
+\begin{itemize}
+    \item Definitional Equivalence: This notion is defined for well-typed terms but does not exploit the type. As an example consider $\hasEF{\Gamma}{M \equiv \lambda a:A.M(a)}{a:A\rightarrow B}$, and observe that this equality only holds in the type ${a:A\rightarrow B}$. So, it is not sufficient for the purpose of internalizing the equality.
+    \item `` Judgmental concepts precede to the type concepts": We can internalize the notion of the map, that we had already, to get identity. We introduce a notion that expresses a binary relation between $M$ an $N$, and call it $\sfid_A(M,N)$:
+       \begin{mathpar}
+  \inferrule {\hasTF{\Gamma}{A}\\ \hasEF{\Gamma}{M}{A}\\ \hasEF{\Gamma}{N}{A}}{ \hasTF{\Gamma}{\sfid_A(M,N)}}
+  \end{mathpar} 
+    %The notion of maps representive of ? internalized to the idea of functions I already have the notion of mapping and I just internalize that to get 
+ But what type is $\sfid_A(M,N)$? In some way, it is the least reflexive relation. 
+      \begin{mathpar}
+  \inferrule[(I)] {\hasTF{\Gamma}{A}\\ \hasEF{\Gamma}{M}{A}}{ \hasEF{\Gamma}{\mathsf{refl}_A(M)}{\sfid_A(M,M)}}
+  \end{mathpar}
+  So, similar to the definition of the Boolean as the least type containing true and false, we may want to define $\sfid_A(M,N)$ as the least reflexive type. However, the difference is that the type Boolean is a single type. In fact, we use the same idea for defining $\sfid_A(M,N)$ but instead as a family of types over $A \times A$ (a family whose indexed types are pairs of elements of $A$). To express $\sfid_A(M,N)$ is actually the least we use the notion of mapping out:
+         \begin{mathpar}
+  \inferrule {\hasEF{\Gamma}{P}{\sfid_A(M,N)}\\ \hasTF{\Gamma, a:A, b:A, c:\sfid_A(a,b)}{C} \\ \hasEF{\Gamma, a : A}{Q}{ [a,a,\mathsf{refl}_A(a)/a,b,c]C}}{ \hasEF{\Gamma}{J_{a,b,c.C}(a.Q)(P)}{[M,N,P/a,b,c]C}}
+  \end{mathpar}
+   If we know that $M$ is identical to $N$ in the sense of this identity type by proof term $P$, then we plug in, all the relevant data, $M$, $N$, and $P$ into $C$. So, that means that we need the premise $\hasTF{\Gamma, a:A, b:A, c:\sfid_A(a,b)}{C}$, which is called the motive (of induction). The third premise, $\hasEF{\Gamma, a : A}{Q}{ [a,a,\mathsf{refl}_A(a)/a,b,c]C}$, says that in order to check the mapping out property it suffices to deal with all the cases where the components of these family are inhabited: the non-empty types that are populated using the Reflexivity principle.\\
+ We also have the following rule that expresses what happens when we actually encounter an instance of reflexivity:
+           \begin{mathpar}
+  \inferrule { \hasEF{\G}{M}{A} \\ \hasTF{\G,a:A,b:A,c:\sfid_A(a,b)}{C} \\ \hasEF{\G,a:A}{Q}{[a,a,\mathsf{refl}_A(a)/a,b,c]C} }{ \G \entails J_{a,b,c.C} (a.Q)(\mathsf{refl}_{A}(M)) \equiv [M/a] Q : [M, M, \mathsf{refl}_{A}(M)/a,b,c]C}
+  \end{mathpar}
+\end{itemize}
+So far the definition of identity type is established. Now, the question is {\it If we think of $\sfid_A(M,N)$ as a relation, what relation it is.($P: \sfid_A(M,N)$ iff What?)}\\
+It is obviously a reflexive relation, but it also has the following properties:
+\begin{enumerate}
+    \item {\bf Symmetry.} $\hasEF{a : \sfid_A(M,N)}{\mathsf{sym}_{A,M,N}(a)}{\sfid_{A}(N,M)} $ for all $A, M, N$.
+    \item {\bf Transitivity.} $\hasEF{a : \sfid_A(M,N), b : \sfid_A(N,P)}{\mathsf{trans}_{A,M,N,P}(a,b)}{\sfid_{A}(M,P)} $ for all $A, M, N, P$.
+\end{enumerate}
+ \begin{exercise}
+ Find $\mathsf{sym}_{A,M,N}(a)$, and $\mathsf{trans}_{A,M,N,P}$. (Hint: related to Yoneda lemma.)
+ \end{exercise}
+ \begin{exercise}
+ Show the following equalities:
+ \begin{itemize}
+\item  $\sfid_{\sfid_{A}(M,M)}(\mathsf{sym}_{A,M,M}(\mathsf{refl}_A(M)), \mathsf{refl}_A(M))$.
+\item  $\sfid_{\sfid_{A}(M,N)}(\mathsf{trans}_{A,M,M,N}(\mathsf{refl}_A(M),P),P)$.
+ \end{itemize}
+ \end{exercise}
+\bibliographystyle{plainnat}
+\bibliography{ctt}
+
+\end{document}
