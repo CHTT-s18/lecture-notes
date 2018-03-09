@@ -17,6 +17,7 @@
 \RequirePackage{todonotes}
 \RequirePackage{url}
 \RequirePackage{xcolor}
+\RequirePackage{xparse}
 
 
 % Theorems
@@ -49,18 +50,21 @@
 
 \newcommand{\redprl}{{\color{red}\textbf{Red}}\textbf{PRL}}
 
+\newcommand{\eqdef}{:=}
+
 % Exact equality
 \newcommand{\eeq}{\ensuremath{\doteq}}
 
-\newcommand{\hasTF}[2]{\ensuremath{#1 \vdash #2\;\mathsf{type}}}
-\newcommand{\hasEF}[3]{\ensuremath{#1 \vdash #2 : #3}}
-\newcommand{\hasTEF}[3]{\ensuremath{#1 \vdash #2 \equiv #3\;\mathsf{type}}}
-\newcommand{\hasEEF}[4]{\ensuremath{#1 \vdash #2 \equiv #3 : #4}}
+\NewDocumentCommand{\hasTF}{m g}{\ensuremath{\IfValueTF{#2}{#1 \vdash #2}{#1}\;\mathsf{type}}}
+\NewDocumentCommand{\hasEF}{m m g}{\ensuremath{\IfValueTF{#3}{#1 \vdash #2 : #3}{#1 : #2}}}
+\NewDocumentCommand{\hasTEF}{m m g}{\ensuremath{\IfValueTF{#3}{#1 \vdash #2 \equiv #3}{#1 \equiv #2}\;\mathsf{type}}}
+\NewDocumentCommand{\hasEEF}{m m m g}{\ensuremath{\IfValueTF{#4}{#1 \vdash #2 \equiv #3 : #4}{#1 \equiv #2 : #3}}}
+\NewDocumentCommand{\trueF}{m g}{\ensuremath{\IfValueTF{#2}{#1 \vdash #2}{#1}\;\mathsf{true}}}
 
-\newcommand{\hasTC}[2]{\ensuremath{#1 \gg #2\;\mathsf{type}}}
-\newcommand{\hasEC}[3]{\ensuremath{#1 \gg #2 \in #3}}
-\newcommand{\hasTEC}[3]{\ensuremath{#1 \gg #2 \eeq #3\;\mathsf{type}}}
-\newcommand{\hasEEC}[4]{\ensuremath{#1 \gg #2 \eeq #3 : #4}}
+\NewDocumentCommand{\hasTC}{m g}{\ensuremath{\IfValueTF{#2}{#1 \gg #2}{#1}\;\mathsf{type}}}
+\NewDocumentCommand{\hasEC}{m m g}{\ensuremath{\IfValueTF{#3}{#1 \gg #2 \in #3}{#1 \in #2}}}
+\NewDocumentCommand{\hasTEC}{m m g}{\ensuremath{\IfValueTF{#3}{#1 \gg #2 \eeq #3}{#1 \eeq #2}\;\mathsf{type}}}
+\NewDocumentCommand{\hasEEC}{m m m g}{\ensuremath{\IfValueTF{#4}{#1 \gg #2 \eeq #3 \in #4}{#1 \eeq #2 \in #3}}}
 
 \newcommand{\hasC}[5]{\ensuremath{#1 : (#2 \rhd #3) \leadsto (#4 \rhd #5)}}
 
@@ -141,6 +145,19 @@
 \newcommand{\nats}[1]{\natsop(#1)}
 \newcommand{\natrecop}{\mathsf{rec}}
 \newcommand{\natrec}[5]{\ensuremath{\natrecop_{#1}\{#2; #3.#4\}(#5)}}
+
+% Dependent type theory
+\newcommand{\Pitype}[3]{({#1}:{#2}) \to {#3}}
+\newcommand{\Sigmatype}[3]{({#1}:{#2}) \times {#3}}
+\newcommand{\Id}[3]{\mathsf{Id}_{#1}(#2,#3)}
+\newcommand{\Ideq}[3]{{#2} =_{#1} {#3}}
+\newcommand{\refl}[2][]{\mathsf{refl}_{#1}(#2)}
+\newcommand{\Idelim}[3]{\mathsf{J}_{#1}(#2)(#3)}
+\newcommand{\transport}[1]{\mathsf{transport}[{#1}]}
+
+\newcommand{\funext}[5]{\mathsf{funext}_{#1,#2}(#3;#4;#5)}
+
+\newcommand{\Eq}[3]{\mathsf{Eq}_{#1}(#2,#3)}
 
 \DeclareMathOperator{\dom}{dom}
 
