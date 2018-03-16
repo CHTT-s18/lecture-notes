@@ -1,0 +1,302 @@
+\documentclass{article} \usepackage{chtt-notes} \usepackage{stmaryrd}
+\usepackage{amssymb}
+
+\scribes{Yue Niu and Jonathan Laurent} \week{8}
+% The following command will let you cross-reference labels in the
+% files week1.tex, week2.tex, \ldots, week\@week.tex, where if l is a
+% label in ``weekN.tex'', then you can access the label using
+% \cref{WN:l}.
+\doXRs
+
+% General remark: Using \cref{label} will fill in the appropriate
+% environment name. For example, ``\begin{lemma}\label{lem:foo}
+%   ...\end{lemma} By \cref{lem:foo}'' will produce ``Lemma 15 ... By
+% lemma~15''
+
+\newcommand{\lift}[1]{{#1}^{\Downarrow}}
+\newcommand{\meet}[1]{\bigwedge\!#1}
+\newcommand{\join}[1]{\bigvee\!#1}
+
+\begin{document}
+\maketitle
+
+\section{An Explicit Construction of Computational Dependent Types}
+
+In this section, we give a rigorous set-theoretic construction of
+computational dependent types (CDTs), as introduced by Allen
+\cite{Allen:87}. In this construction, we define the system of
+computational dependent types as the least fixed point of a monotone
+operator over a lattice of candidate type-systems. The existence of
+such a fixed point is guaranteed by the Knaster-Tarski theorem.
+
+\subsection{Background: Knaster-Tarski Fixed Point Theorem}
+
+A \emph{complete lattice} $(L, \leq)$ consists in a set $L$ along with
+a pre-order\footnote{A pre-order is a reflexive and transitive
+  relation.} $\leq$ such that all subsets of $L$ admit a greatest
+lower bound (aka \emph{meet}) and a least upper bound (aka
+\emph{join}).  More formally, for every subset $X \subseteq L$, there
+are elements $\meet{X}$ and $\join{X}$ in $L$ such that:
+\[\begin{array}{ccc}
+    \forall x\in X, \ \meet{X} \,\leq\, x  &  \text{and}  &
+    \forall y,\, \left( \forall x\in X, \ y \,\leq\, x  \right) \ \Longrightarrow \ 
+    y \,\leq\, \meet{X} \\ \\
+    \forall x\in X, \ x \,\leq\, \join{X}  & \text{and}  &
+    \forall y,\, \left( \forall x\in X, \ x \,\leq\, y  \right) \ \Longrightarrow \ 
+    \join{X} \,\leq\, y.
+  \end{array}\]
+\begin{remark*}
+  If $L$ is infinite, this is a stronger requirement than just having
+  binary meet and join operators $\wedge$ and $\vee$ on $L$ along with
+  smallest and largest elements $\top$ and $\bot$ (in which case
+  $(L, \leq)$ is called a \emph{plain lattice}).
+\end{remark*}
+A function $f : L \to L$ is said to be \emph{monotone} if it preserves
+$\leq$ in the sense that
+\[ \forall x, y \in L, \ x \leq y \ \Longrightarrow \ f(x) \leq
+  f(y).\]
+
+We can now state Knaster-Tarski theorem.
+
+\begin{theorem*}
+  Let $(L, \leq)$ a complete lattice and $f : L \to L$ a monotone
+  function.  Then, $f$ admits a complete lattice of fixed points. In
+  particular, it admits a least fixed point $\mu f$ which is given by
+  the meet of its pre-fixed points:
+  \[ \mu f = \bigwedge \{ x \in L \ |\ f(x) \leq x\}.\]
+\end{theorem*}
+
+In practice, $(L, \leq)$ is often a powerset lattice:
+$(L, \leq) = (\mathcal{P}(E), \subseteq)$ where $E$ is a set and
+$\subseteq$ refers to set inclusion. In this case, the meet operation
+corresponds to set intersection and the join operation corresponds to
+set union. Therefore, if $f : \mathcal{P}(E) \to \mathcal{P}(E)$ is
+monotone, $\mu f$ is the intersection of every subset of $E$ that is
+\emph{closed under} $f$:
+\[ \mu f = \bigcap \ \{ X \subseteq E \ | \ f(X) \subseteq X \}. \]
+
+
+\subsection{Construction of Computational Dependent Types}
+
+\subsubsection{Candidate type systems}
+
+A \emph{candidate type-system} is a ternary relation between values,
+values, and binary relations over values.  Intuitively, if
+$\tau(A, B, \phi)$ then $A$ and $B$ are closed values corresponding to
+equal types and $\phi$ is a binary relation over closed values that
+corresponds to equality of values within type $A$ (or $B$).  For
+example, a type system for booleans would be
+\[\tau_{\bool} = \{(\bool, \bool, \beta)\}, \qquad
+  \beta = \{(\true, \true), (\false, \false)\}.\]
+
+\subsubsection{Real type systems}
+A \emph{real type-system} is defined as a candidate type system for
+which the following properties hold (every free variable is
+universally quantified):
+\begin{enumerate}
+\item \textbf{Functionality:} $\tau(A, B, \phi)$ and
+  $\tau(A, B, \phi')$ imply $\phi = \phi'$
+\item \textbf{\textsc{P.E.R} valued:} if $\tau(A, B, \phi)$, then
+  $\phi$ is a partial equivalence relation\footnote{A partial
+    equivalence relation is a symmetric and transitive relation.}
+\item \textbf{Symmetry:} $\tau(A, B, \phi)$ implies $\tau(B, A, \phi)$
+\item \textbf{Transitivity:} $\tau(A, B, \phi)$ and $\tau(B, C, \phi)$
+  imply $\tau(A, C, \phi)$.
+\end{enumerate}
+
+\medskip
+
+\begin{remark*}
+  Another way to formulate transitivity would be as follows:
+  \begin{center}
+    $\tau(A, B, \phi)$ and $\tau(B, C, \phi')$ imply
+    $\tau(A, C, \phi)$ and $\phi = \phi'$.
+  \end{center}
+  This is equivalent to our first formulation.  Indeed, suppose
+  $\tau(A, B, \phi)$ and $\tau(B, C, \phi')$. Using symmetry and
+  transitivity, we have $\tau(B, B, \phi)$ and $\tau(B, B, \phi')$
+  (p.e.r trick).  Using functionality, we get $\phi = \phi'$.
+\end{remark*}
+
+The set of all candidate type-systems forms a complete lattice for set
+inclusion. This is \textbf{not} true of the set of all real
+type-systems, which is why we need the notion of candidate type-system
+(see section \ref{subsub:tau0}).
+
+
+\subsubsection{Truth judgments relative to a real type system}
+
+We define the following truth judgments relative to a real type-system
+$\tau$:
+\begin{itemize}
+\item $\tau \models \hasTEC{A}{B}$ if and only if
+  $\lift{\tau}(A, B, \phi)$ for some $\phi$
+\item $\tau \models \hasEEC{M}{N}{A}$ if and only if
+  $\lift{\tau}(A, B, \phi)$ and $\lift{\phi}(M, N)$ for some $\phi$
+\end{itemize}
+where the lifted relations $\lift{\tau}$ and $\lift{\phi}$ are defined
+as follows:
+\begin{itemize}
+\item $\lift{\phi}(M, N)$ iff there exists values $V, W$ such that
+  $\eval{M}{V}$, $\eval{N}{W}$ and $\phi(V, W)$
+\item $\lift{\tau}(A, B, \phi)$ iff.  there exists values $V, W$ such
+  that $\eval{A}{V}$, $\eval{B}{W}$ and $\tau(V, W, \phi)$.
+\end{itemize}
+
+\subsubsection{Defining $\tau_0$ as a least fixed
+  point}\label{subsub:tau0}
+
+We can define the type system $\tau_0$ of computational dependent
+types as the least fixed-point of a monotone operator
+\[ \Phi(\tau) \triangleq \textsc{bool} \cup \textsc{nat} \cup
+  \textsc{eq}(\tau) \cup \textsc{pi}(\tau) \cup
+  \textsc{sigma}(\tau).  \] After we define $\textsc{bool}$,
+$\textsc{nat}$, $\textsc{eq}$, $\textsc{pi}$ and $\textsc{tau}$, we
+must prove that the resulting operator $\Phi$ is monotone and that
+$\tau_0 \triangleq \mu \Phi$ is a real type-system.
+
+\paragraph{Booleans}
+As seen earlier,
+\[ \textsc{bool} = \{(\bool, \bool, \beta)\} \text{ where } \beta =
+  \{(\true, \true), (\false, \false)\}. \]
+
+\paragraph{Natural numbers}
+We define $ \textsc{nat} = \{(\nat, \nat, \mu N)\} $ where $\mu N$ is
+the least fixed-point of the following monotone operator over the
+complete lattice of relations over values:
+\[ N(\alpha) = \{(\natz, \natz)\} \cup \{ (\nats{n}, \nats{m}) \ | \
+  \alpha(m,n) \}. \]
+
+\paragraph{Equality}
+We have $\textsc{eq}(\tau)(A_0, A'_0, \epsilon)$ if and only if
+\begin{itemize}
+\item $A_0 = \textsf{Eq}_A(M, N)$ and
+  $A_0' = \textsf{Eq}_{A'}(M', N')$ for some $A, A', M, M', N, N'$
+\item $\lift{\tau}(A, A', \phi)$, $\lift{\phi}(M, M')$ and
+  $\lift{\phi}(N, N')$ for some $\phi$
+\item $\epsilon = \{(\textsf{refl}, \textsf{refl})\}$ if $\phi(M,N)$
+  and $\{\}$ otherwise.
+\end{itemize}
+
+\paragraph{Dependent function}
+We have $\textsc{pi}(\tau)(A_0, A'_0, \rho)$ if and only if
+\begin{itemize}
+\item $A_0 = (x:A \to B)$ and $A_0' = (x:A' \to B')$ for some
+  $A,A',B,B'$
+\item $\tau(A, A', \alpha)$ for some $\alpha$
+\item there exists a function $\psi$ mapping pairs of terms to
+  relations over values such that
+  \begin{center}
+    $\lift{\alpha}(M, M')$ implies
+    $\lift{\tau}\left(\subst{M}{x}{B}, \, \subst{M'}{x}{B'}, \,
+      \psi(M,M')\right)$ for all terms $M, M'$
+  \end{center}
+\item $\rho(M, M')$ if and only if
+  \begin{itemize}
+  \item $M = \lambda x. N$ for some $N$
+  \item $M' = \lambda x. N'$ for some $N'$
+  \item $\lift{\alpha}(P, P')$ implies
+    $\lift{\psi(P, P')}(\subst{P}{x}{N}, \, \subst{P'}{x}{N'})$ for
+    all terms $P, P'$.
+  \end{itemize}
+\end{itemize}
+
+\paragraph{Dependent products}
+We have $\textsc{sigma}(\tau)(A_0, A'_0, \sigma)$ if and only if
+\begin{itemize}
+\item $A_0 = (x:A \times B)$ and $A_0' = (x:A' \times B')$ for some
+  $A,A',B,B'$
+\item $\tau(A, A', \alpha)$ for some $\alpha$
+\item there exists a function $\psi$ mapping pairs of terms to
+  relations over values such that
+  \begin{center}
+    $\lift{\alpha}(M, M')$ implies
+    $\lift{\tau}\left(\subst{M}{x}{B}, \, \subst{M'}{x}{B'}, \,
+      \psi(M,M')\right)$ for all terms $M, M'$
+  \end{center}
+\item $\sigma(P, P')$ if and only if
+  \begin{itemize}
+  \item $P = \textsf{pair}_{A, x.B}(M,N)$ for some $M, N$
+  \item $P' = \textsf{pair}_{A', x.B'}(M',N')$ for some $M', N'$
+  \item $\lift{\alpha}(M, M')$ and $\lift{\psi(M, M')}(N, N')$.
+  \end{itemize}
+\end{itemize}
+
+\subsubsection{Proving the typing rules for $\tau_0$}
+
+Finally, we must show that all the typical typing rules are true with
+respect to $\tau_0$. For example, we must show that if
+$\tau_0 \models \hasEF{M}{(x:A \to B)}$ and
+$\tau_0 \models \hasEF{M}{A}$ then
+$\tau_0 \models \hasEF{MN}{\subst{N}{x}{B}}$.
+
+
+\subsection{Discussion}
+
+In order to show that $\Phi$ (as defined in \ref{subsub:tau0}) is
+monotone, it is sufficient to show that $\textsc{eq}$, $\textsc{pi}$
+and $\textsc{sigma}$ are monotone. A full proof would be tedious but
+the core idea that makes it work is that $\tau$ only appears in
+covariant positions in the definitions of $\textsc{eq}(\tau)$,
+$\textsc{pi}(\tau)$ and $\textsc{sigma}(\tau)$.  In the case of
+$\textsc{pi}$ for example, this reflects the fact that the terms $A$
+and $\subst{M}{x}{B}$ for all $M$ can be considered as defined prior
+to $x:A \to B$.
+
+This would not hold for the type constructor $\forall X. A$, which
+cannot regard $\subst{B}{X}{A}$ as prior to $\forall X. A$ for all
+$B$, as $B$ could be $\forall X. A$. More concretely, here is an
+attempt of adding universal quantification over types in our language
+by extending $\Phi$ with a $\textsc{forall}$ operator:
+
+\paragraph{Type quantification} 
+We have $\textsc{forall}(\tau)(A_0, A'_0, F)$ if and only if
+\begin{itemize}
+\item $A_0 = \forall X. A$ and $A_0' = \forall X. A'$
+\item $\tau(A, A', \alpha)$ for some $\alpha$
+\item There is a mapping $\psi$ from pairs of terms to relations over
+  values such that
+  \begin{center}
+    $\color{red}{\lift{\tau}(T, T')}$ implies
+    $\lift{\tau}(\subst{T}{x}{A}, \subst{T'}{x'}{A'}, \psi(T, T'))$
+  \end{center}
+\item $F(M, M')$ if and only if
+  \begin{itemize}
+  \item $M = \Lambda X. N$ for some term $N$
+  \item $M' = \Lambda X. N'$ for some term $N'$
+  \item $\color{red}{\lift{\tau}(T, T')}$ implies
+    $\lift{\psi(T, T')} (\subst{T}{x}{N}, \subst{T'}{x}{N'})$ for all
+    terms $T, T'$
+  \end{itemize}
+\end{itemize}
+
+Such an operator is \textbf{not} monotone though, as can be seen by
+the contravariant occurences of $\tau$ in the definition of
+$\textsc{forall}(\tau)$ (highlighted in red).
+
+\bigskip
+
+Similarly, in the definition of $\textsc{nat}$, it is crucial that the
+$N$ relation is monotone so that $\mu N$ is well-defined.  This
+monotonicity constraint prevents us from giving a fixed point
+definition for a type like $D \simeq D \to D$. Indeed, it is tempting
+to define a type-system for $D$ as follows:
+$\tau_D \triangleq \{(D, D, \mu X)\}$ where $\mu X$ is the least-fixed
+point of $X$:
+\[ X(\alpha) \triangleq \{ (\textsf{Fun}(f), \textsf{Fun}(g)) \ | \
+  \forall V, W. \ {\color{red}{\alpha(V, W)}} \implies
+  \lift{\alpha}(f(V), f(W)) \} \] Such an operator is \textbf{not}
+monotone though, $\alpha$ appearing in a contravariant position in the
+definition of $X(\alpha)$. Therefore, $\mu X$ does not necessarily
+exist. This makes sense because were a type like $D$ allowed, we would
+have non-termination, which we do not want at this stage.
+
+
+\bibliographystyle{plainnat} \bibliography{ctt}
+
+\end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:
