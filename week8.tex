@@ -19,6 +19,77 @@
 
 \begin{document}
 \maketitle
+\section{Hypothetico-General Judgments}
+
+Last week, we looked briefly at the semantic judgment of computational dependent type theory with a one
+element context. This can be extended hypothetical-generally with the idea functionality: 
+
+Consider a h-g judgment: 
+
+\[
+\hasTEC{x_1 : A_1,...,x_n : A_n}{A}{A'}
+\]
+
+and the corresponding judgment on terms:
+
+\[
+\hasEEC{x_1 : A_1,...,x_n : A_n}{M}{M'}{A}
+\]
+
+They are defined mutually recursively by induction on $n$:
+
+\begin{tabular}{l l}
+$n = 0$ : & \hasTEC{\cdot}{A}{A'} \text{ iff } \hasTEC{A}{A'} and\\
+				& \hasEEC{\cdot}{M}{M'}{A} \text{ iff } \hasEEC{M}{M'}{A}
+			 \text{ (equivalent to the categorical judgments) }\\
+$n = k + 1$: & \hasTEC{x_1 : A_1,...,x_{k+1} : A_{k+1}}{A}{A'} \text{ iff }\\
+& \hasEEC{M_1}{M_1'}{A_1}, \hasEEC{M_2}{M_2'}{[M_1/x_1]A_2},...,
+	\hasEEC{M_{k+1}}{M_{k+1}'}{[M_i/x_i]^{k+1}_{i=1}A_{k+1}} \text{ implies } \\
+& \hasTEC{[M_i/x_i]^{k+1}_{i=1}A}{[M_i'/x_i]^{k+1}_{i=1}A'} and \\
+& \hasEEC{x_1 : A_1,...,x_{k+1} : A_{k+1}}{M}{M'}{A} iff\\
+& \hasEEC{M_1}{M_1'}{A_1}, \hasEEC{M_2}{M_2'}{[M_1/x_1]A_2},...,
+	\hasEEC{M_{k+1}}{M_{k+1}'}{[M_i/x_i]^{k+1}_{i=1}A_{k+1}} \text{ implies } \\
+&	\hasEEC{[M_i/x_i]^{k+1}_{i=1}M}{[M_i'/x_i]^{k+1}_{i=1}M'}{[M_i/x_i]^{k+1}_{i=1}A}\\
+\end{tabular}
+
+Note we define the unary versions of the h-g judgments as reflexive cases (e.g. \hasTC{\Gamma}{A} iff 
+\hasTEC{\Gamma}{A}{A}). We can check that the h-g judgments are symmetric and transitive, 
+and by the ``p.e.r'' trick, we can get reflexivity as well.  
+In addition, the h-g jugdments also have the structural properties of entailment: 
+
+\begin{enumerate}
+\item \hasEC{\Gamma,x : A,\Gamma'}{x}{A}
+\item if \hasTC{\Gamma}{\mathcal{J}} and \hasTC{\Gamma}{A} then \hasTC{\Gamma,x:A}{\mathcal{J}}
+\item if \hasTC{\Gamma,x:A,\Gamma'}{\mathcal{J}} and \hasEEC{\Gamma}{M}{M'}{A} then 
+	\hasTC{\Gamma[M/x]\Gamma'}{[M/x]\mathcal{J}}
+\end{enumerate} 
+
+Where $\mathcal{J}$ any antecedant of a semantic h-g judgment. With these properties, we can embed a logic in 
+this framework: 
+\begin{enumerate}
+\item inhabitantion: \trueF{A} iff there is a term $M$ s.t. \hasEC{M}{A}
+\item equality of proofs: $\Eq{A}{M}{N}$
+\end{enumerate}
+
+\subsection{Function Equality}
+
+Semantic function equality is extensional, since functionality is built into the definition of the semantic
+judgments:
+
+\begin{align*}
+\hasEEC{\lam{x}{A}{M}}{\lam{x}{A}{M'}}{\Pitype{x}{A}{B}} &\text{ iff } \hasEEC{x : A}{M}{M'}{B}\\
+\end{align*}
+
+where the context is a mapping of variables to \emph{closed} values.
+
+\subsection{Equality Type}
+
+The type $\Eq{A}{M}{N}$ internalizes semantic judgmental equality: 
+
+\begin{align*}
+\hasTEC{\Eq{A}{M}{N}}{\Eq{A'}{M'}{N'}} &\text{ iff } \hasTEC{A}{A'}, \hasEEC{M}{M'}{A}, and \hasEEC{N}{N'}{A}\\
+\hasEC{\refl{A}{M}}{\Eq{A}{M}{N}} &\text{ iff } \hasEEC{M}{N}{A}\\
+\end{align*}
 
 \section{An Explicit Construction of Computational Dependent Types}
 
