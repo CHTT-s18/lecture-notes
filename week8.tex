@@ -328,14 +328,14 @@ We have $\textsc{forall}(\tau)(A_0, A'_0, F)$ if and only if
 \item There is a mapping $\psi$ from pairs of terms to relations over
   values such that
   \begin{center}
-    $\color{red}{\lift{\tau}(T, T')}$ implies
-    $\lift{\tau}(\subst{T}{x}{A}, \subst{T'}{x'}{A'}, \psi(T, T'))$
+    $\color{red}{\lift{\tau}(T, T', -)}$ implies
+    $\lift{\tau}(\subst{T}{x}{A}, \subst{T'}{x'}{A'}, \psi(T, T'))$ for all terms $T, T'$
   \end{center}
 \item $F(M, M')$ if and only if
   \begin{itemize}
   \item $M = \Lambda X. N$ for some term $N$
   \item $M' = \Lambda X. N'$ for some term $N'$
-  \item $\color{red}{\lift{\tau}(T, T')}$ implies
+  \item $\color{red}{\lift{\tau}(T, T', -)}$ implies
     $\lift{\psi(T, T')} (\subst{T}{x}{N}, \subst{T'}{x}{N'})$ for all
     terms $T, T'$
   \end{itemize}
