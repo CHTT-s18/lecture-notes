@@ -308,7 +308,7 @@ In order to show that $\Phi$ (as defined in \ref{subsub:tau0}) is
 monotone, it is sufficient to show that $\textsc{eq}$, $\textsc{pi}$
 and $\textsc{sigma}$ are monotone. A full proof would be tedious but
 the core idea that makes it work is that $\tau$ only appears in
-covariant positions in the definitions of $\textsc{eq}(\tau)$,
+positive positions in the definitions of $\textsc{eq}(\tau)$,
 $\textsc{pi}(\tau)$ and $\textsc{sigma}(\tau)$.  In the case of
 $\textsc{pi}$ for example, this reflects the fact that the terms $A$
 and $\subst{M}{x}{B}$ for all $M$ can be considered as defined prior
@@ -341,7 +341,7 @@ We have $\textsc{forall}(\tau)(A_0, A'_0, F)$ if and only if
 \end{itemize}
 
 Such an operator is \textbf{not} monotone though, as can be seen by
-the contravariant occurences of $\tau$ in the definition of
+the negative occurences of $\tau$ in the definition of
 $\textsc{forall}(\tau)$ (highlighted in red).
 
 \bigskip
@@ -356,7 +356,7 @@ point of $X$:
 \[ X(\alpha) \triangleq \{ (\textsf{Fun}(f), \textsf{Fun}(g)) \ | \
   \forall V, W. \ {\color{red}{\alpha(V, W)}} \implies
   \lift{\alpha}(f(V), f(W)) \} \] Such an operator is \textbf{not}
-monotone though, $\alpha$ appearing in a contravariant position in the
+monotone though, $\alpha$ appearing in a negative position in the
 definition of $X(\alpha)$. Therefore, $\mu X$ does not necessarily
 exist. This makes sense because were a type like $D$ allowed, we would
 have non-termination, which we do not want at this stage.
