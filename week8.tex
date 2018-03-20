@@ -245,7 +245,7 @@ We have $\textsc{eq}(\tau)(A_0, A'_0, \epsilon)$ if and only if
   $A_0' = \textsf{Eq}_{A'}(M', N')$ for some $A, A', M, M', N, N'$
 \item $\lift{\tau}(A, A', \phi)$, $\lift{\phi}(M, M')$ and
   $\lift{\phi}(N, N')$ for some $\phi$
-\item $\epsilon = \{(\textsf{refl}, \textsf{refl})\}$ if $\phi(M,N)$
+\item $\epsilon = \{(\textsf{refl}, \textsf{refl})\}$ if $\lift{\phi}(M,N)$
   and $\{\}$ otherwise.
 \end{itemize}
 
@@ -324,7 +324,6 @@ by extending $\Phi$ with a $\textsc{forall}$ operator:
 We have $\textsc{forall}(\tau)(A_0, A'_0, F)$ if and only if
 \begin{itemize}
 \item $A_0 = \forall X. A$ and $A_0' = \forall X. A'$
-\item $\tau(A, A', \alpha)$ for some $\alpha$
 \item There is a mapping $\psi$ from pairs of terms to relations over
   values such that
   \begin{center}
