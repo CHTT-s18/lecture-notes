@@ -59,7 +59,7 @@ In addition, the h-g jugdments also have the structural properties of entailment
 
 \begin{enumerate}
 \item \hasEC{\Gamma,x : A,\Gamma'}{x}{A}
-\item if \hasTC{\Gamma}{\mathcal{J}} and \hasTC{\Gamma}{A} then \hasTC{\Gamma,x:A}{\mathcal{J}}
+\item if $\Gamma \gg \mathcal{J}$ and \hasTC{\Gamma}{A} then $\Gamma,x:A \gg \mathcal{J}$
 \item if \hasTC{\Gamma,x:A,\Gamma'}{\mathcal{J}} and \hasEEC{\Gamma}{M}{M'}{A} then 
 	\hasTC{\Gamma[M/x]\Gamma'}{[M/x]\mathcal{J}}
 \end{enumerate} 
@@ -87,9 +87,59 @@ where the context is a mapping of variables to \emph{closed} values.
 The type $\Eq{A}{M}{N}$ internalizes semantic judgmental equality: 
 
 \begin{align*}
-\hasTEC{\Eq{A}{M}{N}}{\Eq{A'}{M'}{N'}} &\text{ iff } \hasTEC{A}{A'}, \hasEEC{M}{M'}{A}, and \hasEEC{N}{N'}{A}\\
+\hasTEC{\Eq{A}{M}{N}}{\Eq{A'}{M'}{N'}} &\text{ iff } \hasTEC{A}{A'}, \hasEEC{M}{M'}{A},\text{ and } \hasEEC{N}{N'}{A}\\
 \hasEC{\refl{A}{M}}{\Eq{A}{M}{N}} &\text{ iff } \hasEEC{M}{N}{A}\\
 \end{align*}
+
+\section{FTT and CTT}
+
+As before, we relate FTT and CTT with theorems that state the sufficiency of the former for the latter. First,
+we extend the erasure operation to identity types, introduction, and elimination:
+
+\begin{align*}
+\erase{\Id{A}{M}{N}} &\triangleq \Eq{\erase{A}}{\erase{M}}{\erase{N}}\\
+\erase{\refl{A}{M}} &\triangleq \underline{\mathsf{refl}}\\
+\erase{\Idelim{a,b,c.C}{a.Q}{P}} &\triangleq [\erase{M}/a]\erase{Q} \quad (\text{where } \hasEF{P}{\Id{A}{M}{N}})\\
+\end{align*}
+
+\begin{enumerate}
+\item If \hasEF{\Gamma}{M}{A} then \hasEC{\erase{\Gamma}}{\erase{M}}{\erase{A}}
+\item If \hasEEF{\Gamma}{M}{M'}{A} then \hasEEC{\erase{\Gamma}}{\erase{M}}{\erase{M'}}{\erase{A}}
+\item If \hasTF{\Gamma}{A} then \hasTC{\erase{\Gamma}}{\erase{A}}
+\item If \hasTEF{\Gamma}{A}{A'} then \hasTEC{\erase{\Gamma}}{\erase{A}}{\erase{A'}}
+\end{enumerate}
+
+The proof proceeds by nested induction on the 4 FTT type derivations. We show the crucial case of typing
+for $\mathsf{J}$. 
+
+\begin{proof}
+	\begin{itemize}
+  \setlength\itemsep{1em}
+	\item $\inferrule[(E)]
+  {\hasTF{\Gamma, a:A, b:A, p:\Id{A}{a}{b}}{C} \\
+    \hasEF{\Gamma, a:A}{Q}{\subst{a,a,\refl{A}{a}}{a,b,p}{C}} \\
+    \hasEF{\Gamma}{P}{\Id{A}{M}{N}}}
+  {\hasEF{\Gamma}{\Idelim{a,b,p.C}{a.Q}{P}}{\subst{M,N,P}{a,b,p}{C}}}$\\\\
+	By IH on the third premise, we have $\hasEC{\erase{\Gamma}}{\erase{P}}{\erase{\Id{A}{M}{N}}}$. Unfolding the
+	definitions of erasure and Eq, we have $\hasEEC{\erase{\Gamma}}{\erase{M}}{\erase{N}}{\erase{A}}$. By IH on
+	the second premise, we have $\hasEC{\erase{\Gamma,a:A}}{\erase{Q}}{\erase{\subst{a,a,\refl{A}{a}}{a,b,p}{C}}}$.
+	Unfolding the erasure, we get 
+	$\hasEC{\erase{\Gamma},a : \erase{A}}{\erase{Q}}{\subst{a,a,\erefl}{a,b,p}{\erase{C}}}$.
+	By the substitution property, we get 
+	$\hasEC{\erase{\Gamma}}{[\erase{M}/a]\erase{Q}}{\subst{\erase{M},\erase{M},\erefl}{a,b,p}{\erase{C}}}$.
+	Now by IH on the first premise, we have $\hasTEC{\erase{\Gamma,a:A,b:A,p:\Id{A}{a}{b}}}{\erase{C}}{\erase{C}}$,
+	or that 
+$\hasTEC{\erase{\Gamma},a:\erase{A},b:\erase{A},p:\Eq{\erase{A}}{\erase{a}}{\erase{b}}}{\erase{C}}{\erase{C}}$. 
+By functionality on $\hasEEC{\erase{\Gamma}}{\erase{M}}{\erase{M}}{\erase{A}}$, 
+$\hasEEC{\erase{\Gamma}}{\erase{M}}{\erase{N}}{\erase{A}}$, 
+and $\hasEEC{\erase{\Gamma}}{\erase{P}}{\erefl}{\Eq{\erase{A}}{\erase{M}}{\erase{N}}}$, we have
+	$\hasTEC{\erase{\Gamma}}{\subst{\erase{M},\erase{M},\erefl}{a,b,p}{\erase{C}}}{\subst{\erase{M},\erase{N},\erase{P}}{a,b,p}{\erase{C}}}$. Thus we get 
+	$\hasEC{\erase{\Gamma}}{[\erase{M}/a]\erase{Q}}{\subst{\erase{M},\erase{N},\erase{P}}{a,b,p}{\erase{C}}}$, 
+	which by definition is 
+	$\hasEC{\erase{\Gamma}}{\erase{\Idelim{a,b,c.C}{a.Q}{P}}}{\erase{\subst{M,N,P}{a,b,p}{C}}}$.
+	\end{itemize}
+\end{proof}
+
 
 \section{An Explicit Construction of Computational Dependent Types}
 
