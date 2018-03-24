@@ -24,14 +24,105 @@
 \newcommand{\Nat}{\mathit{Nat}}
 \newcommand{\circled}[1]{\text{\textcircled{#1}}}
 
+\newcommand{\T}{\mathcal{T}}
+
 \begin{document}
 \maketitle
-\section{Recap}
+\section{Properties of our type system}
 
 Last week, we formulated a mathematical account of the semantics of computational
-type theory.
+type theory. First, we defined an operator $\T$ which operates on ``pre-type systems''
+or ``candidate type systems''. 
+We used the Knaster-Tarski Theorem to find the least fixed point $\tau_0$ such that
+$\T(\tau_0) \subseteq \tau$.
 
-%\bibliographystyle{plainnat} \bibliography{ctt}
+The candidate type system $\tau$ is a collection of triples $(A, B, \varphi)$ where
+$\varphi$ is a binary relation on closed values. A triple $(A, B, \varphi)$ means that
+$A$ and $B$ are equal canonical types, with $\varphi$ determining the member relation
+on values. Furthermore, we define
+\begin{itemize}
+  \item $\tau^\Downarrow(A,B,\varphi)$ iff $A \Downarrow V$, $B \Downarrow W$, and $\tau(V, W, \varphi)$.
+  \item $\varphi^\Downarrow(M,N)$ iff $M \Downarrow V$, $N \Downarrow W$, and $\varphi(V,W)$.
+\end{itemize}
+The $\tau^\Downarrow$ and $\varphi^\Downarrow$ are essentially $\tau$ and $\varphi$ but where
+we allow the arguments to be terms instead of values.
+
+The operator $\T$ is defined as
+\[
+  \T(\tau) = \textsc{bool}(\tau) \cup \textsc{pi}(\tau) \cup \textsc{sigma}(\tau) \cup
+      \textsc{eq}(\tau) \cup \textsc{nat}(\tau).
+\]
+$\T$ is monotone by construction. 
+
+We'll repeat a few rules here, but they can be found in last week's notes, Section \ref{W8:subsub:tau0}.
+
+\begin{itemize}
+  \item We define \textsc{bool} as \[\textsc{bool}(-) = \{(\bool, \bool, \beta)\} \text{ where } \beta =
+  \{(\true, \true), (\false, \false)\}.\]
+
+  \item We define \textsc{nat} as \[\textsc{nat}(-)(\textsc{Nat}, \textsc{Nat}, \varphi_{\textsc{Nat}})\] where
+    $\varphi_\textsc{Nat}$ is the least fixed point containing
+    \[ \{\textsc{zero}, \textsc{zero})\} \cup \{(\textsc{succ}(M), \textsc{succ}(N)) ~|~
+    \varphi_\textsc{Nat}^\Downarrow(M, N) \}. \]
+    Note that here we are using another induction inside the larger one. We can think of
+    defining the $\textsc{Nat}$ type as a ``horizontal induction'' and defining $\tau_0$
+    as a ``vertical induction.''
+
+  \item The equality type $\Eq{A}{M}{N}$ is defined in terms of a type $A$, so the definition
+      of $\textsc{eq}(\tau)$ has to be defined in terms of $\tau$.
+      
+      We say that $\textsc{eq}(\tau)(\Eq{A}{M}{N}, \Eq{A}{M'}{N'}, \varphi)$ is true iff
+      \begin{itemize}
+      \item $\tau^\Downarrow(A, A', \varphi)$,
+      \item $\varphi^\Downarrow(M,M')$ and $\varphi^\Downarrow(N,N')$,
+      \item $\varphi(\textsf{refl}, \texts{refl})$ iff $\varphi^\Downarrow(M',N)$ and
+          $\varphi^\Downarrow(M,N')$.
+      \end{itemize}
+
+      Essentially, this means that $A$ and $A'$ are equal with membership
+      described by $\varphi$
+
+\end{itemize}
+
+Now, $\tau_0$ is a candidate type system (by construction) but we would like to prove that
+it is a real type system. To do this, we need to show it has the following properties:
+
+\begin{enumerate}
+\item \textbf{Functionality:} $\tau_0(A, B, \phi)$ and
+  $\tau_0(A, B, \phi')$ imply $\phi = \phi'$
+\item \textbf{\textsc{P.E.R} valued:} if $\tau_0(A, B, \phi)$, then
+  $\phi$ is a partial equivalence relation\footnote{A partial
+    equivalence relation is a symmetric and transitive relation.}
+\item \textbf{Symmetry:} $\tau_0(A, B, \phi)$ implies $\tau_0(B, A, \phi)$
+\item \textbf{Transitivity:} $\tau_0(A, B, \phi)$ and $\tau_0(B, C, \phi)$
+  imply $\tau_0(A, C, \phi)$.
+\end{enumerate}
+
+To just give an idea of how these proofs we go, we will give a sketch of the proof
+of Functionality.
+
+\begin{theorem}[Functionality]
+Let $\tau_0$ be the least fixed point of $\T$. Then if
+$\tau_0(A, B, \phi)$ and $\tau_0(A, B, \phi')$, then $\phi = \phi'$.
+\end{theorem}
+\begin{proof}
+  Given $\tau_0$, define another type candidate $\tau$ as
+  \[ \tau(A,B,\varphi) = \forall \varphi' \tao_0(A,B,\varphi') \implies \varphi = \varphi'). \]
+  Essentially, this is $\tau_0$ but without the triples $(A,B,\varphi)$ where $\varphi$ is not
+  unique for $A$ and $B$.
+
+  We will show that $\T(\tau) \subseteq \tau$. This makes $\tau$ a fixed point, and since
+  $\tau_0$ is the \emph{least} fixed point, we will have $\tau_0 \subseteq \tau$. Then we
+  will have the desired property for $\tau_0$ as well.
+
+  So let us show that $\T(\tau) \subseteq \tau$. Let $x \in \T(\tau)$. By definition of
+  $\T$, we have either
+  $x \in \textsc{bool}(\tau)$,
+  $x \in \textsc{pi}(\tau)$,
+  $x \in \textsc{sigma}(\tau)$,
+  $x \in \textsc{eq}(\tau)$, or
+  $x \in \textsc{nat}(\tau)$.
+\end{proof}
 
 \section{Universes}%
 \marginpar{March 22, 2018}%
