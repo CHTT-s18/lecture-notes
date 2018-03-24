@@ -23,12 +23,16 @@
 \newcommand{\atype}[1]{#1~\mathit{type}}
 \newcommand{\Nat}{\mathit{Nat}}
 \newcommand{\circled}[1]{\text{\textcircled{#1}}}
+\newcommand{\tr}{\textsf{tr}}
+\newcommand{\one}{\textsf{one}}
+\newcommand{\zero}{\textsf{zero}}
 
 \newcommand{\T}{\mathcal{T}}
 
 \begin{document}
 \maketitle
 \section{Properties of our type system}
+\marginpar{March 20, 2018}%
 
 Last week, we formulated a mathematical account of the semantics of computational
 type theory. First, we defined an operator $\T$ which operates on ``pre-type systems''
@@ -75,7 +79,7 @@ We'll repeat a few rules here, but they can be found in last week's notes, Secti
       \begin{itemize}
       \item $\tau^\Downarrow(A, A', \varphi)$,
       \item $\varphi^\Downarrow(M,M')$ and $\varphi^\Downarrow(N,N')$,
-      \item $\varphi(\textsf{refl}, \texts{refl})$ iff $\varphi^\Downarrow(M',N)$ and
+      \item $\varphi(\textsf{refl}, \textsf{refl})$ iff $\varphi^\Downarrow(M',N)$ and
           $\varphi^\Downarrow(M,N')$.
       \end{itemize}
 
@@ -101,13 +105,13 @@ it is a real type system. To do this, we need to show it has the following prope
 To just give an idea of how these proofs we go, we will give a sketch of the proof
 of Functionality.
 
-\begin{theorem}[Functionality]
+\begin{theorem*}[Functionality]
 Let $\tau_0$ be the least fixed point of $\T$. Then if
 $\tau_0(A, B, \phi)$ and $\tau_0(A, B, \phi')$, then $\phi = \phi'$.
-\end{theorem}
+\end{theorem*}
 \begin{proof}
   Given $\tau_0$, define another type candidate $\tau$ as
-  \[ \tau(A,B,\varphi) = \forall \varphi' \tao_0(A,B,\varphi') \implies \varphi = \varphi'). \]
+  \[ \tau(A,B,\varphi) = \forall \varphi' .~ \tau_0(A,B,\varphi') \implies \varphi = \varphi'). \]
   Essentially, this is $\tau_0$ but without the triples $(A,B,\varphi)$ where $\varphi$ is not
   unique for $A$ and $B$.
 
@@ -121,9 +125,144 @@ $\tau_0(A, B, \phi)$ and $\tau_0(A, B, \phi')$, then $\phi = \phi'$.
   $x \in \textsc{pi}(\tau)$,
   $x \in \textsc{sigma}(\tau)$,
   $x \in \textsc{eq}(\tau)$, or
-  $x \in \textsc{nat}(\tau)$.
+  $x \in \textsc{nat}(\tau)$. We need to show that $x \in \tau$.
+
+  We will handle two of these cases here, an easier case and a harder case.
+  \begin{itemize}
+    \item \emph{Case} $x \in \textsc{bool}(\tau)$.
+
+    In this case we must just have $x = (\bool, \bool, \beta)$ as defined above.
+    By definition of $\tau$, we have,
+    \[ \tau(\bool, \bool, \beta) = \forall \varphi' .~ \tau_0(\bool,\bool,\varphi') \implies \varphi' = \beta. \]
+    But $\tau_0 = \T(\tau_0)$ and in the definition of $\T$ we can check that
+    for $A=\bool$ and $B=\bool$ we must have $\varphi' = \beta$. Therefore,
+    $x \in \tau$.
+
+    This case was straightforward because $\textsc{bool}(\tau)$ does not actually depend
+    on $\tau$.
+
+    \item \emph{Case} $x \in \textsc{pi}(\tau)$.
+
+    As a reminder, we have $\textsc{pi}(\tau)(A_0, A'_0, \rho)$ iff
+    \begin{itemize}
+      \item $\exists A,A',B,B'$ such that $A_0 = (x:A \to B)$ and $A'_0 = (x : A' \to B')$,
+      \item $\exists \alpha$ such that $\tau(A,A',\alpha)$,
+      \item $\exists \varphi$ such that $\forall M, M' .~ \alpha^\Downarrow(M,M') \implies \tau^\Downarrow([M/x]B, [M'/x]B', \varphi(M,M'))$,
+      \item $\rho(M, M')$ iff
+      \begin{itemize}
+        \item $\exists N .~ M = \lambda x.N$,
+        \item $\exists N' .~ M'= \lambda x.N'$,
+        \item $\forall P, P' .~ \alpha^\Downarrow(P,P') \implies \varphi(P,P')^\Downarrow([P/x]N,[P'/x]N')$.
+      \end{itemize}
+    \end{itemize}
+    Therefore, we have $x = (A_0, A'_0, \rho)$ where $A,A',B,B,\alpha,\varphi$ all exist as described.
+
+    Furthermore, by definition of $\tau$, we must have that $\alpha$ and $\varphi$ are the \emph{unique}
+    binary relations satisfying these properties, that is,
+    \begin{itemize}
+      \item $\tau_0(A,A',\alpha') \implies \alpha = \alpha'$.
+      \item $\forall M,M' .~ \alpha^\Downarrow(M,M') \implies \tau_0^\Downarrow([M/x]B, [M'/x]B', \gamma) \implies \varphi(M,M') = \gamma$.
+    \end{itemize}
+    Furthermore, given unique $A,A',B,B',\alpha,\varphi$, the definition uniquely defines $\rho$.
+
+    Therefore,
+    \[
+      \tau_0(A_0,A'_0,\rho') \implies \rho = \rho'.
+    \]
+    Therefore, $(A_0, A'_0, \rho) \in \tau$.
+  \end{itemize}
 \end{proof}
 
+\section{Equality and transport}%
+
+Let's revisit Intensional Type Theory (ITT).
+
+We inductively defined the judgments,
+\begin{center}
+\begin{tabular}{ll}
+  $\Gamma \entails M : A$ &
+  $\Gamma \entails M \equiv M' : A$ \\
+  $\Gamma \entails A~\textsf{type}$ &
+  $\Gamma \entails A \equiv A'$ \\
+  $\Gamma~\textsf{ctxt}$ &
+  $\Gamma \equiv \Gamma'$
+\end{tabular}
+\end{center}
+We also showed that if $\Gamma \entails M : A$, then $|\Gamma| \gg |M| \in |A|$, where $|\cdot|$ denotes ``erasure compilation'', i.e., removing all type lambda application and abstraction from the expression.
+We also saw that $\Id{A}{M}{N}$ is not an adequate account of equality. On the plus side,
+it is a partial equivalence relation and it satisfies the indiscernibility of identicals
+(that is, if $\Id{A}{M}{N}$ then $M$ can be substituted for $N$.
+
+On the negative side, there is no notion of function extensionality. $\textsc{Id}_A$ is defined
+uniformly over $A$, that is, the same way for each $A$. Therefore,
+we cannot possibly have
+$abs \equiv id : \textsf{nat} \to \textsf{nat}$, even though we would like to,
+because we must have
+$abs \not\equiv id : \textsf{int} \to \textsf{int}$.
+
+Before we can address this, we need to motivate the notion of \emph{universes}. Let's talk
+more about transport and the indiscernibility of identicals. We will show that
+if $\Id{A}{M}{N}$ is true then we can substitute $M$ for $N$.
+
+\begin{theorem*}[Transport]
+  Suppose $B$ is a ``predicate family''.
+  \[ \Gamma, a:A \entails B~\textsf{type}. \]
+  Also, suppose that $M$ is identical to $N$, with proof of identification $P$,
+  \[ P : \Id{A}{M}{N}, \]
+  and finally suppose that $[M/a]B$ is true,
+  \[ Q : [M/a]B. \]
+  Then we can substitute $N$ instead, that is we can find an element
+  \[ \tr[a.B](P)(Q) : [N/a]B. \]
+\end{theorem*}
+\begin{proof}
+  We can take
+  \[
+    \tr[a.B](P)(Q) = J_{a,b,\_. [a/a]B \to [b/a]B}(a.\lambda b:B . b)(Q).
+  \]
+\end{proof}
+\begin{remark}
+  By $\beta$ simplification, we can find that
+  \[
+    \tr[a.b](\refl{A}{M})(Q) \equiv Q : [M/a]B.
+  \]
+\end{remark}
+
+Again, the only equivalence on which this works is definitional equivalence.
+We could try to define a \textsf{funext} object to handle function extensions; however,
+we wouldn't be able to say how \textsf{tr} or $J$ works.
+
+Now, we will try to use $\tr$ to solve a seemingly simple problem. We want to prove that
+$0 \ne 1$, or in other words, find $M$ such that
+\[
+  \G \entails Q : \Id{\textsf{Nat}}{\zero}{\one} \entails M : \bot.
+\]
+(Here, $\one$ is simply $\textsf{succ}(\zero)$.)
+
+This should be easy; we just have to use $Q$ to substitute $\zero$ for $\one$.
+For any $P$, we do have,
+\[
+  \G \entails Q : \tr[a.P](Q) : [\zero / a]P \to [\one / a]P.
+\]
+So we would be done if we could find $P$ such that $[\zero / a]P \equiv \top$ and $[\one / a]P \equiv \bot$.
+
+Could we simply define $P$ as follow?
+\[ 
+  P = \textsf{NATREC}(\top; \_.\_. \bot)(a).
+\]
+We can't, simply because there is no such thing as \textsf{NATREC} in ITT!
+
+In fact, one can show that there is no such $P$ in ITT. This is a problem, and we would like
+to fix it. There are two possibilities.
+\begin{enumerate}
+\item[1.] Define a type theory with these ``large elimination forms'' (like \textsf{NATREC}) built in.
+\item[2.] Allow us to just use \textsf{natrec}.
+\end{enumerate}
+
+We would like to do option 2. But this requires us to ask, what \emph{type} would the
+use of \textsf{natrec} have in
+$\textsf{natrec}(\top; \_.\_. \bot)(a)$ have? To answer this, we need a ``type of types,''
+and this brings us to universes.
+  
 \section{Universes}%
 \marginpar{March 22, 2018}%
 To prove that zero and one are not equal, we need to be able to define a type family $P$ by induction on a natural number, which is not possible in ITT.
