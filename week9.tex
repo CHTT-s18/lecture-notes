@@ -20,8 +20,8 @@
 \newcommand{\join}[1]{\bigvee\!#1}
 \newcommand{\entails}{\vdash}
 \newcommand{\G}{\Gamma}
-\newcommand{\atype}[1]{#1~\mathit{type}}
-\newcommand{\Nat}{\mathit{Nat}}
+\newcommand{\atype}[1]{#1~\mathsf{type}}
+\newcommand{\Nat}{\mathsf{Nat}}
 \newcommand{\circled}[1]{\text{\textcircled{#1}}}
 \newcommand{\tr}{\textsf{tr}}
 \newcommand{\one}{\textsf{one}}
@@ -267,22 +267,22 @@ and this brings us to universes.
 \marginpar{March 22, 2018}%
 To prove that zero and one are not equal, we need to be able to define a type family $P(a)$ by induction on natural numbers, which is not possible in ITT.
 
-We might attempt to change this by adding natural recursion on the type level as a type constructor $\mathit{NATREC}$:
-\[ \inferrule{\G \entails \atype{A_0} \quad \G, a: \Nat, b: \circled{?} \entails \atype{A_1} \quad \G \entails M : \Nat}{\G \entails \atype{\mathit{NATREC}(A_0; a,b.\; A_1)(M)}} \]
+We might attempt to change this by adding natural recursion on the type level as a type constructor $\textsf{NATREC}$:
+\[ \inferrule{\G \entails \atype{A_0} \quad \G, a: \Nat, b: \circled{?} \entails \atype{A_1} \quad \G \entails M : \Nat}{\G \entails \atype{\textsf{NATREC}(A_0; a,b.\; A_1)(M)}} \]
 Even apart from the cumbersome repetition between definitions on the term and type level, it is not clear what ``type'' to give to $b$ in the premise.
 
 What we need is a type of types, a \emph{universe} $\mathcal{U}$.
 Membership in this type implies being a type:
 \[ \inferrule{\G \entails A : \mathcal{U}}{\G \entails \atype{A}} \]
-Then, we can do away with the distinction between terms and types, and use the usual rule for $\mathit{natrec}$ to type $P(a) \coloneqq \mathit{natrec}(\top; \_, \_. \; \bot)(a)$:
-\[ \inferrule{\G \entails A_0 : \mathcal{U} \quad \G, a : \Nat, b : \mathcal{U} \entails A_1 : \mathcal{U} \quad \G \entails M : \Nat}{\G \entails \mathit{natrec}(A_0; a, b.\; A_1)(M) : \mathcal{U}} \]
+Then, we can do away with the distinction between terms and types, and use the usual rule for $\textsf{natrec}$ to type $P(a) \coloneqq \textsf{natrec}(\top; \_, \_. \; \bot)(a)$:
+\[ \inferrule{\G \entails A_0 : \mathcal{U} \quad \G, a : \Nat, b : \mathcal{U} \entails A_1 : \mathcal{U} \quad \G \entails M : \Nat}{\G \entails \textsf{natrec}(A_0; a, b.\; A_1)(M) : \mathcal{U}} \]
 
-To show, for example, that $P(\mathit{zero}) \equiv \top$, we lift the structural equality $P(\mathit{zero}) \equiv \top : \mathcal{U}$ using the following rule:
+To show, for example, that $P(\textsf{zero}) \equiv \top$, we lift the structural equality $P(\textsf{zero}) \equiv \top : \mathcal{U}$ using the following rule:
 \[ \inferrule{\G \entails A \equiv B : \mathcal{U}}{\G \entails A \equiv B} \]
 
 We then fill the universe with the types of ITT:
-\[ \inferrule{}{\G \entails \Nat, \mathit{Bool}, \mathit{Void}, \mathit{Unit} : \mathcal{U}} \quad \quad \quad \inferrule{\G \entails A : \mathcal{U} \quad \G, a: A \entails B : \mathcal{U}}{\G \entails \Pi a : A.\; B, \Sigma a : A.\; B : \mathcal{U}}\]
-\[ \inferrule{\G \entails A : \mathcal{U} \quad \G \entails M, N : A}{\G \entails \mathit{Id}_A(M, N) : \mathcal{U}} \]
+\[ \inferrule{}{\G \entails \Nat, \textsf{Bool}, \textsf{Void}, \textsf{Unit} : \mathcal{U}} \quad \quad \quad \inferrule{\G \entails A : \mathcal{U} \quad \G, a: A \entails B : \mathcal{U}}{\G \entails \Pi a : A.\; B, \Sigma a : A.\; B : \mathcal{U}}\]
+\[ \inferrule{\G \entails A : \mathcal{U} \quad \G \entails M, N : A}{\G \entails \textsf{Id}_A(M, N) : \mathcal{U}} \]
 And so forth.
 
 Ideally, we would like $\mathcal{U}$ to encode all types.
@@ -295,28 +295,28 @@ This hierarchy is cumulative as per the following rule:
 It is worth pointing out that our types can now include arbitrarily complicated computation.
 
 \section{Higher identification}
-If $\mathit{Id}_A$ should be a notion of equality, we would expect for example $\mathit{Id}_{\Nat \to \Nat}(f, g)$ to be inhabited iff $\Pi a: \Nat.\; \mathit{Id}_{\Nat}(f~a, g~a)$ is.
+If $\textsf{Id}_A$ should be a notion of equality, we would expect for example $\textsf{Id}_{\Nat \to \Nat}(f, g)$ to be inhabited iff $\Pi a: \Nat.\; \textsf{Id}_{\Nat}(f~a, g~a)$ is.
 
-Now that we introduced universes, what should $\mathit{Id}_{\mathcal{U}}$ look like?
-It would be natural to consider two types $A, B : \mathcal{U}$ as equal iff they are isomorphic, i.e., if there are functions $f : A \to B$ and $g : B \to A$ such that $g \circ f \circled{=} \mathit{id}$ and $f \circ g \circled{=} \mathit{id}$.
+Now that we introduced universes, what should $\textsf{Id}_{\mathcal{U}}$ look like?
+It would be natural to consider two types $A, B : \mathcal{U}$ as equal iff they are isomorphic, i.e., if there are functions $f : A \to B$ and $g : B \to A$ such that $g \circ f \circled{=} \textit{id}$ and $f \circ g \circled{=} \textit{id}$.
 But which relation should we use for ``$\circled{=}$''?
 Requiring structural equality as $g(f(a)) \equiv a$ is way to fine.
-A better idea would be to require $\mathit{Id}_A(g(f(a)), a)$, and Vladimir Voevodsky's univalence goes into that direction. \medskip
+A better idea would be to require $\textsf{Id}_A(g(f(a)), a)$, and Vladimir Voevodsky's univalence goes into that direction. \medskip
 
 In \cref{W7:sec:identitytypes} of Week~7, we considered different ways of constructing elements of identity types:
 \begin{itemize}
-    \item $\mathit{refl}_A(M) : \mathit{Id}_A (M, M)$. Leaving the type implicit, we suggestively set $\mathit{id} \coloneqq \mathit{refl}_A(M)$.
+    \item $\textsf{refl}_A(M) : \textsf{Id}_A (M, M)$. Leaving the type implicit, we suggestively set $\textit{id} \coloneqq \textsf{refl}_A(M)$.
         We illustrate this as follows:
         \begin{center}\begin{tikzpicture}[->,>=stealth',auto,node distance=2cm,every loop/.style={min distance=5mm,in=45,out=135,looseness=5}]
 \node [circle, draw=black, inner sep=0pt, minimum size=2mm] (a) [label=below:$M$] {};
-        \path[->] (a) edge  [loop above] node {$\mathit{id}$} ();\end{tikzpicture}\end{center}
-    \item $\mathit{sym}_A(P) : \mathit{Id}_A (N, M)$ for $P : \mathit{Id}_A(M, N)$. Set $P^{-1} \coloneqq \mathit{sym}_A(P)$.
+        \path[->] (a) edge  [loop above] node {$\textit{id}$} ();\end{tikzpicture}\end{center}
+    \item $\textsf{sym}_A(P) : \textsf{Id}_A (N, M)$ for $P : \textsf{Id}_A(M, N)$. Set $P^{-1} \coloneqq \textsf{sym}_A(P)$.
         \begin{center}\begin{tikzpicture}[->,>=stealth',auto,node distance=2cm,every loop/.style={min distance=5mm,in=45,out=135,looseness=5}]
 \node [circle, draw=black, inner sep=0pt, minimum size=2mm] (a) [label=below:$M$] {};
 \node [circle, draw=black, inner sep=0pt, minimum size=2mm] (b) [right=of a,label=below:$N$] {};
 \draw [->, bend left] (a) to node [above] {$P$} (b);
         \draw [->, bend left] (b) to node [below] {$P^{-1}$} (a);\end{tikzpicture}\end{center}
-    \item $\mathit{trans}_A(Q, R) : \mathit{Id}_A(M, P)$ for $Q : \mathit{Id}_A(M, N)$ and $R : \mathit{Id}_A(N, P)$. Denote this by $Q \circ R$.
+    \item $\textsf{trans}_A(Q, R) : \textsf{Id}_A(M, P)$ for $Q : \textsf{Id}_A(M, N)$ and $R : \textsf{Id}_A(N, P)$. Denote this by $Q \circ R$.
         \begin{center}\begin{tikzpicture}[->,>=stealth',auto,node distance=2cm,every loop/.style={min distance=5mm,in=45,out=135,looseness=5}]
 \node [circle, draw=black, inner sep=0pt, minimum size=2mm] (a) [label=below:$M$] {};
 \node [circle, draw=black, inner sep=0pt, minimum size=2mm] (b) [right=of a,label=below:$N$] {};
@@ -326,7 +326,7 @@ In \cref{W7:sec:identitytypes} of Week~7, we considered different ways of constr
         \draw [->, bend right] (a) to node [below] {$Q \circ R$} (c);\end{tikzpicture}\end{center}
 \end{itemize}
 
-We would expect this structure to respect the groupoid\footnote{A groupoid is a generalization of a group in which elements are ``typed.'' Here, we can only concatenate paths $P$ and $Q$ as $P \circ Q$ if $P : \mathit{Id}_A(M, N)$ and $Q : \mathit{Id}_A(N, P)$, i.e., if the endpoint of path $P$ equals the starting point of path $Q$.} laws:
+We would expect this structure to respect the groupoid\footnote{A groupoid is a generalization of a group in which elements are ``typed.'' Here, we can only concatenate paths $P$ and $Q$ as $P \circ Q$ if $P : \textsf{Id}_A(M, N)$ and $Q : \textsf{Id}_A(N, P)$, i.e., if the endpoint of path $P$ equals the starting point of path $Q$.} laws:
 \begin{enumerate}
     \item \label{idrev} $\mathit{id}^{-1} \circled{=} \mathit{id}$
     \item \label{trid} $Q \circ \mathit{id} \circled{=} Q$
@@ -339,12 +339,12 @@ We would expect this structure to respect the groupoid\footnote{A groupoid is a 
 As we discussed in Week~7, choosing ``$\equiv$'' for ``$\circled{=}$'' only satisfies some of these laws.
 For example, property~\ref{idrev} is true, whereas at most one out of properties~\ref{trid} and \ref{idtr} holds, depending on the exact program used to implement transitivity.
 
-To get the groupoid structure, we instead choose $\mathit{Id}_{\mathit{Id}_A}$ for ``$\circled{=}$'':
+To get the groupoid structure, we instead choose $\textsf{Id}_{\textsf{Id}_A}$ for ``$\circled{=}$'':
 
 For instance, consider Law~\ref{pinvid}:
-Suppose that we have $P : \mathit{Id}_A(M, N)$ and thus $P^{-1} : \mathit{Id}_A(n, M)$.
+Suppose that we have $P : \textsf{Id}_A(M, N)$ and thus $P^{-1} : \textsf{Id}_A(n, M)$.
 Then, by using $\mathit{id}^{-1} \equiv \mathit{id}$ and $\mathit{id} \circ \mathit{id} \equiv \mathit{id}$, one verifies that
-\[J_{a,\_,p.\; \mathit{Id}_{\mathit{Id}_A(a,a)}(p \circ p^{-1}, \mathit{refl}_A(a))}(a.\; \mathit{refl}_{\mathit{Id}_A(a,a)}(\mathit{refl}_A(a)))(P) : \mathit{Id}_{\mathit{Id}_A(M, M)}(P \circ P^{-1}, \mathit{refl}_A(M)).\]
+\[J_{a,\_,p.\; \textsf{Id}_{\textsf{Id}_A(a,a)}(p \circ p^{-1}, \textsf{refl}_A(a))}(a.\; \textsf{refl}_{\textsf{Id}_A(a,a)}(\textsf{refl}_A(a)))(P) : \textsf{Id}_{\textsf{Id}_A(M, M)}(P \circ P^{-1}, \textsf{refl}_A(M)).\]
 
 Or consider Law~\ref{assoc}:
 \begin{center}\begin{tikzpicture}[->,>=stealth',auto,node distance=2cm,every loop/.style={min distance=5mm,in=45,out=135,looseness=5}]
@@ -359,20 +359,20 @@ Or consider Law~\ref{assoc}:
 \draw [->, bend right] (b) to node [below] {$Q \circ R$} (d);
 \draw [->, out=50, in=130] (a) to node [above] {$(P \circ Q) \circ R$} (d);
 \draw [->, out=-50, in=-130] (a) to node [below] {$P \circ (Q \circ R)$} (d);\end{tikzpicture}\end{center}
-Again, given $P, Q, R$, we can find a term of type $\mathit{Id}_{\mathit{Id}_A(S, F)}((P \circ Q) \circ R, P \circ (Q \circ R))$.
+Again, given $P, Q, R$, we can find a term of type $\textsf{Id}_{\textsf{Id}_A(S, F)}((P \circ Q) \circ R, P \circ (Q \circ R))$.
 Borrowing intuitions from homotopy theory, this term can be thought of as a continuous deformation (a \emph{homotopy}) of the path corresponding to $(P \circ Q) \circ R$ into the path corresponding to $P \circ (Q \circ R)$.
 
 Generally, the groupoid laws hold ``up to higher identification''.
-We call the nesting depth of $\mathit{Id}_{\mathit{Id}_{._{._{.}}}}$ its dimension.
+We call the nesting depth of $\textsf{Id}_{\textsf{Id}_{._{._{.}}}}$ its dimension.
 Again, in the language of homotopy theory, this corresponds to going from points (dimension 0) to paths between points (dimension 1) to paths between paths between points (dimension 2) and so forth.
-Since the groupoid laws for objects of some dimension hold up to an equivalence of one higher dimension, the iterated $\mathit{Id}$s form a so-called \emph{$\infty$-groupoid}.
+Since the groupoid laws for objects of some dimension hold up to an equivalence of one higher dimension, the iterated $\textsf{Id}$s form a so-called \emph{$\infty$-groupoid}.
 
 \section{Outlook}
 When is $f : A \to B$ a bijection?
 One way of defining this is the following:
-For every element $b : B$, call its preimages $f^{-1}(b) \coloneqq \Sigma a: A. \; \mathit{Id}_{B}(f(a), b)$ its \emph{homotopy fiber}.
+For every element $b : B$, call its preimages $f^{-1}(b) \coloneqq \Sigma a: A. \; \textsf{Id}_{B}(f(a), b)$ its \emph{homotopy fiber}.
 $f$ is a bijection iff every fiber contains exactly one element.
-Equivalently, we might require that every fiber contains a \emph{center of contraction} $c$ such that, for every element $c'$ of the fiber, there is a ``path from $c$ to $c'$'', i.e., a term of type $\mathit{Id}_A(c, c')$.
+Equivalently, we might require that every fiber contains a \emph{center of contraction} $c$ such that, for every element $c'$ of the fiber, there is a ``path from $c$ to $c'$'', i.e., a term of type $\textsf{Id}_A(c, c')$.
 In this case, we say that the fibers are contractible.
 
 Next week, we will study the univalence axiom, which is based on this idea.
