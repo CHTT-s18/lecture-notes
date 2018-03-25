@@ -49,7 +49,7 @@ on values. Furthermore, we define
   \item $\varphi^\Downarrow(M,N)$ iff $M \Downarrow V$, $N \Downarrow W$, and $\varphi(V,W)$.
 \end{itemize}
 The $\tau^\Downarrow$ and $\varphi^\Downarrow$ are essentially $\tau$ and $\varphi$ but where
-we allow the arguments to be terms instead of values.
+we allow the arguments to be terms instead of requiring them to be values.
 
 The operator $\T$ is defined as
 \[
@@ -64,18 +64,18 @@ We'll repeat a few rules here, but they can be found in last week's notes, Secti
   \item We define \textsc{bool} as \[\textsc{bool}(-) = \{(\bool, \bool, \beta)\} \text{ where } \beta =
   \{(\true, \true), (\false, \false)\}.\]
 
-  \item We define \textsc{nat} as \[\textsc{nat}(-)(\textsc{Nat}, \textsc{Nat}, \varphi_{\textsc{Nat}})\] where
-    $\varphi_\textsc{Nat}$ is the least fixed point containing
+  \item We define \textsc{nat} as \[\textsc{nat}(-) = \{(\textsf{Nat}, \textsf{Nat}, \varphi_{\textsf{Nat}})\}\] where
+    $\varphi_\textsf{Nat}$ is the least fixed point containing
     \[ \{\textsc{zero}, \textsc{zero})\} \cup \{(\textsc{succ}(M), \textsc{succ}(N)) ~|~
-    \varphi_\textsc{Nat}^\Downarrow(M, N) \}. \]
+    \varphi_\textsf{Nat}^\Downarrow(M, N) \}. \]
     Note that here we are using another induction inside the larger one. We can think of
-    defining the $\textsc{Nat}$ type as a ``horizontal induction'' and defining $\tau_0$
+    defining the $\textsf{Nat}$ type as a ``horizontal induction'' and defining $\tau_0$
     as a ``vertical induction.''
 
   \item The equality type $\Eq{A}{M}{N}$ is defined in terms of a type $A$, so the definition
       of $\textsc{eq}(\tau)$ has to be defined in terms of $\tau$.
       
-      We say that $\textsc{eq}(\tau)(\Eq{A}{M}{N}, \Eq{A}{M'}{N'}, \varphi)$ is true iff
+      We say that $\textsc{eq}(\tau)(\Eq{A}{M}{N}, \Eq{A'}{M'}{N'}, \varphi)$ is true iff
       \begin{itemize}
       \item $\tau^\Downarrow(A, A', \varphi)$,
       \item $\varphi^\Downarrow(M,M')$ and $\varphi^\Downarrow(N,N')$,
@@ -83,8 +83,9 @@ We'll repeat a few rules here, but they can be found in last week's notes, Secti
           $\varphi^\Downarrow(M,N')$.
       \end{itemize}
 
-      Essentially, this means that $A$ and $A'$ are equal with membership
-      described by $\varphi$
+      Essentially, this means that $A$ and $A'$ are equal types with membership
+      described by $\varphi$, and $M$ and $M'$ are equal computations according to
+      $\varphi$, and same for $N$ and $N'$.
 
 \end{itemize}
 
@@ -95,8 +96,7 @@ it is a real type system. To do this, we need to show it has the following prope
 \item \textbf{Functionality:} $\tau_0(A, B, \phi)$ and
   $\tau_0(A, B, \phi')$ imply $\phi = \phi'$
 \item \textbf{\textsc{P.E.R} valued:} if $\tau_0(A, B, \phi)$, then
-  $\phi$ is a partial equivalence relation\footnote{A partial
-    equivalence relation is a symmetric and transitive relation.}
+  $\phi$ is a partial equivalence relation
 \item \textbf{Symmetry:} $\tau_0(A, B, \phi)$ implies $\tau_0(B, A, \phi)$
 \item \textbf{Transitivity:} $\tau_0(A, B, \phi)$ and $\tau_0(B, C, \phi)$
   imply $\tau_0(A, C, \phi)$.
@@ -127,7 +127,7 @@ $\tau_0(A, B, \phi)$ and $\tau_0(A, B, \phi')$, then $\phi = \phi'$.
   $x \in \textsc{eq}(\tau)$, or
   $x \in \textsc{nat}(\tau)$. We need to show that $x \in \tau$.
 
-  We will handle two of these cases here, an easier case and a harder case.
+  We will handle two of these cases here, just to illustrate how it goes: an easier case and a harder case.
   \begin{itemize}
     \item \emph{Case} $x \in \textsc{bool}(\tau)$.
 
@@ -193,7 +193,7 @@ We also saw that $\Id{A}{M}{N}$ is not an adequate account of equality. On the p
 it is a partial equivalence relation and it satisfies the indiscernibility of identicals
 (that is, if $\Id{A}{M}{N}$ then $M$ can be substituted for $N$.
 
-On the negative side, there is no notion of function extensionality. $\textsc{Id}_A$ is defined
+On the negative side, there is no notion of function extensionality. $\textsf{Id}_A$ is defined
 uniformly over $A$, that is, the same way for each $A$. Therefore,
 we cannot possibly have
 $abs \equiv id : \textsf{nat} \to \textsf{nat}$, even though we would like to,
