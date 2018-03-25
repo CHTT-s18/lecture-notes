@@ -265,7 +265,7 @@ and this brings us to universes.
   
 \section{Universes}%
 \marginpar{March 22, 2018}%
-To prove that zero and one are not equal, we need to be able to define a type family $P$ by induction on a natural number, which is not possible in ITT.
+To prove that zero and one are not equal, we need to be able to define a type family $P(a)$ by induction on natural numbers, which is not possible in ITT.
 
 We might attempt to change this by adding natural recursion on the type level as a type constructor $\mathit{NATREC}$:
 \[ \inferrule{\G \entails \atype{A_0} \quad \G, a: \Nat, b: \circled{?} \entails \atype{A_1} \quad \G \entails M : \Nat}{\G \entails \atype{\mathit{NATREC}(A_0; a,b.\; A_1)(M)}} \]
@@ -274,8 +274,8 @@ Even apart from the cumbersome repetition between definitions on the term and ty
 What we need is a type of types, a \emph{universe} $\mathcal{U}$.
 Membership in this type implies being a type:
 \[ \inferrule{\G \entails A : \mathcal{U}}{\G \entails \atype{A}} \]
-Then, we can do away with the distinction between terms and types, and use the usual rule for $\mathit{natrec}$ to type $P \coloneqq \mathit{natrec}(\top; \_, \_. \; \bot)$:
-\[ \inferrule{\G \entails A_0 : \mathcal{U} \quad \G, a : \Nat, b : \mathcal{U} \entails A_1 : \mathcal{U} \quad \G \entails M : \Nat}{\G \entails \mathit{natrec}(A_0; a, b.\; A_1)(M)} : \mathcal{U} \]
+Then, we can do away with the distinction between terms and types, and use the usual rule for $\mathit{natrec}$ to type $P(a) \coloneqq \mathit{natrec}(\top; \_, \_. \; \bot)(a)$:
+\[ \inferrule{\G \entails A_0 : \mathcal{U} \quad \G, a : \Nat, b : \mathcal{U} \entails A_1 : \mathcal{U} \quad \G \entails M : \Nat}{\G \entails \mathit{natrec}(A_0; a, b.\; A_1)(M) : \mathcal{U}} \]
 
 To show, for example, that $P(\mathit{zero}) \equiv \top$, we lift the structural equality $P(\mathit{zero}) \equiv \top : \mathcal{U}$ using the following rule:
 \[ \inferrule{\G \entails A \equiv B : \mathcal{U}}{\G \entails A \equiv B} \]
@@ -288,11 +288,11 @@ And so forth.
 Ideally, we would like $\mathcal{U}$ to encode all types.
 However, we cannot set $\mathcal{U} : \mathcal{U}$ because this would be inconsistent by Russel's paradox.
 To solve this problem, we define not just a single universe $\mathcal{U}$, but an infinite hierarchy of universes $\mathcal{U}_0: \mathcal{U}_1: \mathcal{U}_2 \dots$.
-Every universe is maximal in the sense that it is closed under our type constructors by the afore-mentioned rules.
+Every universe is maximal in the sense that it is closed under our type constructors by the aforem-entioned rules.
 This hierarchy is cumulative as per the following rule:
 \[ \inferrule{\G \entails M : \mathcal{U}_i}{\G \entails M : \mathcal{U}_{i + 1}}\]
 
-It is worth pointing out that by now, types can include arbitrarily complicated computation.
+It is worth pointing out that our types can now include arbitrarily complicated computation.
 
 \section{Higher identification}
 If $\mathit{Id}_A$ should be a notion of equality, we would expect for example $\mathit{Id}_{\Nat \to \Nat}(f, g)$ to be inhabited iff $\Pi a: \Nat.\; \mathit{Id}_{\Nat}(f~a, g~a)$ is.
@@ -301,7 +301,7 @@ Now that we introduced universes, what should $\mathit{Id}_{\mathcal{U}}$ look l
 It would be natural to consider two types $A, B : \mathcal{U}$ as equal iff they are isomorphic, i.e., if there are functions $f : A \to B$ and $g : B \to A$ such that $g \circ f \circled{=} \mathit{id}$ and $f \circ g \circled{=} \mathit{id}$.
 But which relation should we use for ``$\circled{=}$''?
 Requiring structural equality as $g(f(a)) \equiv a$ is way to fine.
-A slightly better step would be to require $\mathit{Id}_A(g(f(a)), a)$, and Vladimir Voevodsky's univalence goes into that direction. \medskip
+A better idea would be to require $\mathit{Id}_A(g(f(a)), a)$, and Vladimir Voevodsky's univalence goes into that direction. \medskip
 
 In \cref{W7:sec:identitytypes} of Week~7, we considered different ways of constructing elements of identity types:
 \begin{itemize}
@@ -326,7 +326,7 @@ In \cref{W7:sec:identitytypes} of Week~7, we considered different ways of constr
         \draw [->, bend right] (a) to node [below] {$Q \circ R$} (c);\end{tikzpicture}\end{center}
 \end{itemize}
 
-We would expect this structure to respect the groupoid laws:
+We would expect this structure to respect the groupoid\footnote{A groupoid is a generalization of a group in which elements are ``typed.'' Here, we can only concatenate paths $P$ and $Q$ as $P \circ Q$ if $P : \mathit{Id}_A(M, N)$ and $Q : \mathit{Id}_A(N, P)$, i.e., if the endpoint of path $P$ equals the starting point of path $Q$.} laws:
 \begin{enumerate}
     \item \label{idrev} $\mathit{id}^{-1} \circled{=} \mathit{id}$
     \item \label{trid} $Q \circ \mathit{id} \circled{=} Q$
@@ -337,7 +337,7 @@ We would expect this structure to respect the groupoid laws:
     \item $(P^{-1})^{-1} \circled{=} P$
 \end{enumerate}
 As we discussed in Week~7, choosing ``$\equiv$'' for ``$\circled{=}$'' only satisfies some of these laws.
-For example, property~\ref{idrev} is true, whereas at most one out of properties~\ref{trid} and \ref{idtr} holds–––depending on the exact program used to implement transitivity.
+For example, property~\ref{idrev} is true, whereas at most one out of properties~\ref{trid} and \ref{idtr} holds, depending on the exact program used to implement transitivity.
 
 To get the groupoid structure, we instead choose $\mathit{Id}_{\mathit{Id}_A}$ for ``$\circled{=}$'':
 
@@ -364,7 +364,7 @@ Borrowing intuitions from homotopy theory, this term can be thought of as a cont
 
 Generally, the groupoid laws hold ``up to higher identification''.
 We call the nesting depth of $\mathit{Id}_{\mathit{Id}_{._{._{.}}}}$ its dimension.
-Again, in the language of homotopy, this corresponds to going from points (dimension 0) to paths between points (dimension 1) to paths between paths between points (dimension 2) and so forth.
+Again, in the language of homotopy theory, this corresponds to going from points (dimension 0) to paths between points (dimension 1) to paths between paths between points (dimension 2) and so forth.
 Since the groupoid laws for objects of some dimension hold up to an equivalence of one higher dimension, the iterated $\mathit{Id}$s form a so-called \emph{$\infty$-groupoid}.
 
 \section{Outlook}
