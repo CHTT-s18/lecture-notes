@@ -17,6 +17,9 @@
 \newcommand{\bbI}{\mathbb{I}}
 \newcommand{\Irecop}{\mathsf{Irec}}
 \newcommand{\Irec}[4]{\Irecop(#1;#2;#3)(#4)}
+\renewcommand{\natrecop}{\mathsf{natrec}}
+
+\usetikzlibrary{arrows}
 
 \begin{document}
 \maketitle
@@ -36,14 +39,13 @@ there is an ``isomorphism'' $f : A \to B$ between $A$ and $B$.
 The question remains how to express the idea in the type theory.
 
 This week, we are going to study Homotopy Type Theory (HoTT), which is an 
-extension of ITT with the following two ideas:
+extension of ITT with the following two ideas (\cite{HoTTBook:13}):
 \begin{enumerate}
 	\item \textbf{Univalence:} types are identified up to \emph{equivalence}, 
 	which is 
 	defined based on the idea of isomorphism.
-	\item \textbf{Higher inductive types:} types can specify both \emph{points} 
-	and 
-	\emph{paths}, with respect to identification.
+	\item \textbf{Higher inductive types:} types can specify \emph{points}, 
+	\emph{paths}, and higher paths.
 \end{enumerate}
 
 \section{Univalence}
@@ -69,7 +71,8 @@ Before proceeding, we review some notions of ITT:
 
 Intuitively, two types $A$ and $B$ are equal iff they are isomorphic up to 
 identification.
-First, we observe that any function $f : A \to B$ preserves identification.
+First, we observe that any function $f : A \to B$ preserves identification, i.e., 
+$f$ behaves functionally on paths.
 
 \begin{lemma}
 	If $f : A \to B$ and $P : \Ideq{A}{M}{M'}$, then there is an operation 
@@ -83,7 +86,7 @@ First, we observe that any function $f : A \to B$ preserves identification.
 	\]
 \end{proof}
 
-Then we want to extend this result to pi-types $f : 
+Then we want to extend this result to $\Pi$-types $f : 
 \hpitype{a}{A}{B}$.
 At the first attempt, we might write down the following formulation.
 
@@ -100,7 +103,6 @@ respectively.
 In other words, we need to come up with a notion of \emph{heterogeneous 
 paths} between $f(M)$ and $f(M')$.
 
-
 Recall that \emph{transport} has the following property:
 If $a : A \vdash B~\mathsf{type}$ and $P : \Ideq{A}{M}{M'}$, then 
 $\transport{a.B}(P) : \subst{M}{a}{B} \to \subst{M'}{a}{B}$, as well as 
@@ -108,8 +110,25 @@ $\transport{a.B}(\refl{A}{M})(Q) \equiv Q$ for any $Q : \subst{M}{a}{B}$.
 Then we can define heterogeneous paths between $f(M)$ and $f(M')$ as:
 \[
 \DIdeq{a.B}{P}{f(M)}{f(M')} \eqdef  \Ideq{ \subst{M'}{a}{B}  
-}{\transport{a.B}(P)(f(M))}{f(M')}.
+}{\transport{a.B}(P)(f(M))}{f(M')}
 \]
+which is illustrated by the following figure.
+
+\begin{center}
+	\begin{tikzpicture}[->,>=stealth',auto,node distance=1cm and 3cm,every 
+	loop/.style={min distance=5mm,in=45,out=135,looseness=5}]
+	\node [circle, draw=black, inner sep=0pt, minimum size=2mm] (a) 
+	[label=below:$f(M):\subst{M}{a}{B}$] {};
+	\node [circle, draw=black, inner sep=0pt, minimum size=2mm, right=of a] 
+	(b) 
+	[label=below:$f(M'):\subst{M'}{a}{B}$] {};
+	\node [circle, draw=black, inner sep=0pt, minimum size=2mm, above=of 
+	b] (c) [label=$\transport{a.B}(P)(f(M))$] {};
+	\path[-] (a) edge [dashed] node {horizontal path} (b);
+	\path[->] (a) edge [bend left=35] node {} (c);
+	\path[-] (b) edge node [right] {vertical path} (c);
+	\end{tikzpicture}
+\end{center}
 
 \begin{lemma}
 	If $f : \hpitype{a}{A}{B}$ and $P: \Ideq{A}{M}{M'}$, then there is an 
@@ -211,7 +230,8 @@ In fact, we are able to define a map from $\Ideq{\calU}{A}{B}$ to $A
 
 However, we could not \emph{prove} that $\mathsf{idtoequiv}_{A,B}$ is an 
 equivalence.
-Instead, we introduce an \emph{axiom} to ensure it is an equivalence.
+Instead, we introduce an \emph{axiom} to ensure it is an equivalence: 
+Voevodsky’s \emph{univalence axiom}.
 
 \begin{axiom}[Univalence]
 	$\mathsf{idtoequiv}_{A,B}$ is an equivalence.
@@ -313,7 +333,8 @@ By univalence axiom we obtain the following identification.
 	inhabitants.
 \end{lemma}
 \begin{proof}
-	By transitivity of identification and lemma above we can derive the following:
+	By transitivity of identification and lemmas above we can derive the 
+	following:
 	\[
 	\begin{array}{cl}
 	& \mathsf{Paths}(A \to B) \\
@@ -341,8 +362,6 @@ By univalence axiom we obtain the following identification.
 
 \section{Higher Inductive Types}
 
-\renewcommand{\natrecop}{\mathsf{natrec}}
-
 Inductive types are essentially characterized by a ``mapping out'' property.
 Recall the formalization of natural numbers.
 We define two introduction forms (for zero and successors, respectively), and 
@@ -365,7 +384,8 @@ specification.
 \end{mathpar}
 
 As a generalization of the idea, in defining a higher inductive type, we might 
-have constructors for not only \emph{points}, but also \emph{paths} in that 
+have constructors for not only \emph{points}, but also \emph{paths} as well 
+as higher paths in that 
 type.
 In other words, an inductively defined type $A$ is somehow coupled to 
 $\Id{A}{-}{-}$, $\Id{A}{-}{-}$ is somehow coupled to 
@@ -410,11 +430,31 @@ The following properties should hold:
 Then we consider the general case where $A$ could depend on the value of 
 $M$.
 Similar to previous discussion on $\mathsf{ap}$ and $\mathsf{apd}$, we 
-make use of transport to establish heterogeneous paths.
+make use of transport to establish heterogeneous paths, which is illustrated by 
+the following figure.
+
+\begin{center}
+	\begin{tikzpicture}[->,>=stealth',auto,node distance=1cm and 3cm,every 
+	loop/.style={min distance=5mm,in=45,out=135,looseness=5}]
+	\node [circle, draw=black, inner sep=0pt, minimum size=2mm] (a) 
+	[label=below:$M_0:\subst{0}{i}{A}$] {};
+	\node [circle, draw=black, inner sep=0pt, minimum size=2mm, right=of a] 
+	(b) 
+	[label=below:$M_1:\subst{1}{i}{A}$] {};
+	\node [circle, draw=black, inner sep=0pt, minimum size=2mm, above=of 
+	b] (c) [label=$\transport{i.A}(\mathsf{seg})(M_0)$] {};
+	\path[-] (a) edge [dashed] node {$M_{\mathsf{seg}}$} (b);
+	\path[->] (a) edge [bend left=35] node {} (c);
+	\path[-] (b) edge node [right] {vertical path} (c);
+	\end{tikzpicture}
+\end{center}
+
+The general elimination form is the following:
 \begin{mathpar}
 	\inferrule{ \Gamma, i : \bbI \vdash A~\mathsf{type} \\ \Gamma \vdash M : 
 	\bbI \\ \Gamma \vdash M_0 : \subst{0}{i}{A} \\ \Gamma \vdash M_1 : 
-	\subst{1}{i}{A} \\ \Gamma \vdash \DIdeq{i.A}{\mathsf{seg}}{M_0}{M_1} 
+	\subst{1}{i}{A} \\ \Gamma \vdash M_{\mathsf{seg}} : 
+	\DIdeq{i.A}{\mathsf{seg}}{M_0}{M_1} 
 	}{ \Gamma \vdash \Irec{M_0}{M_1}{M_\mathsf{seg}}{M} : 
 	\subst{M}{i}{A} }
 \end{mathpar}
@@ -439,6 +479,30 @@ make use of transport to establish heterogeneous paths.
 	It is straightforward to show they are mutually inverse.
 \end{proof}
 
+Although the interval type is not very interesting, it has some interesting 
+features, such as it could lead to another proof of function extensionality.
+
+\begin{lemma}
+	$\mathsf{Paths}(A \to B)$ is identical to $\mathsf{Htpy}(A,B)$, i.e., $ 
+	\Ideq{\calU}{\mathsf{Paths}(A \to B)}{\mathsf{Htpy}(A,B)}$ has 
+	inhabitants.
+\end{lemma}
+\begin{proof}
+	By transitivity of identification and lemmas above we can derive the 
+	following:
+	\[
+	\begin{array}{cl}
+	& \mathsf{Paths}(A \to B) \\
+	=_{\calU} & \bbI \to (A \to B) \\
+	=_{\calU} & (\bbI \times A) \to B \\
+	=_{\calU} & (A \times \bbI) \to B \\
+	=_{\calU} & A \to (\bbI \to B) \\
+	=_{\calU} & A \to \mathsf{Paths}(B) \\
+	=_{\calU} & \mathsf{Htpy}(A,B).
+	\end{array}
+	\]
+\end{proof}
+
 \section{Outlook}
 
 We will finish exploration of HoTT by investigating another example of higher 
@@ -446,7 +510,7 @@ inductive types, the \emph{circle} type, which contains a base (as a
 point) and a loop (as a path).
 Then we will redevelop the idea of \emph{dimensionality} directly and turn to 
 discuss cubical type theory, which takes care of computationality and 
-univalence becomes definable in the framework.
+univalence becomes definable in that framework.
 
 \bibliographystyle{plainnat}
 \bibliography{ctt}
