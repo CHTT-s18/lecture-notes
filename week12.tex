@@ -1,0 +1,202 @@
+\documentclass{article}
+\usepackage{chtt-notes}
+
+\scribes{Ryan Kavanaugh, Jon Sterling}
+\week{12}
+% The following command will let you cross-reference labels
+% in the files week1.tex, week2.tex, \ldots, week\@week.tex,
+% where if l is a label in ``weekN.tex'', then you can access
+% the label using \cref{WN:l}.
+\doXRs
+
+% General remark: Using \cref{label} will fill in the appropriate
+% environment name. For example,
+% ``\begin{lemma}\label{lem:foo} ...\end{lemma} By \cref{lem:foo}''
+% will produce ``Lemma 15 ... By lemma~15''
+
+
+\newcommand\Interval{\mathbb{I}}
+\newcommand\IIndOp{\Interval\textsf{-ind}}
+\newcommand\IInd[5]{\IIndOp\Squares*{#1}\Parens*{#2;#3;#4}\Parens*{#5}}
+\newcommand\Seg{\mathsf{seg}}
+\newcommand\Transport[3]{\mathsf{tr}\Squares*{#1}\Parens*{#2;#3}}
+
+\newcommand\Circle{\mathbb{C}}
+\newcommand\Base{\mathsf{base}}
+\newcommand\Loop{\mathsf{loop}}
+\newcommand\CIndOp{\Circle\textsf{-ind}}
+\newcommand\CInd[4]{\CIndOp\Squares{#1}\Parens*{#2;#3}\Parens{#4}}
+
+\DeclarePairedDelimiter\Parens{\lparen}{\rparen}
+\DeclarePairedDelimiter\Squares{[}{]}
+
+\usetikzlibrary{arrows}
+
+\begin{document}
+\maketitle
+
+\section{Last Time}
+
+Last time, we introudced ``higher'' inductive definitions,
+simultaneously defining the types $A$, $\Id{A}{-}{-}$,
+$\Id{\Id{A}{-}{-}}{-}{-}$, etc.\ by their generators.
+
+We also introduced the abstract interval $\Interval$ with endpoints
+$0,1:\Interval$ and path constructor $\Seg:\Id{\Interval}{0}{1}$. To
+construct a map out of the interval into a type $A$ is to ``draw a
+line'' in the type $A$: you specify two points, and a path in $A$ that
+connects them. In fact, a map $\Interval^n\to{}A$ can be thought of as
+a defining an $n$-cube in $A$.
+
+\section{Elimination for the interval}
+
+The elimination rule (induction principle) for the interval is written
+as follows, writing $\DIdeq{i.C}{\Seg}{M_0}{M_1}$ for the homogeneous
+identification $\Ideq{\subst{1}{i}{C}}{\Transport{i.C}{\Seg}{M_0}}{M_1}$:
+%
+\begin{mathpar}
+  \inferrule{
+    \hasTF{\Gamma,u:\Interval}{C}
+    \\
+    \hasEF{\Gamma}{M}{\Interval}
+    \\
+    \hasEF{\Gamma}{M_0}{\subst{0}{i}{C}}
+    \\
+    \hasEF{\Gamma}{M_1}{\subst{1}{i}{C}}
+    \\
+    \hasEF{\Gamma}{M_\Seg}{
+      \DIdeq{i.C}{\Seg}{M_0}{M_1}
+    }
+  }{
+    \hasEF{\Gamma}{
+      \IInd{i.C}{M_0}{M_1}{M_\Seg}{M}
+    }{
+      \subst{M}{i}{C}
+    }
+  }
+\end{mathpar}
+
+For well-typed instances of the elimination form, we impose the
+following beta rules:
+\begin{mathpar}
+  \inferrule{}{
+    \hasEEF{
+      \IInd{i.C}{M_0}{M_1}{M_\Seg}{0}
+    }{M_0}{
+      \subst{0}{i}{C}
+    }
+  }
+  \and
+  \inferrule{}{
+    \hasEEF{
+      \IInd{i.C}{M_0}{M_1}{M_\Seg}{1}
+    }{M_1}{
+      \subst{1}{i}{C}
+    }
+  }
+\end{mathpar}
+
+We also have a ``propositional beta rule'' for the $\Seg$ constructor;
+in this particular formal system, we are not free to impose a
+definitional equality, which is a bit strange:
+\[
+  \Ideq{
+    \Parens*{\DIdeq{i.C}{\Seg}{M_0}{M_1}}
+  }{
+    \hapd{}{
+      \IInd{i.C}{M_0}{M_1}{M_\Seg}{-}
+    }\Parens*{\Seg}
+  }{
+    M_\Seg
+  }
+\]
+
+\section{The Circle $\Circle$ aka $\mathbb{S}^1$}
+
+The circle $\Circle$ is given by the following generators, induction
+principle, and equations:
+%
+\begin{mathpar}
+  \inferrule{}{
+    \hasEF{\Gamma}{\Base}{\Circle}
+  }
+  \and
+  \inferrule{}{
+    \hasEF{\Gamma}{\Loop}{
+      \Ideq{\Circle}{\Base}{\Base}
+    }
+  }
+  \and
+  \inferrule{
+    \hasTF{\Gamma,c:\Circle}{C}
+    \\
+    \hasEF{\Gamma}{M_\Base}{
+      \subst{\Base}{c}{C}
+    }
+    \\
+    \hasEF{\Gamma}{M_\Loop}{
+      \DIdeq{c.C}{\Loop}{M_\Base}{M_\Base}
+    }
+  }{
+    \hasEF{\Gamma}{
+      \CInd{c.C}{M_\Base}{M_\Loop}{M}
+    }{
+      \subst{M}{c}{C}
+    }
+  }
+  \\
+  \hasEEF{
+    \CInd{c}{C}{M_\Base}{M_\Loop}{\Base}
+  }{M_\Base}{
+    \subst{\Base}{c}{C}
+  }
+  \\
+  \Ideq{
+    \Parens*{
+      \DIdeq{c.C}{\Loop}{M_\Base}{M_\Base}
+    }
+  }{
+    \hapd{}{
+      \CInd{c.C}{M_\Base}{M_\Loop}{-}
+    }\Parens*{\Loop}
+  }{M_\Loop}
+\end{mathpar}
+
+One thing worth pointing out is that it would have been possible (but
+not correct) to replace the third premise of the elimination rule with
+$\hasEF{\Gamma}{M_\Loop}{\Ideq{\subst{\Base}{c}{C}}{M_\Base}{M_\Base}}$. This
+would have been type-correct, but it does not capture the right case
+in the induction principle, which should be to exhibit a loop in $C$
+which lies over the generating $\Loop$ in $\Circle$.
+
+\subsection{Loop space}
+
+There is the (based) loop space
+$\Omega\Parens*{A;a_0}\triangleq\Ideq{A}{a_0}{a_0}$ for any point
+$a:A$. Here, the groupoid laws become \emph{group} laws, because the
+endpoints are the same. To ensure that this is actually a group, one
+can take its ``zero-truncation''
+$\parallel\Omega\Parens*{A;a_0}\parallel_0$, in which all the higher
+structure has been squashed down to reflexivities. This truncation of
+the loop space is called the ``fundamental group'' of a type.
+
+Using the univalence axiom, it can be shown that the loop space of the
+circle $\Circle$ with base point $\Base$ can be identified with the
+group of integers under addition. Because the integers are already
+0-truncated, we have also shown that the fundamental group of the
+circle is the integers~\citep{Licata-Shulman:13}.
+
+
+\section{What is the computational meaning of ``HoTT''?}
+
+To study the degree to which HoTT has computational meaning (i.e.\
+develop a way to phrase homotopy type theory which does have
+computational meaning), we return to Martin-L\"of's version of the
+notion of a \emph{judgment}, which forms the epistemic foundation of
+modern type theory~\citep{MartinLof:87,MartinLof:94,MartinLof:96}
+
+\nocite{HoTTBook:13}
+\bibliographystyle{plainnat}
+\bibliography{ctt}
+
+\end{document}
