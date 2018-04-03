@@ -1,0 +1,518 @@
+\documentclass{article}
+\usepackage{chtt-notes}
+\scribes{Di Wang}
+\week{11}
+% The following command will let you cross-reference labels
+% in the files week1.tex, week2.tex, \ldots, week\@week.tex,
+% where if l is a label in ``weekN.tex'', then you can access
+% the label using \cref{WN:l}.
+\doXRs
+
+% General remark: Using \cref{label} will fill in the appropriate
+% environment name. For example,
+% ``\begin{lemma}\label{lem:foo} ...\end{lemma} By \cref{lem:foo}''
+% will produce ``Lemma 15 ... By lemma~15''
+
+\newcommand{\calU}{\mathcal{U}}
+\newcommand{\bbI}{\mathbb{I}}
+\newcommand{\Irecop}{\mathsf{Irec}}
+\newcommand{\Irec}[4]{\Irecop(#1;#2;#3)(#4)}
+\renewcommand{\natrecop}{\mathsf{natrec}}
+
+\usetikzlibrary{arrows}
+
+\begin{document}
+\maketitle
+
+\section{Setting the Scene}
+
+Last week, we further explored some properties of the semantics of 
+computational dependent type theory, such as functionality, P.E.R valued, 
+symmetry, and transitivity.
+Then we revisited Intensional Type Theory (ITT) and claimed there is no 
+notion of function extensionality, and we even can not prove $0 \neq 1$ in ITT.
+We enriched ITT by introducing \emph{universes}, i.e., types of types, and 
+studied higher identification $\mathsf{Id}_\calU$ in a universe $\calU$.
+We explored the \emph{groupoid} structure of identification.
+Intuitively, for two types $A,B : \calU$, $\Id{\calU}{A}{B}$ is inhabited if 
+there is an ``isomorphism'' $f : A \to B$ between $A$ and $B$.
+The question remains how to express the idea in the type theory.
+
+This week, we are going to study Homotopy Type Theory (HoTT), which is an 
+extension of ITT with the following two ideas (\cite{HoTTBook:13}):
+\begin{enumerate}
+	\item \textbf{Univalence:} types are identified up to \emph{equivalence}, 
+	which is 
+	defined based on the idea of isomorphism.
+	\item \textbf{Higher inductive types:} types can specify \emph{points}, 
+	\emph{paths}, and higher paths.
+\end{enumerate}
+
+\section{Univalence}
+
+The question we are going to address in this section is the following:
+\begin{quotation}
+	How do we characterize $\Id{\calU}{A}{B}$ for types $A,B:\calU$ in ITT 
+	enriched with universes?
+\end{quotation}
+
+Before proceeding, we review some notions of ITT:
+\begin{table}[h]
+	\centering
+	\begin{tabular}{c@{\hspace{3em}}l}
+		$\Id{A}{M}{N}, \Ideq{A}{M}{N}$ & identity type, identification type, path 
+		type \\
+		$\Idelim{a,b,c.C}{a.Q}{P}$ & elimination form of the identity type, path 
+		induction \\
+		$\refl{A}{M}$ & introduction form of the identity type \\
+		$\transport{a.B}(P)$ & transport
+	\end{tabular}
+\end{table}
+
+Intuitively, two types $A$ and $B$ are equal iff they are isomorphic up to 
+identification.
+First, we observe that any function $f : A \to B$ preserves identification, i.e., 
+$f$ behaves functionally on paths.
+
+\begin{lemma}
+	If $f : A \to B$ and $P : \Ideq{A}{M}{M'}$, then there is an operation 
+	$\hap{f}{P} : \Ideq{B}{f(M)}{f(M')}$, such that $\hap{f}{\refl{A}{M}} 
+	\equiv \refl{B}{f(M)}$.
+\end{lemma}
+\begin{proof}
+	We give a definition of $\hap{f}{P}$ by path induction on $P$:
+	\[
+	\hap{f}{P} \eqdef  \Idelim{a,b,-. \Ideq{B}{f(a)}{f(b)}}{a.\refl{B}{f(a)}}{P}.
+	\]
+\end{proof}
+
+Then we want to extend this result to $\Pi$-types $f : 
+\hpitype{a}{A}{B}$.
+At the first attempt, we might write down the following formulation.
+
+\begin{claim}
+	If $f : \hpitype{a}{A}{B}$ and $P : \Ideq{A}{M}{M'}$, then there is an 
+	operation $\hapd{f}{P} : \Ideq{B}{f(M)}{f(M')}$.
+\end{claim}
+
+However, this statement will not typecheck---$B$ could depend on $a$, thus 
+$f(M)$ and 
+$f(M')$ could have different types $\subst{M}{a}{B}$ and 
+$\subst{M'}{a}{B}$, 
+respectively.
+In other words, we need to come up with a notion of \emph{heterogeneous 
+paths} between $f(M)$ and $f(M')$.
+
+Recall that \emph{transport} has the following property:
+If $a : A \vdash B~\mathsf{type}$ and $P : \Ideq{A}{M}{M'}$, then 
+$\transport{a.B}(P) : \subst{M}{a}{B} \to \subst{M'}{a}{B}$, as well as 
+$\transport{a.B}(\refl{A}{M})(Q) \equiv Q$ for any $Q : \subst{M}{a}{B}$.
+Then we can define heterogeneous paths between $f(M)$ and $f(M')$ as:
+\[
+\DIdeq{a.B}{P}{f(M)}{f(M')} \eqdef  \Ideq{ \subst{M'}{a}{B}  
+}{\transport{a.B}(P)(f(M))}{f(M')}
+\]
+which is illustrated by the following figure.
+
+\begin{center}
+	\begin{tikzpicture}[->,>=stealth',auto,node distance=1cm and 3cm,every 
+	loop/.style={min distance=5mm,in=45,out=135,looseness=5}]
+	\node [circle, draw=black, inner sep=0pt, minimum size=2mm] (a) 
+	[label=below:$f(M):\subst{M}{a}{B}$] {};
+	\node [circle, draw=black, inner sep=0pt, minimum size=2mm, right=of a] 
+	(b) 
+	[label=below:$f(M'):\subst{M'}{a}{B}$] {};
+	\node [circle, draw=black, inner sep=0pt, minimum size=2mm, above=of 
+	b] (c) [label=$\transport{a.B}(P)(f(M))$] {};
+	\path[-] (a) edge [dashed] node {horizontal path} (b);
+	\path[->] (a) edge [bend left=35] node {} (c);
+	\path[-] (b) edge node [right] {vertical path} (c);
+	\end{tikzpicture}
+\end{center}
+
+\begin{lemma}
+	If $f : \hpitype{a}{A}{B}$ and $P: \Ideq{A}{M}{M'}$, then there is an 
+	operation $\hapd{f}{P} : \DIdeq{a.B}{P}{f(M)}{f(M')}$.
+\end{lemma}
+\begin{proof}
+	We give a definition of $\hapd{f}{P}$ by path induction on $P$:
+	\[
+	\hapd{f}{P} \eqdef \Idelim{a,b,p. 
+	 \DIdeq{a.B}{p}{f(a)}{f(b)} }{a. \refl{B}{f(M)} 
+	}{P}.
+	\]
+\end{proof}
+
+Then we need to reason about when a function $f : A \to B$ is a bijection up to 
+identification.
+Intuitively, $f$ is a bijection if for any $b : B$, $f^{-1}(b)$ contains exactly 
+one element.
+To proceed, we give a formal account of $f^{-1}(b)$.
+
+\begin{definition}[Fibers]
+	For any $b : B$, its fiber is defined as $f^{-1}(b) \eqdef \hsigtype{a}{A}{ 
+	\Ideq{B}{f(a)}{b} }$.
+\end{definition}
+
+Rather than containing a single element, we want to express the property as 
+containing a \emph{center} such that every element has a path to the center.
+
+\begin{definition}[Contractibility]
+	A type $A$ is contractible iff there exists a center $c : A$ such that every 
+	element $a : A$ is identical to $c$.
+	Formally, the following type expresses contractibility:
+	\[
+	\mathsf{isContractible}(A) \eqdef  \hsigtype{c}{A}{ \hpitype{a}{A}{ 
+			\Ideq{A}{a}{c} } }.
+	\]
+	A contractible type is also called a \emph{singleton}.
+\end{definition}
+
+Now we are able to express that $f : A \to B$ is a bijection up to identification.
+
+\begin{definition}[Equivalences]
+	$f : A \to B$ is an equivalence between types $A$ and $B$, iff for any $b : B$, 
+	its fiber is contractible.
+	Formally, the following type expresses this property:
+	\[
+	\mathsf{isEquiv}(f) \eqdef  
+	\hpitype{b}{B}{\mathsf{isContractible}(f^{-1}(b))}.
+	\]
+	Further, we say that two types $A,B : \calU$ are \emph{equivalent}, iff there 
+	is an equivalence $f : A \to B$.
+	Formally, the following type characterizes this property:
+	\[
+	A \simeq B \eqdef \hsigtype{f}{A \to B}{\mathsf{isEquiv}(f)}.
+	\]
+\end{definition}
+
+Recall that our intuition is that two types $A$ and $B$ are equal iff they are 
+isomorphic up to identification.
+We might come up with the following claim:
+
+\begin{proposition}[Pre-univalence]
+	$\Ideq{\calU}{A}{B}$ has inhabitants if and only if $A \simeq B$ does.
+\end{proposition}
+
+We can strengthen this idea by claiming the two types $\Ideq{\calU}{A}{B}$ 
+and $A \simeq 
+B$ are indeed equivalent.
+In fact, we are able to define a map from $\Ideq{\calU}{A}{B}$ to $A 
+\simeq B$.
+
+\begin{lemma}
+	There is a function $\mathsf{idtoequiv}_{A,B} : (\Ideq{\calU}{A}{B}) \to (A 
+	\simeq 
+	B)$.
+\end{lemma}
+\begin{proof}
+	For any path $p : \Ideq{\calU}{A}{B}$, we define 
+	$\mathsf{idtoequiv}_{A,B}(p)$ 
+	by path induction on $p$:
+	\[
+	\mathsf{idtoequiv}_{A,B} \eqdef \lambda p : \Ideq{\calU}{A}{B}. 
+	\Idelim{a,b,-. a 
+	\simeq b}{a.  \langle \mathsf{id}_a,  
+	\lambda x : a. \mathsf{pf\_contr}  \rangle 
+	}{p}
+	\]
+	where $a : \calU, x : a \vdash \mathsf{pf\_contr} : 
+	\mathsf{isContractible}((\mathsf{id}_a)^{-1}(x))$.
+	Let $T \eqdef (\mathsf{id}_a)^{-1}(x)$.
+	$\mathsf{pf\_contr}$ is defined as
+	\[
+	\mathsf{pf\_contr} \eqdef \langle  \langle x, 
+	\refl{a}{x} \rangle , 
+	\lambda y : 
+	T.  \refl{T}{ \langle y.\mathsf{1}, y.\mathsf{2}  \rangle   } \rangle.
+	\]
+\end{proof}
+
+However, we could not \emph{prove} that $\mathsf{idtoequiv}_{A,B}$ is an 
+equivalence.
+Instead, we introduce an \emph{axiom} to ensure it is an equivalence: 
+Voevodsky’s \emph{univalence axiom}.
+
+\begin{axiom}[Univalence]
+	$\mathsf{idtoequiv}_{A,B}$ is an equivalence.
+	For $A,B : \calU$ and $E : A \simeq B$, the axiom gives us a term 
+	$\mathsf{ua}(A,B,E) : \Ideq{\calU}{A}{B}$.
+\end{axiom}
+
+\begin{remark}
+	The introduction of univalence axiom breaks computationality.
+	Suppose we are evaluating $\Idelim{a,b,p.C}{a.Q}{\mathsf{ua}(A,B,E)}$.
+	The computation is stuck because $\mathsf{ua}(A,B,E)$ is given by an axiom 
+	and thus irreducible.
+	The insight is that we should define entailment \emph{before} implication, 
+	i.e., first express identity judgmentally, and then internalize the identity into 
+	the language.
+	We will explore this idea in future lectures.
+\end{remark}
+
+We then turn to show that ITT extended with univalence has function 
+extensionality.
+
+\begin{definition}[Total path spaces]
+	The total path space in a type $A$ is characterized by the type 
+	$\mathsf{Paths}(A) \eqdef 
+	\hsigtype{a}{A}{\hsigtype{b}{A}{\Ideq{A}{a}{b}}}$.
+	In addition, $\hsigtype{b}{A}{\Ideq{A}{a}{b}}$ is called the \emph{based 
+	path space} at $a$.
+	Based path spaces are contractible by definition.
+\end{definition}
+
+\begin{lemma}
+	$A$ is equivalent to $\mathsf{Paths}(A)$, i.e., $A \simeq 
+	\mathsf{Paths}(A)$ has inhabitants.
+\end{lemma}
+\begin{proof}
+	We prove this by showing there are a map $f$ from $A$ to 
+	$\mathsf{Paths}(A)$ and a map $g$ from $\mathsf{Paths}(A)$ to $A$, as 
+	well as $f$ and $g$ are mutually inverse.
+	\[
+	\begin{array}{rcl}
+	f & \eqdef & \lambda a :A. \langle a, a, \refl{A}{a} \rangle \\
+	g & \eqdef & \lambda t : \mathsf{Paths}(A). t.\mathsf{1}.
+	\end{array}
+	\]
+	It is straightforward to show that $\Ideq{A}{g(f(a))}{a}$ for all $a : A$.
+	We need to show that $\Ideq{\mathsf{Paths}(A)}{f(g(t))}{t}$ for all $t : 
+	\mathsf{Paths}(A)$, i.e., $\Ideq{\mathsf{Paths}(A)}{\langle t.\mathsf{1}, 
+	t.\mathsf{1}, \refl{A}{t.\mathsf{1}} \rangle }{t}$.
+	This is proved by the fact that $\langle t.\mathsf{1}, 
+	\refl{A}{t.\mathsf{1}} \rangle$ belongs to the based path space at 
+	$t.\mathsf{1}$, which is contractible.
+\end{proof}
+
+By univalence axiom we obtain the following identification.
+
+\begin{corollary}
+	$A$ is identical to $\mathsf{Paths}(A)$, i.e., 
+	$\Ideq{\calU}{A}{\mathsf{Paths}(A)}$ has inhabitants.
+\end{corollary}
+
+\begin{definition}[Homotopies]
+	The homotopy between types $A$ and $B$ is characterized by the 
+	type $\mathsf{Htpy}(A,B) \eqdef \hsigtype{f,g}{A \to B}{A \sim B}$, where 
+	$A \sim B \eqdef \hpitype{a}{A}{\Ideq{B}{f(a)}{g(a)}}$.
+\end{definition}
+
+\begin{lemma}
+	$A \to \mathsf{Paths}(B)$ is equivalent to $\mathsf{Htpy}(A,B)$, i.e., $(A 
+	\to \mathsf{Paths}(B)) \simeq \mathsf{Htpy}(A,B)$ has inhabitants.
+\end{lemma}
+\begin{proof}
+	We prove this by showing there are a map $f$ from $A \to 
+	\mathsf{Paths}(B)$ to $\mathsf{Htpy}(A,B)$ and a map $g$ from 
+	$\mathsf{Htpy}(A,B)$ to $A \to \mathsf{Paths}(B)$, as well as $f$ and $g$ 
+	are mutually inverse.
+	\[
+	\begin{array}{rcl}
+	f & \eqdef & \lambda F : A \to \mathsf{Paths}(B). \langle \lambda a : A. 
+	F(a).\mathsf{1}, \lambda a : A. F(a).\mathsf{2}, \lambda a:A. 
+	F(a).\mathsf{3} \rangle \\
+	g & \eqdef & \lambda H : \mathsf{Htpy}(A,B). \lambda a : A. \langle 
+	H.\mathsf{1}(a), H.\mathsf{2}(a), H.\mathsf{3}(a) \rangle.
+	\end{array}
+	\] 
+	It is straightforward to show they are mutually inverse.
+\end{proof}
+
+By univalence axiom we obtain the following identification.
+
+\begin{corollary}
+	$A \to \mathsf{Paths}(B)$ is identical to $\mathsf{Htpy}(A,B)$, i.e., 
+	$\Ideq{\calU}{A \to \mathsf{Paths}(B)}{\mathsf{Htpy}(A,B)}$ has 
+	inhabitants.
+\end{corollary}
+
+\begin{lemma}
+	$\mathsf{Paths}(A \to B)$ is identical to $\mathsf{Htpy}(A,B)$, i.e., 
+	$\Ideq{\calU}{\mathsf{Paths}(A \to B)}{\mathsf{Htpy}(A,B)}$ has 
+	inhabitants.
+\end{lemma}
+\begin{proof}
+	By transitivity of identification and lemmas above we can derive the 
+	following:
+	\[
+	\begin{array}{cl}
+	& \mathsf{Paths}(A \to B) \\
+	=_{\calU} & A \to B \\
+	=_{\calU} & A \to \mathsf{Paths}(B) \\
+	=_{\calU} & \mathsf{Htpy}(A,B).
+	\end{array}
+	\]
+\end{proof}
+
+\begin{corollary}
+	Univalence entails function extensionality.
+\end{corollary}
+\begin{proof}
+	Function extensionality states that identical functions map the same 
+	arguments to identical results.
+	Identical functions in $A \to B$ are captured by $\mathsf{Paths}(A\to B) = 
+	\hsigtype{f,g}{A\to B}{ \Ideq{A \to B}{f}{g} }$.
+	Functions that map the same arguments to identical results are captured  by 
+	$\mathsf{Htpy}(A,B) = \hsigtype{f,g}{A \to B}{ \hpitype{a}{A}{ 
+	\Ideq{A}{f(a)}{g(a)} } }$.
+	Because $\mathsf{Paths}(A \to B)$ is identical to $\mathsf{Htpy}(A,B)$, we 
+	conclude function extensionality in ITT extended with univalence.
+\end{proof}
+
+\section{Higher Inductive Types}
+
+Inductive types are essentially characterized by a ``mapping out'' property.
+Recall the formalization of natural numbers.
+We define two introduction forms (for zero and successors, respectively), and 
+one elimination form (i.e., natural recursion).
+Then we claim the natural number type is the least thing that satisfies the 
+specification.
+\begin{mathpar}
+	\inferrule[\rn{I-zero}]{ }{ \Gamma \vdash \natz : \mathsf{Nat} }
+	\and
+	\inferrule[\rn{I-succ}]{ \Gamma \vdash M : \mathsf{Nat} }{ \Gamma \vdash 
+	\nats{M} : \mathsf{Nat}  }
+	\and
+	\inferrule[\rn{E}]{ \Gamma,n:\mathsf{Nat} \vdash A~\mathsf{type} \\ 
+	\Gamma \vdash M : \mathsf{Nat} \\ \Gamma \vdash M_0 : 
+	[\natz/n]A \\ \Gamma,n:\mathsf{Nat},a:A \vdash M_1 : [\nats{n}/n]A  }{ 
+	\Gamma \vdash 
+	\natrec{n.A}{M_0}{n.a}{M_1}{M} : 
+	\subst{M}{n}{A} 
+	}
+\end{mathpar}
+
+As a generalization of the idea, in defining a higher inductive type, we might 
+have constructors for not only \emph{points}, but also \emph{paths} as well 
+as higher paths in that 
+type.
+In other words, an inductively defined type $A$ is somehow coupled to 
+$\Id{A}{-}{-}$, $\Id{A}{-}{-}$ is somehow coupled to 
+$\Id{\Id{A}{-}{-}}{*}{*}$, and so on.
+
+As an example, we explore the \emph{interval} type, denoted by $\bbI$.
+Following are the introduction forms.
+\begin{mathpar}
+	\inferrule{ }{ \Gamma \vdash 0 : \bbI }
+	\and
+	\inferrule{ }{ \Gamma \vdash 1 : \bbI }
+	\and
+	\inferrule{ }{ \Gamma \vdash \mathsf{seg} : \Id{\bbI}{0}{1} } 
+\end{mathpar}
+
+\begin{fact}
+	$\bbI$ is contractible.
+\end{fact}
+
+The elimination form is trickier than introduction forms---we should keep in 
+mind that the type is the least thing that satisfies our specification.
+At the first attempt, we assume the result type of the elimination does not 
+depend on the value to be eliminated.
+\begin{mathpar}
+	\inferrule{ \Gamma \vdash A ~\mathsf{type} \\ \Gamma \vdash M : \bbI \\ 
+	\Gamma \vdash M_0 : A \\ \Gamma \vdash M_1 : A \\ \Gamma \vdash 
+	M_{\mathsf{seg}} : \Id{A}{M_0}{M_1} }{ \Gamma \vdash 
+	\Irec{M_0}{M_1}{M_{\mathsf{seg}}}{M} : A }
+\end{mathpar}
+
+The following properties should hold:
+\[
+\begin{array}{l}
+\Irec{M_0}{M_1}{M_{\mathsf{seg}}}{0} \equiv M_0 \\
+\Irec{M_0}{M_1}{M_{\mathsf{seg}}}{1} \equiv M_1 \\
+\Ideq{\Id{A}{M_0}{M_1}}{ \hap{ 
+\Irec{M_0}{M_1}{M_{\mathsf{seg}}}{\cdot} 
+}{M_{\mathsf{seg}}} }{ M_{\mathsf{seg}}}
+\end{array}
+\]
+
+Then we consider the general case where $A$ could depend on the value of 
+$M$.
+Similar to previous discussion on $\mathsf{ap}$ and $\mathsf{apd}$, we 
+make use of transport to establish heterogeneous paths, which is illustrated by 
+the following figure.
+
+\begin{center}
+	\begin{tikzpicture}[->,>=stealth',auto,node distance=1cm and 3cm,every 
+	loop/.style={min distance=5mm,in=45,out=135,looseness=5}]
+	\node [circle, draw=black, inner sep=0pt, minimum size=2mm] (a) 
+	[label=below:$M_0:\subst{0}{i}{A}$] {};
+	\node [circle, draw=black, inner sep=0pt, minimum size=2mm, right=of a] 
+	(b) 
+	[label=below:$M_1:\subst{1}{i}{A}$] {};
+	\node [circle, draw=black, inner sep=0pt, minimum size=2mm, above=of 
+	b] (c) [label=$\transport{i.A}(\mathsf{seg})(M_0)$] {};
+	\path[-] (a) edge [dashed] node {$M_{\mathsf{seg}}$} (b);
+	\path[->] (a) edge [bend left=35] node {} (c);
+	\path[-] (b) edge node [right] {vertical path} (c);
+	\end{tikzpicture}
+\end{center}
+
+The general elimination form is the following:
+\begin{mathpar}
+	\inferrule{ \Gamma, i : \bbI \vdash A~\mathsf{type} \\ \Gamma \vdash M : 
+	\bbI \\ \Gamma \vdash M_0 : \subst{0}{i}{A} \\ \Gamma \vdash M_1 : 
+	\subst{1}{i}{A} \\ \Gamma \vdash M_{\mathsf{seg}} : 
+	\DIdeq{i.A}{\mathsf{seg}}{M_0}{M_1} 
+	}{ \Gamma \vdash \Irec{M_0}{M_1}{M_\mathsf{seg}}{M} : 
+	\subst{M}{i}{A} }
+\end{mathpar}
+
+\begin{lemma}
+	$\mathsf{Paths}(A)$ is identical to $\bbI \to A$.
+\end{lemma}
+\begin{proof}
+	By univalence axiom, it suffices to show that $\mathsf{Paths}(A)$ is 
+	equivalent to $\bbI \to A$.
+	We then show there are a map $f$ from $\mathsf{Paths}(A)$ to $\bbI \to A$ 
+	and a map $g$ from $\bbI \to A$ to $\mathsf{Paths}(A)$, as well as $f$ and 
+	$g$ are mutually inverse.
+	\[
+	\begin{array}{rcl}
+	f & \eqdef & \lambda t : \mathsf{Paths}(A). \lambda i : \bbI. 
+	\Irec{t.\mathsf{1}}{t.\mathsf{2}}{t.\mathsf{3}}{i} \\
+	g & \eqdef & \lambda h : \bbI \to A. \langle h(0), h(1), 
+	\hap{h}{\mathsf{seg}} \rangle.
+	\end{array}
+	\]
+	It is straightforward to show they are mutually inverse.
+\end{proof}
+
+Although the interval type is not very interesting, it has some interesting 
+features, such as it could lead to another proof of function extensionality.
+
+\begin{lemma}
+	$\mathsf{Paths}(A \to B)$ is identical to $\mathsf{Htpy}(A,B)$, i.e., $ 
+	\Ideq{\calU}{\mathsf{Paths}(A \to B)}{\mathsf{Htpy}(A,B)}$ has 
+	inhabitants.
+\end{lemma}
+\begin{proof}
+	By transitivity of identification and lemmas above we can derive the 
+	following:
+	\[
+	\begin{array}{cl}
+	& \mathsf{Paths}(A \to B) \\
+	=_{\calU} & \bbI \to (A \to B) \\
+	=_{\calU} & (\bbI \times A) \to B \\
+	=_{\calU} & (A \times \bbI) \to B \\
+	=_{\calU} & A \to (\bbI \to B) \\
+	=_{\calU} & A \to \mathsf{Paths}(B) \\
+	=_{\calU} & \mathsf{Htpy}(A,B).
+	\end{array}
+	\]
+\end{proof}
+
+\section{Outlook}
+
+We will finish exploration of HoTT by investigating another example of higher 
+inductive types, the \emph{circle} type, which contains a base (as a 
+point) and a loop (as a path).
+Then we will redevelop the idea of \emph{dimensionality} directly and turn to 
+discuss cubical type theory, which takes care of computationality and 
+univalence becomes definable in that framework.
+
+\bibliographystyle{plainnat}
+\bibliography{ctt}
+
+\end{document}

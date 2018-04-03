@@ -37,6 +37,12 @@
 \newtheorem*{exercise*}{Exercise}
 \newtheorem{example}[theorem]{Example}
 \newtheorem*{example*}{Example}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem*{proposition*}{Proposition}
+\newtheorem{axiom}[theorem]{Axiom}
+\newtheorem*{axiom*}{Axiom}
+\newtheorem{fact}[theorem]{Fact}
+\newtheorem*{fact*}{Fact}
 
 % \newtheorem{theorem}{Theorem}
 % \newtheorem{corollary}[theorem]{Corollary}
@@ -165,6 +171,13 @@
 \DeclareMathOperator{\dom}{dom}
 
 \newcommand{\E}{\mathcal{E}}
+
+% Homotopy type theory
+\newcommand{\hap}[2]{\mathsf{ap}_{#1}(#2)}
+\newcommand{\hapd}[2]{\mathsf{apd}_{#1}(#2)}
+\newcommand{\DIdeq}[4]{{#3} =_{#2}^{#1} {#4}}
+\newcommand{\hpitype}[3]{\Pi{#1}:{#2}.\;{#3}}
+\newcommand{\hsigtype}[3]{\Sigma{#1}:{#2}.\;{#3}}
 
 % Rule Name
 \newcommand{\rn}[1]{\textsc{(#1)}}
