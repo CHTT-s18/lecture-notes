@@ -184,7 +184,7 @@ Using the univalence axiom, it can be shown that the loop space of the
 circle $\Circle$ with base point $\Base$ can be identified with the
 group of integers under addition. Because the integers are already
 0-truncated, we have also shown that the fundamental group of the
-circle is the integers~\citep{Licata-Shulman:13}.
+circle is the integers~\citep{Licata:13}.
 
 
 \section{What is the computational meaning of ``HoTT''?}
@@ -193,7 +193,72 @@ To study the degree to which HoTT has computational meaning (i.e.\
 develop a way to phrase homotopy type theory which does have
 computational meaning), we return to Martin-L\"of's version of the
 notion of a \emph{judgment}, which forms the epistemic foundation of
-modern type theory~\citep{MartinLof:87,MartinLof:94,MartinLof:96}
+modern type theory~\citep{MartinLof:87,MartinLof:94,MartinLof:96}.
+
+The guiding idea is that judgments come first: structure which appears
+in the connectives and type constructors is developed using analogous
+structure at the level of judgments.
+
+Gentzen's key contribution was his stress on \emph{entailment}
+(hypothetical judgment) as being prior to implication; compare Hilbert
+systems which have \emph{only} implication. The contradiction between
+entailment and implication has a parallel in the old battle between
+lambda calculus and combinators.
+
+Entailment $J_0\vdash J_1$ expresses that the fact $J_1$ can be
+concluded once the fact $J_0$ is assumed, but it does not yet express
+\emph{generality}. The \emph{generic judgment} is the structure from
+which the universal quantification connective is built, in the same
+way as the hypothetical judgment lies underneath the implication
+connective; using the notation of \citet{MartinLof:notes:87}:
+\[
+  \inferrule{
+    \vert_x\ \Parens*{\trueF{A}}
+  }{
+    \trueF{\forall x.A}
+  }
+\]
+
+Constructivism (which we take here as the principle that the evidence
+of a proposition's truth is a mathematical object) suggests a
+consolidation of the hypothetical and the generic judgments into a
+single form, named ``hypothetico-general judgment'' by Martin-L\"of:
+\[
+  \framebox{$\hasEF{x_1:A_1,\ldots,x_n:A_n}{M}{A}$}
+\]
+
+This notation emphasizes the centrality of variables in type
+theory. We must reiterate type theory does not fix a particular
+interpretation of variables, but is instead compatible with multiple
+explanations of variables, each of which can be deployed in different
+settings with different aims. We will call out two possible
+interpretations of variables in particular:
+
+\medskip
+\begin{center}
+  \begin{tabular}{ll}
+    \textbf{formal} & \textbf{semantic}
+    \\
+    indeterminates / generic values & placeholders
+    \\
+    ``derivability'' & ``admissibility'' (careful!)
+    \\
+    $\hasEF{\Gamma}{M}{A}$ & $\hasEC{\Gamma}{M}{A}$
+  \end{tabular}
+\end{center}
+
+Both forms of judgment above share the \emph{structural properties}
+and present a consequence relation. However, the variables on the
+formal side range over open elements (elements that may themselves
+have free variables), whereas the variables on the semantic side range
+over only closed elements. The semantic consequence relation and
+account of variables as placeholders is essentially the mathematical
+notion of a variable, whereas the formal consequence relation and
+account of variables as indeterminates is proof-theoretic in nature,
+making terms analogous to polynomials.
+
+
+
 
 \nocite{HoTTBook:13}
 \bibliographystyle{plainnat}
