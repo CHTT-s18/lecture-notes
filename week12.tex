@@ -273,6 +273,42 @@ later in the course in the context of cubical type theory.
 
 
 
+\section{Judgmental structure of identifications}
+
+To give a type-theoretic account of paths/identifications, we must
+conceive them as an intrinsic concept in type theory, emanating from
+the judgmental base. We are not free to simply ``throw in''
+identifications without explaining them at the judgmental level, since
+this would disrupt many important properties of type theory, including
+its computational content.
+
+There are multiple possible ways to give a judgmental account of
+higher-dimensional structure, each of which is based on a different
+kind of shape; the type-theoretic community has mostly settled on a
+\emph{cubical} account of higher dimensional structure.\footnote{There
+  are several different possible flavors of cubical structure; it is a
+  matter of current scientific inquiry to determine the benefits and
+  drawbacks of each version of cubical structure.}
+
+In HoTT (which can be thought of as a ``vulgar globular'' account of
+higher structure), higher structure is captured by iterating the
+identification type. Instead, we want to give these dimension levels
+names:
+
+\begin{enumerate}
+\item points
+\item lines
+\item squares
+\item cubes
+\item[\ldots] (and beyond)
+\end{enumerate}
+
+Accordingly, we extend the judgments of type theory to indicate
+whether they are constructing a point in a type, or a line, or a cube,
+or a higher cube, etc.
+
+
+
 \nocite{HoTTBook:13}
 \bibliographystyle{plainnat}
 \bibliography{ctt}
