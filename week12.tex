@@ -26,6 +26,7 @@
 \newcommand\Loop{\mathsf{loop}}
 \newcommand\CIndOp{\Circle\textsf{-ind}}
 \newcommand\CInd[4]{\CIndOp\Squares{#1}\Parens*{#2;#3}\Parens{#4}}
+\newcommand\DimSubst[3]{#3\langle{#1}/{#2}\rangle}
 
 \DeclarePairedDelimiter\Parens{\lparen}{\rparen}
 \DeclarePairedDelimiter\Squares{[}{]}
@@ -305,9 +306,36 @@ names:
 
 Accordingly, we extend the judgments of type theory to indicate
 whether they are constructing a point in a type, or a line, or a cube,
-or a higher cube, etc.
+or a higher cube, etc. For now, we might write
+$\hasEEC{\Gamma}{M}{M'}{A}\mathrel{@}n$ to mean that $M$ and $M'$ are
+equal ``cubes'' of type $A$ of dimension $n$. When $n=0$, this is the
+familiar member equality judgment, but when $n\geq 1$, this form of
+judgment asserts the unfamiliar equation between higher-dimensional
+elements of a higher-dimensional type.
 
+The way that we make sense of this is to say that an ``$n$-dimensional
+type'' is a \emph{family} of types that is indexed by the generic
+$n$-cube, i.e.\ the $n$th power of the interval. To make this precise,
+we replace this $n$ parameter with a \emph{context} $\Psi$ (of length
+$n$) of dimension variables, which are allowed to occur in
+$\Gamma,M,M',A$.
 
+When we assert the judgment $\hasEC{M}{A}\ [x]$, we are saying that
+$A$ is a \emph{line of types} in the $x$ direction, and that $M$ is a
+\emph{line of elements} of $A$. To get the left endpoint of the type
+$A$ we write $\DimSubst{0}{x}{M}$, and we have
+$\hasEC{\DimSubst{0}{x}{M}}{\DimSubst{0}{x}{A}}\ [\cdot]$. One of the
+big difficulties of higher dimensional type theory is to develop a
+theory of coercions and compositions which let us move an element from
+the $0$ fiber to the $1$ fiber, or even the $0$ fiber to the $x$
+fiber! We will study this further in future lectures.
+
+It is important to note that the variables $\Psi=x,y,\ldots$ range
+over an abstract notion of interval, rather than a metric one. In
+particular, we do not have any notion of distance; you are either at
+the endpoints $\DimSubst{0}{x}{A}$, $\DimSubst{1}{x}{A}$ or even in
+``middle'' $\DimSubst{y}{x}{A}$, but there is no sense in which you
+can be ``two-thirds of the way'', etc.
 
 \nocite{HoTTBook:13}
 \bibliographystyle{plainnat}
