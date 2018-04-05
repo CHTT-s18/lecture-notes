@@ -1,0 +1,344 @@
+\documentclass{article}
+\usepackage{chtt-notes}
+
+\scribes{Ryan Kavanaugh, Jon Sterling}
+\week{12}
+% The following command will let you cross-reference labels
+% in the files week1.tex, week2.tex, \ldots, week\@week.tex,
+% where if l is a label in ``weekN.tex'', then you can access
+% the label using \cref{WN:l}.
+\doXRs
+
+% General remark: Using \cref{label} will fill in the appropriate
+% environment name. For example,
+% ``\begin{lemma}\label{lem:foo} ...\end{lemma} By \cref{lem:foo}''
+% will produce ``Lemma 15 ... By lemma~15''
+
+
+\newcommand\Interval{\mathbb{I}}
+\newcommand\IIndOp{\Interval\textsf{-ind}}
+\newcommand\IInd[5]{\IIndOp\Squares*{#1}\Parens*{#2;#3;#4}\Parens*{#5}}
+\newcommand\Seg{\mathsf{seg}}
+\newcommand\Transport[3]{\mathsf{tr}\Squares*{#1}\Parens*{#2;#3}}
+
+\newcommand\Circle{\mathbb{C}}
+\newcommand\Base{\mathsf{base}}
+\newcommand\Loop{\mathsf{loop}}
+\newcommand\CIndOp{\Circle\textsf{-ind}}
+\newcommand\CInd[4]{\CIndOp\Squares{#1}\Parens*{#2;#3}\Parens{#4}}
+\newcommand\DimSubst[3]{#3\langle{#1}/{#2}\rangle}
+
+\DeclarePairedDelimiter\Parens{\lparen}{\rparen}
+\DeclarePairedDelimiter\Squares{[}{]}
+
+\usetikzlibrary{arrows}
+
+\begin{document}
+\maketitle
+
+\section{Last Time}
+
+Last time, we introduced ``higher'' inductive definitions,
+simultaneously defining the types $A$, $\Id{A}{-}{-}$,
+$\Id{\Id{A}{-}{-}}{-}{-}$, etc.\ by their generators.
+
+We also introduced the abstract interval $\Interval$ with endpoints
+$0,1:\Interval$ and path constructor $\Seg:\Id{\Interval}{0}{1}$. To
+construct a map out of the interval into a type $A$ is to ``draw a
+line'' in the type $A$: you specify two points, and a path in $A$ that
+connects them. In fact, a map $\Interval^n\to{}A$ can be thought of as
+a defining an $n$-cube in $A$.
+
+\section{Elimination for the interval}
+
+The elimination rule (induction principle) for the interval is written
+as follows, writing $\DIdeq{i.C}{\Seg}{M_0}{M_1}$ for the homogeneous
+identification $\Ideq{\subst{1}{i}{C}}{\Transport{i.C}{\Seg}{M_0}}{M_1}$:
+%
+\begin{mathpar}
+  \inferrule{
+    \hasTF{\Gamma,u:\Interval}{C}
+    \\
+    \hasEF{\Gamma}{M}{\Interval}
+    \\
+    \hasEF{\Gamma}{M_0}{\subst{0}{i}{C}}
+    \\
+    \hasEF{\Gamma}{M_1}{\subst{1}{i}{C}}
+    \\
+    \hasEF{\Gamma}{M_\Seg}{
+      \DIdeq{i.C}{\Seg}{M_0}{M_1}
+    }
+  }{
+    \hasEF{\Gamma}{
+      \IInd{i.C}{M_0}{M_1}{M_\Seg}{M}
+    }{
+      \subst{M}{i}{C}
+    }
+  }
+\end{mathpar}
+
+For well-typed instances of the elimination form, we impose the
+following beta rules:
+\begin{mathpar}
+  \inferrule{}{
+    \hasEEF{
+      \IInd{i.C}{M_0}{M_1}{M_\Seg}{0}
+    }{M_0}{
+      \subst{0}{i}{C}
+    }
+  }
+  \and
+  \inferrule{}{
+    \hasEEF{
+      \IInd{i.C}{M_0}{M_1}{M_\Seg}{1}
+    }{M_1}{
+      \subst{1}{i}{C}
+    }
+  }
+\end{mathpar}
+
+We also have a ``propositional beta rule'' for the $\Seg$ constructor;
+in this particular formal system, we are not free to impose a
+definitional equality, which is a bit strange:
+\[
+  \Ideq{
+    \Parens*{\DIdeq{i.C}{\Seg}{M_0}{M_1}}
+  }{
+    \hapd{}{
+      \IInd{i.C}{M_0}{M_1}{M_\Seg}{-}
+    }\Parens*{\Seg}
+  }{
+    M_\Seg
+  }
+\]
+
+\section{The Circle $\Circle$ aka $\mathbb{S}^1$}
+
+The circle $\Circle$ is given by the following generators, induction
+principle, and equations:
+%
+\begin{mathpar}
+  \inferrule{}{
+    \hasEF{\Gamma}{\Base}{\Circle}
+  }
+  \and
+  \inferrule{}{
+    \hasEF{\Gamma}{\Loop}{
+      \Ideq{\Circle}{\Base}{\Base}
+    }
+  }
+  \and
+  \inferrule{
+    \hasTF{\Gamma,c:\Circle}{C}
+    \\
+    \hasEF{\Gamma}{M_\Base}{
+      \subst{\Base}{c}{C}
+    }
+    \\
+    \hasEF{\Gamma}{M_\Loop}{
+      \DIdeq{c.C}{\Loop}{M_\Base}{M_\Base}
+    }
+  }{
+    \hasEF{\Gamma}{
+      \CInd{c.C}{M_\Base}{M_\Loop}{M}
+    }{
+      \subst{M}{c}{C}
+    }
+  }
+  \\
+  \hasEEF{
+    \CInd{c}{C}{M_\Base}{M_\Loop}{\Base}
+  }{M_\Base}{
+    \subst{\Base}{c}{C}
+  }
+  \\
+  \Ideq{
+    \Parens*{
+      \DIdeq{c.C}{\Loop}{M_\Base}{M_\Base}
+    }
+  }{
+    \hapd{}{
+      \CInd{c.C}{M_\Base}{M_\Loop}{-}
+    }\Parens*{\Loop}
+  }{M_\Loop}
+\end{mathpar}
+
+One thing worth pointing out is that it would have been possible (but
+not correct) to replace the third premise of the elimination rule with
+$\hasEF{\Gamma}{M_\Loop}{\Ideq{\subst{\Base}{c}{C}}{M_\Base}{M_\Base}}$. This
+would have been type-correct, but it does not capture the right case
+in the induction principle, which should be to exhibit a loop in $C$
+which lies over the generating $\Loop$ in $\Circle$.
+
+\subsection{Loop space}
+
+There is the (based) loop space
+$\Omega\Parens*{A;a_0}\triangleq\Ideq{A}{a_0}{a_0}$ for any point
+$a:A$. Here, the groupoid laws become \emph{group} laws, because the
+endpoints are the same. To ensure that this is actually a group, one
+can take its ``zero-truncation''
+$\parallel\Omega\Parens*{A;a_0}\parallel_0$, in which all the higher
+structure has been squashed down to reflexivities. This truncation of
+the loop space is called the ``fundamental group'' of a type.
+
+Using the univalence axiom, it can be shown that the loop space of the
+circle $\Circle$ with base point $\Base$ can be identified with the
+group of integers under addition. Because the integers are already
+0-truncated, we have also shown that the fundamental group of the
+circle is the integers~\citep{Licata:13}.
+
+
+\section{Judgmental methodology}
+
+To study the degree to which HoTT has computational meaning (i.e.\
+develop a way to phrase homotopy type theory which does have
+computational meaning), we return to Martin-L\"of's version of the
+notion of a \emph{judgment}, which forms the epistemic foundation of
+modern type theory~\citep{MartinLof:87,MartinLof:94,MartinLof:96}.
+
+The guiding idea is that judgments come first: structure which appears
+in the connectives and type constructors is developed using analogous
+structure at the level of judgments.
+
+Gentzen's key contribution was his stress on \emph{entailment}
+(hypothetical judgment) as being prior to implication; compare Hilbert
+systems which have \emph{only} implication. The contradiction between
+entailment and implication has a parallel in the old battle between
+lambda calculus and combinators.
+
+Entailment $J_0\vdash J_1$ expresses that the fact $J_1$ can be
+concluded once the fact $J_0$ is assumed, but it does not yet express
+\emph{generality}. The \emph{generic judgment} is the structure from
+which the universal quantification connective is built, in the same
+way as the hypothetical judgment lies underneath the implication
+connective; using the notation of \citet{MartinLof:notes:87}:
+\[
+  \inferrule{
+    \vert_x\ \Parens*{\trueF{A}}
+  }{
+    \trueF{\forall x.A}
+  }
+\]
+
+Constructivism (which we take here as the principle that the evidence
+that makes a proposition true is a mathematical object) suggests a
+consolidation of the hypothetical and the generic judgments into a
+single form, named ``hypothetico-general judgment'' by Martin-L\"of:
+\[
+  \framebox{$\hasEF{x_1:A_1,\ldots,x_n:A_n}{M}{A}$}
+\]
+
+This notation emphasizes the centrality of variables in type
+theory. We must reiterate that type theory does not fix a particular
+interpretation of variables, but is instead compatible with multiple
+explanations of variables, each of which can be deployed in different
+settings with different aims. We will call out two possible
+interpretations of variables in particular:
+
+\medskip
+\begin{center}
+  \begin{tabular}{ll}
+    \textbf{formal} & \textbf{semantic}
+    \\
+    indeterminates / generic values & placeholders
+    \\
+    ``derivability'' & ``admissibility'' (careful!)
+    \\
+    $\hasEF{\Gamma}{M}{A}$ & $\hasEC{\Gamma}{M}{A}$
+  \end{tabular}
+\end{center}
+
+Both forms of judgment above share the \emph{structural properties}
+and present a consequence relation. However, the variables on the
+formal side range over open elements (elements that may themselves
+have free variables), whereas the variables on the semantic side range
+over only closed elements. The semantic consequence relation and
+account of variables as placeholders is essentially the mathematical
+notion of a variable, whereas the formal consequence relation and
+account of variables as indeterminates is proof-theoretic in nature,
+making terms analogous to polynomials.
+
+The defeasible structural principles which define the structure of
+contexts (weakening/projections, contraction/diagonals,
+exchange/symmetries) are designed to be admissible each consequence
+relation, as are the non-defeasible ones (identity and
+composition). The negotiation of the structural maps will appear again
+later in the course in the context of cubical type theory.
+
+\begin{remark}
+  In the first version of Church's lambda calculus, you were required
+  to use every variable that is introduced. Later this idea of working
+  without weakening was codified into what some call ``relevant
+  logic'' and others call ``strict logic''.
+\end{remark}
+
+
+
+\section{Judgmental structure of identifications}
+
+To give a type-theoretic account of paths/identifications, we must
+conceive them as an intrinsic concept in type theory, emanating from
+the judgmental base. We are not free to simply ``throw in''
+identifications without explaining them at the judgmental level, since
+this would disrupt many important properties of type theory, including
+its computational content.
+
+There are multiple possible ways to give a judgmental account of
+higher-dimensional structure, each of which is based on a different
+kind of shape; the type-theoretic community has mostly settled on a
+\emph{cubical} account of higher dimensional structure.\footnote{There
+  are several different possible flavors of cubical structure; it is a
+  matter of current scientific inquiry to determine the benefits and
+  drawbacks of each version of cubical structure.}
+
+In HoTT (which can be thought of as a ``vulgar globular'' account of
+higher structure), higher structure is captured by iterating the
+identification type. Instead, we want to give these dimension levels
+names:
+
+\begin{enumerate}
+\item points
+\item lines
+\item squares
+\item cubes
+\item[\ldots] (and beyond)
+\end{enumerate}
+
+Accordingly, we extend the judgments of type theory to indicate
+whether they are constructing a point in a type, or a line, or a cube,
+or a higher cube, etc. For now, we might write
+$\hasEEC{\Gamma}{M}{M'}{A}\mathrel{@}n$ to mean that $M$ and $M'$ are
+equal ``cubes'' of type $A$ of dimension $n$. When $n=0$, this is the
+familiar member equality judgment, but when $n\geq 1$, this form of
+judgment asserts the unfamiliar equation between higher-dimensional
+elements of a higher-dimensional type.
+
+The way that we make sense of this is to say that an ``$n$-dimensional
+type'' is a \emph{family} of types that is indexed by the generic
+$n$-cube, i.e.\ the $n$th power of the interval. To make this precise,
+we replace this $n$ parameter with a \emph{context} $\Psi$ (of length
+$n$) of dimension variables, which are allowed to occur in
+$\Gamma,M,M',A$.
+
+When we assert the judgment $\hasEC{M}{A}\ [x]$, we are saying that
+$A$ is a \emph{line of types} in the $x$ direction, and that $M$ is a
+\emph{line of elements} of $A$. To get the left endpoint of the type
+$A$ we write $\DimSubst{0}{x}{M}$, and we have
+$\hasEC{\DimSubst{0}{x}{M}}{\DimSubst{0}{x}{A}}\ [\cdot]$. One of the
+big difficulties of higher dimensional type theory is to develop a
+theory of coercions and compositions which let us move an element from
+the $0$ fiber to the $1$ fiber, or even the $0$ fiber to the $x$
+fiber! We will study this further in future lectures.
+
+It is important to note that the variables $\Psi=x,y,\ldots$ range
+over an abstract notion of interval, rather than a metric one. In
+particular, we do not have any notion of distance; you are either at
+the endpoints $\DimSubst{0}{x}{A}$, $\DimSubst{1}{x}{A}$ or even in
+``middle'' $\DimSubst{y}{x}{A}$, but there is no sense in which you
+can be ``two-thirds of the way'', etc.
+
+\nocite{HoTTBook:13}
+\bibliographystyle{plainnat}
+\bibliography{ctt}
+
+\end{document}
