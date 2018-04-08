@@ -1,7 +1,8 @@
 \documentclass{article}
 \usepackage{chtt-notes}
+\usepackage[linewidth=1pt]{mdframed}
 
-\scribes{Ryan Kavanaugh, Jon Sterling}
+\scribes{Ryan Kavanaugh, Jon Sterling and Jonathan Laurent}
 \week{12}
 % The following command will let you cross-reference labels
 % in the files week1.tex, week2.tex, \ldots, week\@week.tex,
@@ -337,7 +338,444 @@ the endpoints $\DimSubst{0}{x}{A}$, $\DimSubst{1}{x}{A}$ or even in
 ``middle'' $\DimSubst{y}{x}{A}$, but there is no sense in which you
 can be ``two-thirds of the way'', etc.
 
+
+
+
+
+%% Lecture of April 5th 2018: Meanings of Judgments in CCDTT
+%% Scribe: Jonathan Laurent (jonathan.laurent@cs.cmu.edu)
+
+\newif\ifannots
+\annotstrue
+%\annotsfalse
+
+\newcommand{\jonathan}[1]{{\ifannots {\color{red} [\,#1\,]} \fi}}
+\newcommand{\colored}[1]{{\color{blue} #1}}
+
+\newcommand{\isDim}[2]{#1 \,\vdash\, #2 \;\mathsf{dim}}
+\newcommand{\isTm}[2]{#1 \; \mathsf{tm} \; [#2]}
+\newcommand{\EmptyDimCtx}[0]{\emptyset}
+
+\newcommand{\stepDim}[3]{\ensuremath{#1 \mapsto_{#3} #2}}
+\newcommand{\evalDim}[3]{\ensuremath{#1 \mathrel{\Downarrow}^{#3}\! #2}}
+\newcommand{\valueDim}[2]{\ensuremath{#1\;\mathsf{value}_{#2}}}
+
+\newcommand{\InTypeDim}[3]{#1 \in #2 \; [#3]}
+\newcommand{\EqInTypeDim}[4]{#1 \doteq #2 \in #3 \; [#4]}
+
+
+\section{Dimensions and dimension substitutions}
+
+Formally, we define a \emph{dimension context} $\Psi$ as a finite
+sequence of \emph{dimension variables}:
+\[ \Psi = x_1, \cdots, x_n \quad (n \geq 0).  \] These variables can
+be thought as cartesian coordinates in an $n$-space.  A
+\emph{dimension term} is either $0$, $1$ or a dimension variable. We
+write $\isDim{\Psi}{r}$ when $r$ is a valid dimension term in
+dimension context $\Psi$:
+\[
+  \inferrule{}{\isDim{\Psi}{0}} \qquad \inferrule{}{\isDim{\Psi}{1}}
+  \qquad \inferrule{}{\isDim{\Psi, x, \Psi'}{x}.}
+\]
+A $\lambda$-calculus term $M$ whose free dimension variables belong to
+$\Psi$ is called a $\Psi$-cube. In this case, we write
+$\isTm{M}{\Psi}$. The dimension variables in $M$ can be subsituted for
+dimension terms via a \emph{dimension substitution}. A dimension
+substitution $\psi : \Psi' \to \Psi$ maps variables of
+$\Psi = x_1, \cdots, x_n $ to dimension terms that are valid in
+$\Psi'$:
+\[
+  \inferrule{}{\isDim{\Psi'}{\psi(x_i)} \qquad \text{(for
+      $1 \leq i \leq n$).}}
+\]
+Thus, a dimension substitution $\psi : \Psi' \to \Psi$ takes a
+$\Psi$-cube $M$ into a $\Psi'$-cube $M \psi$. Formally,
+\begin{center}
+  if $\isTm{M}{\Psi}$ and $\psi : \Psi' \to \Psi$ then
+  $\isTm{M \psi}{\Psi'}$.
+\end{center}
+Substitutions define contravariant \emph{functorial actions} on
+$\lambda$-terms, in the sense that they preserve identity and
+composition:
+\[ M \cdot \textsf{id} \,=\, M \qquad M \cdot (\psi_1 \psi_2) \,=\,
+  (M \cdot \psi_1) \cdot \psi_2 \] where $\textsf{id}$ refers to the
+identity substitution and $\psi_1 \psi_2$ refers to the composition
+of substitutions $\psi_1$ and $\psi_2$. \jonathan{presheaf semantics,
+  Kripke semantics where worlds are dimensions}
+
+
+\paragraph{Example: getting the endpoints of a line via substitution}
+
+If $M_x$ is a $\lambda$-term with a single free dimension variable $x$, it
+is called an $(x)$-cube. Because it is one dimensional, we also say that
+$M_x$ is a line. We can get its endpoints by substituting $0$ or $1$ into $x$
+(for the ``left'' and ``right'' endpoints respectively):
+
+\begin{center}
+	\begin{tikzpicture}
+    [ x = {(4.0cm , 0.0cm)}, y = {(0.0cm, 1.0cm)} ]
+    \node (a) at (0,0) {$\DimSubst{0}{x}{M}$};
+    \node (b) at (1,0) {$\DimSubst{1}{x}{M}$};
+    \path[-] (a) edge node [above] {$M_x$} (b);
+	\end{tikzpicture}
+\end{center}
+
+
+\paragraph{Dimension contexts are structural}
+  Dimension contexts are structural: they admit 
+  \emph{exchange}, \emph{weakening} and \emph{contraction} in the following sense:
+  \begin{itemize}
+  \item \textbf{Exchange:} the order of variables in a dimension
+    context does not matter and variables can be permuted silently:
+    \[ \Psi, x, y, \Psi' \,\xrightarrow{\text{ silent }}\, \Psi, y, x, \Psi'.  \] 
+    For example, an $(x,y)$-cube is a $(y,x)$-cube and vice versa.
+  \item \textbf{Weakening:} 
+    a $\Psi$-cube is also a (degenerate) $(\Psi, x)$-cube ($x \notin \Psi$):
+    \[ \Psi, x, y \,\xrightarrow{\text{ silent }}\, \Psi.  \]
+    For example, the $x$-line in the previous example is also a degenerate
+    $(x, y)$-square.
+  \item \textbf{Contraction:}
+    the substitution $\langle z,z \,/\, x,y \rangle$ turns a $(\Psi, x, y)$-cube
+    into a $(\Psi, z)$-cube:
+    \[ \Psi, z \,\xrightarrow{\,\langle z,z \,/\, x,y \rangle\,}\, \Psi, x, y.  \]
+  \end{itemize}
+
+We can now investigate the definition of a simple cubical programming language.
+
+
+\section{A cubical programming language}
+
+
+We define an operational semantics for a cubical programming
+language using two judgments
+\[ \valueJ{M} \qquad \step{M}{M'} \] for when $M$ is a value and when
+$M$ transitions to $M'$ respectively.  We write $\eval{M}{M'}$ when
+$\steps{M}{M'}$ and $\valueJ{M}$, in which case we say that $M$
+\emph{evaluates} to value $M'$. For clarity, we sometimes annotate these
+judgments with the dimension context of $M$:
+\[ \valueDim{M}{\Psi} \qquad \stepDim{M}{M'}{\Psi} \qquad
+  \evalDim{M}{M'}{\Psi}.  \] Such a notation makes sense because a
+$\Psi$-cube can only transition to a (possibly degenerate\footnote{A
+  $\Psi$-cube $M$ is said to be \emph{degenerate} if there are
+  dimension variables in $\Psi$ that do not appear free in
+  $M$.})  $\Psi$-cube. Indeed, a transition cannot make
+new free dimension variables appear in a term.
+
+Note that these two judgments do not commute with dimension
+substitution. Typically,
+\begin{itemize}
+\item we can have $\valueDim{M}{(x)}$ but not
+  $\valueDim{\DimSubst{0}{x}{M}}{\EmptyDimCtx}$
+\item we can have $\stepDim{M}{M'}{(x)}$ but not
+  $\stepDim{\DimSubst{0}{x}{M}}{\DimSubst{0}{x}{M'}}{\EmptyDimCtx}$.
+\end{itemize}
+We can observe this phenomenon on the example of the circle $\Circle$.
+
+
+\subsection{Operational semantics of $\Circle$}\label{sec:circle-sem}
+
+In order to augment our language with the circle type $\Circle$, we
+need to add the following $\lambda$-terms in our grammar:
+\[ \text{Terms } M \ := \ \cdots \ | \ 
+  \Circle \ | \ \Base \ | \ \Loop_r \ | \ \CInd{c.C}{M_{\Base}}{M_{\Loop}}{M} \]
+where $r$ refers to a dimension term: it can be either $0$, $1$ or a dimension
+variable $x$. These terms are subject to the following operational semantics:
+
+\[
+\inferrule{}{\valueJ{\Base}} \qquad
+\inferrule{}{\valueJ{\Loop_x}} \qquad
+\inferrule{}{\step{\Loop_0}{\Base}} \qquad
+\inferrule{}{\step{\Loop_1}{\Base}} \qquad
+\]
+
+Moreover, in order to evaluate $\CInd{c.C}{M_{\Base}}{x.M_{\Loop}}{M}$, 
+we first evaluate $M$:
+
+\[ 
+\inferrule{\step{M}{M'}}{
+  \step{
+    \CInd{c.C}{M_{\Base}}{x.M_{\Loop}}{\colored{M}}
+  }{
+    \CInd{c.C}{M_{\Base}}{x.M_{\Loop}}{\colored{M'}}
+  }
+}\]
+
+\medskip
+
+\noindent Then, if $\Psi$ is a dimension context, $x \notin \Psi$, 
+$\isTm{M_{\Base}}{\Psi}$ and $\isTm{M_{\Loop}}{\Psi, x}$, we have:
+
+\[
+\inferrule{}{
+  \stepDim{
+    \CInd{c.C}{M_{\Base}}{x.M_{\Loop}}{\colored{\Base}}
+  }{
+    \colored{M_{\Base}}
+  }{\colored{\Psi}}
+}
+\]
+
+
+\[
+\inferrule{}{
+  \stepDim{
+    \CInd{c.C}{M_{\Base}}{x.M_{\Loop}}{\colored{\Loop_x}}
+  }{
+    \colored{M_{\Loop}}
+  }{\colored{\Psi, x}}
+}
+\]
+
+\bigskip
+
+As we can see, substituting into a loop changes a value into a non-value: 
+$\valueJ{\Loop_x}$ but $\step{\Loop_0}{\Base}$. Besides, reduction does not 
+commute with substitution. Indeed,
+\begin{align*}
+  & \DimSubst{0}{x}{\left(\CInd{c.C}{M_{\Base}}{x.M_{\Loop}}{\Loop_x}\right)} \\
+  &= \ \CInd{c.C}{M_{\Base}}{x.M_{\Loop}}{\Loop_0} \\
+  &\mapsto \ \CInd{c.C}{M_{\Base}}{x.M_{\Loop}}{\Base} \\
+  &\mapsto \ M_{\Base}
+\end{align*}
+but
+\begin{align*}
+  \step{  \CInd{c.C}{M_{\Base}}{x.M_{\Loop}}{\Loop_x}  }{ M_{\Loop}  }
+\end{align*}
+and there is no reason to expect
+$M_{\Base} \equiv \DimSubst{x}{0}{M_{\Loop}}$ in general.  Although
+there is no syntactic confluence in cubical dependent type theory, we
+use types to enforce semantic confluence. Coherence between different
+aspects of a cube is not obtained via the operational semantics but
+via the type system, as detailed in section~\ref{sec:meaning}.
+
+
+
+\subsection{Giving a meaning to the judgments $M \in A \;[\Psi]$}
+\label{sec:meaning}
+
+In standard ($0$-dimensional) computational type theory, the judgment
+$M \in A$ means that $\eval{A}{A_0}$, $\eval{M}{M_0}$, and that $M_0$ is a
+(canonical) value of type $A_0$. Everything is about running programs and
+using types to specify their values. Similarly, in a higher dimensional setting,
+we say that $\InTypeDim{M}{A}{\Psi}$ if $\evalDim{A}{A_0}{\Psi}$, 
+$\evalDim{M}{M_0}{\Psi}$ and $M_0$ is a $\Psi$-value of type $A_0$. It remains to
+explain what $\Psi$-values are and what type membership is. We must be careful
+in defining these though. For example, the meaning of membership must account for
+substitutions, as we argue below.
+
+Indeed, if a cube belongs to a type, we expect all its faces to belong
+to the same type. For example, because
+$\InTypeDim{\Loop_x}{\Circle}{x}$ and
+$\DimSubst{0}{x}{\Loop_x} \,\equiv\, \Loop_0$, we expect
+$\InTypeDim{\Loop_0}{\Circle}{\cdot}$. Because $\eval{\Loop_0}{\Base}$, this is
+equivalent to $\InTypeDim{\Base}{\Circle}{\cdot}$.
+
+\begin{center}
+	\begin{tikzpicture}
+    [ x = {(4.0cm , 0.0cm)}, y = {(0.0cm, -1.5cm)} ]
+    \node (a) at (0,0) {$\Base$};
+    \node (b) at (1,0) {$\Base$};
+    \node (c) at (0,1) {$\Loop_0$};
+    \node (d) at (1,1) {$\Loop_1$};
+    \path[-] (a) edge node [above] {$\Loop_x$} (b);
+    \draw[->] (c) to (a);
+    \draw[->] (d) to (b);
+	\end{tikzpicture}
+\end{center}
+
+More generally, we want the following to hold.
+
+\paragraph{Desideratum 1 (first attempt)} 
+If $\InTypeDim{M}{A}{\Psi}$, then for any substitution
+$\psi : \Psi' \to \Psi$ we have $\InTypeDim{M \psi}{A}{\Psi'}$
+(i.e. $\eval{A}{A_0}$, $\eval{M \psi}{M_0}$ and $M_0$ is a
+$\Psi'$-value of $A_0$).
+
+\bigskip
+
+In other words, the meaning of a cube must account for all its
+\emph{aspects}, where the aspects of a $\Psi$-cube $M$ is the set of
+all $M\psi$ for $\psi : \Psi' \to \Psi$ a substitution (in particular,
+faces are aspects). This is not enough to get the kind of semantic
+confluence properties that we discussed in
+section~\ref{sec:circle-sem} though. Indeed, the aspects of a cube must
+also be \emph{coherent} in a sense that we make precise below.
+
+Suppose we have the following $(x,y,z)$-cube. Let's call it $M$.
+
+\begin{center}
+\pgfmathsetmacro{\axoff}{-0.5}
+\pgfmathsetmacro{\axlen}{-0.25}
+\begin{tikzpicture}
+[
+  x = {(2.0cm , 0.0cm)} , 
+  y = {(0.0cm , -2.0cm)} , 
+  z = {(1.25cm , -0.75cm)}
+]
+  % axes
+  \draw [->] (\axoff , 0 , 0) to node [below right] {$z$} (\axoff , 0 , -\axlen) ;
+  \draw [->] (\axoff , 0 , 0) to node [left] {$y$} (\axoff , -\axlen , 0) ;
+  \draw [->] (\axoff , 0 , 0) to node [auto] {$x$} ({\axoff - \axlen} , 0 , 0) ;
+  % faces
+
+  % vertices
+  \node (000) at (0 , 0 , 0) {$\cdot$} ;
+  \node (001) at (0 , 0 , 1) {$\cdot$} ;
+  \node (010) at (0 , 1 , 0) {$\cdot$} ;
+  \node (011) at (0 , 1 , 1) {$\cdot$} ;
+  \node (100) at (1 , 0 , 0) {$\cdot$} ;
+  \node (101) at (1 , 0 , 1) {$\cdot$} ;
+  \node (110) at (1 , 1 , 0) {$\cdot$} ;
+  \node (111) at (1 , 1 , 1) {$\cdot$} ;
+  
+  % edges
+  % back
+  \draw [-] (000) to (010) ;
+  \draw [-] (100) to (110) ;
+  \draw [-] (000) to (100) ;
+  \draw [-] (010) to (110) ;
+  % front
+  \draw [-] (001) to (011) ;
+  \draw [-] (101) to (111) ;
+  \draw [-,line width=1pt] (001) to (101) ;
+  \draw [-] (011) to (111) ;
+  % sides
+  \draw [-] (000) to (001) ;
+  \draw [-] (010) to (011) ;
+  \draw [-] (100) to (101) ;
+  \draw [-] (110) to (111) ;
+
+  \draw [draw=none,fill=lightgray, opacity=0.5]
+    (0,0,1) -- (1,0,1) -- (1,1,1) -- (0,1,1) -- cycle ;
+
+  % text
+  \node (M1) at (0.5, 0.5, 1) {$M_1$} ;
+  \node (M2anchor) at (0.5, -0.05, 1) {} ;
+  \node (M2label) at (1.2, -0.4, 1) {$M_2$} ;
+  \draw [->,bend right=20] (M2label) to (M2anchor) ;
+
+\end{tikzpicture}
+\end{center}
+
+We can compute the front face of $M$:
+$\eval{\DimSubst{1}{z}{M}}{M_1}$.  Also, we can compute the top edge
+of $M_1$: $\eval{\DimSubst{0}{y}{M_1}}{M_2}$.  Intuitively, $M_2$
+should also be an aspect of $M$. Indeed, if
+$\eval{\DimSubst{1,0}{z,y}{M}}{M_{1,2}}$, then we expect that $M_2$
+and $M_{1,2}$ should coincide somehow. More precisely, if $M$ has type
+$A_0$, we expect that $\EqInTypeDim{M_2}{M_{1,2}}{A_0}{x}$.\footnote{
+Remember that the judgment $\InTypeDim{M}{A}{\Psi}$ is only a shortcut for 
+$\EqInTypeDim{M}{M}{A}{\Psi}$.} Generalizing, this leads to the following
+desideratum.
+
+
+
+\paragraph{Desideratum 2 (first attempt)}
+%The aspects of a cube must be coherent
+If the following conditions hold
+\begin{itemize}
+\item $\InTypeDim{M}{A}{\Psi}$
+\item $\evalDim{A}{A_0}{\Psi}$ and $\evalDim{M}{M_0}{\Psi}$
+\item $\psi_1 : \Psi_1 \to \Psi$ and $\psi_2 : \Psi_2 \to \Psi_1$
+\item $\evalDim{M_0 \psi_1}{M_1}{\Psi_1}$ and $\evalDim{M_1 \psi_2}{M_2}{\Psi_2}$
+\item $\evalDim{M_0(\psi_1\psi_2)}{M_{1,2}}{\Psi_2}$,
+\end{itemize}
+then we have $\EqInTypeDim{M_{1,2}}{M_2}{A_0}{\Psi_2}$.
+
+\bigskip
+
+We insist that nothing forces this to hold for every term in our
+language that is syntactically correct. It is always possible to write
+bad programs violating this, but we simply decide to not give them a
+type. Types are expected to be specifications of good programs, whose
+meaning accounts for all their aspects and whose aspects are coherent
+(Desiderata $1$ and $2$).
+
+\paragraph{Adding dependency}
+
+In our first attempt to formulate Desiderata $1$ and $2$, we neglected
+dependency. Indeed, because types can depend on higher dimensional
+$\lambda$-terms, then types can also vary in dimensions. For example,
+if $F$ is an $A$-indexed family of types and $\InTypeDim{M}{A}{x}$,
+then $F[M]$ is a type which varies in dimension $x$: 
+$\DimSubst{0}{x}{F[M]} = F[\DimSubst{0}{x}{M}]$.
+
+Taking this into account, we generalize Desiderata $1$ and $2$ as follows.
+
+\begin{mdframed}
+\paragraph{Desideratum 1} 
+\emph{The meaning of a cube must account for all its aspects.}
+That is, if $\InTypeDim{M}{A}{\Psi}$, then for any substitution
+$\psi : \Psi' \to \Psi$ we have $\InTypeDim{M \psi}{A\colored{\psi}}{\Psi'}$
+(i.e. $\eval{A\colored{\psi}}{A_0}$, $\eval{M \psi}{M_0}$ and $M_0$ is a
+$\Psi'$-value of $A_0$).
+
+\paragraph{Desideratum 2}
+\emph{The aspects of a cube must be coherent.} That is, 
+if
+\begin{itemize}
+\item $\InTypeDim{M}{A}{\Psi}$
+\item $\evalDim{A}{A_0}{\Psi}$ and $\evalDim{M}{M_0}{\Psi}$
+\item $\psi_1 : \Psi_1 \to \Psi$ and $\psi_2 : \Psi_2 \to \Psi_1$
+\item $\evalDim{M_0 \psi_1}{M_1}{\Psi_1}$ and $\evalDim{M_1 \psi_2}{M_2}{\Psi_2}$
+\item \colored{$\evalDim{A_0 \psi_1}{A_1}{\Psi_1}$ and
+    $\evalDim{A_1 \psi_2}{A_2}{\Psi_2}$}
+\item $\evalDim{M_0(\psi_1\psi_2)}{M_{1,2}}{\Psi_2}$,
+\end{itemize}
+then we have $\EqInTypeDim{M_{1,2}}{M_2}{\colored{A_2}}{\Psi_2}$.
+
+\bigskip
+
+\end{mdframed}
+
+\medskip
+
+One should picture a cube $M$ being typed
+by another cube $A$: the front face of $M$ must inhabit the front face of $A$,
+the top right edge of $M$ must inhabit the top right edge of $A$\dots
+
+Also, one should note that equality is prior to the notion of path. Indeed,
+in order to  make paths ``fit together'' to form cubes, we need a notion of
+equality of endpoints.
+
+
+\subsection{Hypotheticogeneral judgments}
+
+We now investigate the meaning of the hypotheticogeneral judgment
+\[ a : A \, \gg \, \InTypeDim{N}{B}{\Psi}  .\]
+A first attempt at a definition would be as follows:
+\begin{center}
+  if $\EqInTypeDim{M}{M'}{A}{\Psi}$, \quad  then \quad
+  $\EqInTypeDim{\subst{M}{a}{N}}{\subst{M'}{a}{N}}{\subst{M}{a}{B} \doteq \subst{M'}{a}{B}}{\Psi}$.
+\end{center}
+
+This is not enough though. We need more than just ensuring that equal things
+are sent to equal things: we also need to ensure that the definition works at all
+accessible dimensions (for all aspects of $A$) and respects paths. This gives
+us the following definition.
+
+\begin{definition*} We write $a : A \, \gg \, \InTypeDim{N}{B}{\Psi}$ whenever
+  for any substitution $\psi : \Psi' \to \Psi$, 
+  \begin{center}
+  if 
+  $\EqInTypeDim{M}{M'}{A\colored{\psi}}{\colored{\Psi'}}$ then
+  $\EqInTypeDim{\subst{M}{a}{N\colored{\psi}}}{\subst{M'}{a}{N\colored{\psi}}}
+  {\subst{M}{a}{B\colored{\psi}} \doteq \subst{M'}{a}{B\colored{\psi}}}{\colored{\Psi'}}.$
+  \end{center} 
+\end{definition*}
+In particular, if we take $\psi$ to be the weakening map $\Psi, x \to \Psi$
+($x \notin \Psi$), then we get that $N$ must respect $x$-lines in $A$, taking
+them to heterogeneous lines spanning $\subst{M}{a}{B}$ and $\subst{M'}{a}{B}$.
+Therefore, we recover the \textsf{apd} behavior of HoTT.
+
+\bigskip
+
+\jonathan{In summary: we make everything behave properly as presheaves.}
+
 \nocite{HoTTBook:13}
+\nocite{Angiuli:chtt3:17}
+\nocite{Angiuli:chtt:17}
+
 \bibliographystyle{plainnat}
 \bibliography{ctt}
 
