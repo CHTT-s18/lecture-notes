@@ -292,7 +292,7 @@ kind of shape; the type-theoretic community has mostly settled on a
   matter of current scientific inquiry to determine the benefits and
   drawbacks of each version of cubical structure.}
 
-In HoTT (which can be thought of as a ``vulgar globular'' account of
+In HoTT (which can be thought of as a ``globular'' account of
 higher structure), higher structure is captured by iterating the
 identification type. Instead, we want to give these dimension levels
 names:
@@ -400,9 +400,14 @@ composition:
 \[ M \cdot \textsf{id} \,=\, M \qquad M \cdot (\psi_1 \psi_2) \,=\,
   (M \cdot \psi_1) \cdot \psi_2 \] where $\textsf{id}$ refers to the
 identity substitution and $\psi_1 \psi_2$ refers to the composition
-of substitutions $\psi_1$ and $\psi_2$. \jonathan{presheaf semantics,
-  Kripke semantics where worlds are dimensions}
+of substitutions $\psi_1$ and $\psi_2$.
 
+Dimension contexts may be thought of as ``possible worlds'' in the sense of Kripke, or more generally
+pre-sheaf, interpretations in which worlds specify a collection of ``indeterminates''.  Worlds are related by
+substitutions, which interpret one collection of indeterminates in terms of another by either specifying an
+end point (0 or 1) for a variable or replacing a variable by another variable, with possibly several variables
+being replaced by one.  Dimension substitutions induce a contravariant, functorial action on terms, by
+performing the given substitutions on them.
 
 \paragraph{Example: getting the endpoints of a line via substitution}
 
@@ -664,7 +669,7 @@ should also be an aspect of $M$. Indeed, if
 $\eval{\DimSubst{1,0}{z,y}{M}}{M_{1,2}}$, then we expect that $M_2$
 and $M_{1,2}$ should coincide somehow. More precisely, if $M$ has type
 $A_0$, we expect that $\EqInTypeDim{M_2}{M_{1,2}}{A_0}{x}$.\footnote{
-Remember that the judgment $\InTypeDim{M}{A}{\Psi}$ is only a shortcut for 
+Remember that the judgment $\InTypeDim{M}{A}{\Psi}$ is only a shorthand for 
 $\EqInTypeDim{M}{M}{A}{\Psi}$.} Generalizing, this leads to the following
 desideratum.
 
@@ -739,9 +744,9 @@ in order to  make paths ``fit together'' to form cubes, we need a notion of
 equality of endpoints.
 
 
-\subsection{Hypotheticogeneral judgments}
+\subsection{Hypothetico-General judgments}
 
-We now investigate the meaning of the hypotheticogeneral judgment
+We now investigate the meaning of the hypothetico-general judgment
 \[ a : A \, \gg \, \InTypeDim{N}{B}{\Psi}  .\]
 A first attempt at a definition would be as follows:
 \begin{center}
@@ -770,7 +775,27 @@ Therefore, we recover the \textsf{apd} behavior of HoTT.
 
 \bigskip
 
-\jonathan{In summary: we make everything behave properly as presheaves.}
+The semantics of the hypothetical judgment corresponds to that of a mapping in a presheaf, wherein a mapping
+from $A$ to $B$ at $\Psi$ is not merely a function mapping the elements of $A$ at $\Psi$ to elements of $B$ at
+$\Psi$, but, rather, must also account for arguments that arise in all possible worlds relative to $\Psi$:
+given any $\psi:\Psi'\to\Psi$, it must map elements of $A$ at $\Psi'$ to elements of $B$ at $\Psi'$, a strong
+uniformity condition.  The motivation for this requirement is to ensure that elements and mappings are
+preserved on passage to accessible worlds.
+
+In the case of the hypothetical judgment, we wish to ensure that if
+\[ a : A \, \gg \, \InTypeDim{N}{B}{\Psi} \]
+and $\psi:\Psi'\to\Psi$, then
+\[ a : A\psi \, \gg \, \InTypeDim{N\psi}{B\psi}{\Psi'} .\]
+%
+In particular if $\psi$ is a weakening $\Psi,x\to\Psi$, which acts silently, then we require that if
+\[ a : A \, \gg \, \InTypeDim{N}{B}{\Psi},\]
+then 
+\[ a : A \, \gg \, \InTypeDim{N}{B}{\Psi,x} .\]
+%
+This says that $N$ must not only take \emph{points} in $A$ at dimension $\Psi$ to points in $B$ at the same
+dimension, it must also take \emph{lines} in $A$ at dimension $\Psi,x$ to lines in $B$ at that extended
+dimension.  More succinctly, $N$ must map points in such a way that it also preserves paths between them.
+
 
 \nocite{HoTTBook:13}
 \nocite{Angiuli:chtt3:17}
