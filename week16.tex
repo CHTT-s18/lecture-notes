@@ -45,7 +45,7 @@ They are defined as follows:
 \[ \ival{\T}_{\Psi} \qquad \ival{\F}_{\Psi} \qquad \T \doteq \T \in \bool \ps \qquad \F \doteq \F \in \bool \ps \]
 \[ \inferrule{M \mapsto_{\Psi} M'}{\If(M; M_0; M_1) \mapsto_{\Psi} \If(M'; M_0; M_1)} \qquad \inferrule{ }{\If(\T; M_0; M_1) \mapsto_{\Psi} M_0} \qquad \inferrule{ }{\If(\F; M_0; M_1) \mapsto_{\Psi} M_1} \]
 All lines in $\bool$ are degenerate; each strict Boolean is $\T$ or $\F$. Therefore, both coercion and composition are trivial:
-\[ \coe^{r \leadsto r'}_{\_.\bool}(M) \mapsto M \qquad \hcom^{r \leadsto r'}_{Bool}(M; \overrightarrow{\xi_i \hookrightarrow y. \; N_i})\]
+\[ \coe^{r \leadsto r'}_{\_.\bool}(M) \mapsto M \qquad \hcom^{r \leadsto r'}_{Bool}(M; \overrightarrow{\xi_i \hookrightarrow y. \; N_i}) \mapsto M\]
 One can check that this defines a valid Kan structure.
 
 \subsection{The weak Booleans $\wbool$}
@@ -192,10 +192,12 @@ Now, we would like to look at the multiverse of types\footnote{The multiverse ca
 In particular, the multiverse has a form of Kan composition: if $A$ and $B_i$ are cubes of types, $\mathsf{HCOM}_{\mathit{(multiverse)}}^{r \leadsto r'} (A; \overrightarrow{\xi_i \hookrightarrow y.\;B_i})$ is itself a cube of types.
 
 Considered at dimension~0, this gives us our usual types. But even at higher dimensions, the $\mathsf{HCOM}$'s can be given a Kan type structure by defining appropriate $\coe_{x. \mathsf{HCOM}}^{r \leadsto r'}(A)$ and $\hcom_{\mathsf{HCOM}}^{r \mapsto r'}(H; \overrightarrow{\xi_i \hookrightarrow y. \; H_i})$.
+Especially the composition of compositions is challenging.
 While we will not present the solution here, the key idea is to introduce constraints $\xi_i$ of the shape $y = y'$, representing diagonals.
 Whereas part~II of the Computational Higher Type Theory papers \citep{Angiuli:chtt2:16} did not yet incorporate these constraints, they appear in part~III \citep{Angiuli:chtt3:17}.
 
 Note that dimensions in the multiverse are not related to the indexing of universes in HoTT ($\mathcal{U}_0 \subseteq \mathcal{U}_1 \subseteq \dots$).
+We can choose our multiverse to contain the entire hierarchy of universes at dimension~0, but this is not essential for our considerations and we could choose differently.
 
 \section{Univalence}
 We would like to incorporate univalence into our type theory, obviously without giving up its computational meaning.
