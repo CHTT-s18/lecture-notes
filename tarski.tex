@@ -47,31 +47,32 @@ of the empty set, namely $\emptyset$, and the greatest element is the meet of th
 set, namely $X$.
 
 A function $F:\wp{X}\to\wp{X}$ is \emph{monotone} if it preserves inclusion: if
-$A\subseteq B\subseteq X$, then $F(A)\subseteq F(B)\subseteq X$. For monotone
-$F$ on $\wp{X}$, a \emph{pre-fixed point} of $F$ is a set $A\subseteq X$ such that
+$A\subseteq B\subseteq X$, then $F(A)\subseteq F(B)\subseteq X$. For monotone $F$ on
+$\wp{X}$, a \emph{pre-fixed point} of $F$ is a set $A\subseteq X$ such that
 $F(A)\subseteq A$, and a \emph{post-fixed point} of $F$ is a set $A\subseteq X$ such that
-$X\subseteq F(X)$. A pre-fixed point of $F$ is also said to be \emph{$F$-closed} and a
-post-fixed point of $F$ is said to be \emph{$F$-consistent}. Viewing the lattice
-as a (skinny) )category, a monotone function $F$ on it is a \emph{functor}, a
-pre-fixed point of it is an \emph{$F$-algebra} and a post-fixed point of it is
-an \emph{$F$-coalgebra}. Thus, a \emph{least} pre-fixed point of $F$ is an
-\emph{initial $F$-algebra} and a \emph{greatest} post-fixed point of $F$ is a
-\emph{final $F$-coalgebra}.
+$X\subseteq F(X)$. A pre-fixed point of $F$ is also said to be \emph{$F$-closed} and a post-fixed
+point of $F$ is said to be \emph{$F$-consistent}.  A \emph{least pre-fixed point} of a
+monotone $F$ is the \emph{smallest} (with respect to containment) $F$-closed set, and a
+\emph{greatest post-fixed point} of $F$ is the \emph{largest} (with respect to
+containment) $F$-consistent set.
 
-If $L\subseteq X$ is a least pre-fixed point of a monotone $F$, then $L$ is a
-\emph{fixed point} of $F$, which is to say $F(L)=L$. Given that
-$F(L)\subseteq L$, it is enough to show that $L\subseteq F(L)$. Now with $L$ being the meet of
-all pre-fixed points of $F$, it suffices to show that $F(L)$ is a pre-fixed
-point of $F$. But by monotonicity of $F$ we have
-$F(F(L))\subseteq F(L)\subseteq L$. (This is a special case of the theorem in category
-theory stating that an initial algebra for a functor is an isomorphism.)
+Viewing the lattice as a (skinny) )category, a monotone function $F$ on it is a
+\emph{functor}, a pre-fixed point of it is an \emph{$F$-algebra} and a post-fixed point of
+it is an \emph{$F$-coalgebra}. Thus, a \emph{least} pre-fixed point of $F$ is an
+\emph{initial $F$-algebra} and a \emph{greatest} post-fixed point of $F$ is a \emph{final
+  $F$-coalgebra}.
 
-By duality if $M\subseteq X$ is the greatest post-fixed point of $F$, then $M$ is also a
-fixed point of $F$. (Categorially, a final co-algebra for a functor is an
-isomorphism.)
+If $L\subseteq X$ is a least pre-fixed point of a monotone $F$, then $L$ is a \emph{fixed point}
+of $F$, which is to say $F(L)=L$. Given that $F(L)\subseteq L$, it is enough to show that
+$L\subseteq F(L)$. Now with $L$ being the meet of all pre-fixed points of $F$, it suffices to show
+that $F(L)$ is a pre-fixed point of $F$. But by monotonicity of $F$ we have
+$F(F(L))\subseteq F(L)\subseteq L$.  (Categorially, an initial algebra for a functor is an isomorphism.)
 
-Every monotone $F:\wp{X}\to\wp{X}$ has a least pre-fixed point and greatest post-fixed
-point, given by the equations
+By duality if $M\subseteq X$ is a greatest post-fixed point of $F$, then $M$ is also a fixed point
+of $F$. (Categorially, a final co-algebra for a functor is an isomorphism.)
+
+Every monotone $F:\wp{X}\to\wp{X}$ has a (unique) least pre-fixed point and (unique) greatest
+post-fixed point, given by the equations
 \begin{align*}
   \mu(F) & = \bigcap\{\,A\subseteq X\,\mid\, F(A)\subseteq A\,\} \\
   \nu(F) & = \bigcup\{\,A\subseteq X\,\mid\,A\subseteq F(A)\,\}
@@ -89,9 +90,20 @@ Similarly, $\nu(F)$ contains all post-fixed points of $F$, it being their union,
 and, arguing dually to the preceding, $\nu(F)$ is itself a post-fixed point of
 $F$.  It is thus the greatest post-fixed point, and hence a fixed point.
 
-It is also possible to show that the meet and join of any set of fixed points of
-a monotone function is itself a fixed point, but this fact seems not to be as
-useful as the construction of a least and greatest.
+The least fixed point of a monotone $F$ on $\wp{X}$ is that it affords the following
+\emph{induction principle}: to show that $\mu(F)\subseteq A$, it suffices to show that
+$F(A)\subseteq A$, which is to say that $A$ is $F$-closed.  Similarly, the greatest post-fixed
+point, $\nu(F)$, of $F$ affords the following \emph{coinduction principle}: to show that
+$A\subseteq \nu(F)$, it suffices to show that $A\subseteq F(A)$, which is to say that $A$ is $F$-consistent.
+
+Re-phrased in terms of predicates and implication, the least fixed point of a monotone $F$
+is the \emph{strongest} property $A$ of elements of $X$ such that if $x\in F(A)$, then
+$x\in A$.  Thus, to show that $x\in\mu(F)$ implies $x\in A$, it is enough to show that if
+$x\in F(A)$, then $x\in A$.  A dual characterization applies to the greatest fixed point.
+
+It is also possible to show that the meet and join of any set of fixed points of a
+monotone function is itself a fixed point, but this seems not to be as useful as the
+construction of a least and greatest.
 
 \end{document}
 
