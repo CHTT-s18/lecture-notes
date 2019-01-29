@@ -1,0 +1,103 @@
+\documentclass[11pt,twoside]{article}
+\usepackage[authoryear,semicolon]{natbib}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{textgreek}
+\usepackage{fullpage}
+\usepackage[color=yellow]{todonotes}
+\setlength{\marginparwidth}{1.25in}
+\usepackage{xifthen}
+\usepackage{amsmath,amssymb,amsthm,mathtools,stmaryrd}
+\usepackage{proof,mathpartir}
+\usepackage{colonequals}
+\usepackage{code,verbatim}
+\usepackage{comment}
+\usepackage{textcomp}
+\usepackage[us]{optional}
+\usepackage{color}
+\usepackage{url}
+\usepackage{graphics}
+\usepackage{import}
+\usepackage{stackengine}
+\usepackage{scalerel}
+
+\allowdisplaybreaks[1]       %mildly permissible to break up displayed equations
+
+\begin{document}
+\title{Tarski's Theorem on Power Sets}
+\author{Robert Harper}
+\date{\today}
+
+\maketitle{}
+
+\section{Introduction}
+
+Tarski's theorem states that a monotone function on a complete lattice has a
+complete lattice of fixed points, in particular a least and greatest. A useful
+class of special cases are powerset lattices ordered by inclusion.
+
+\section{Powerset Lattices}
+
+Let $X$ be a set, not necessarily empty, and let $\wp{X}$ be the set of all
+subsets of $X$. The set $\wp{X}$ forms a complete lattice under set inclusion,
+with meets given by intersection and joins given by union. That is, if
+$\mathcal{X}\subset\wp{X}$, then $\bigcap{\mathcal{X}}$ is its meet (greatest lower bound) and
+$\bigcup{\mathcal{X}}$ is its join (least upper bound). The least element is the join
+of the empty set, namely $\emptyset$, and the greatest element is the meet of the empty
+set, namely $X$.
+
+A function $F:\wp{X}\to\wp{X}$ is \emph{monotone} if it preserves inclusion: if
+$A\subseteq B\subseteq X$, then $F(A)\subseteq F(B)\subseteq X$. For monotone
+$F$ on $\wp{X}$, a \emph{pre-fixed point} of $F$ is a set $A\subseteq X$ such that
+$F(A)\subseteq A$, and a \emph{post-fixed point} of $F$ is a set $A\subseteq X$ such that
+$X\subseteq F(X)$. A pre-fixed point of $F$ is also said to be \emph{$F$-closed} and a
+post-fixed point of $F$ is said to be \emph{$F$-consistent}. Viewing the lattice
+as a (skinny) )category, a monotone function $F$ on it is a \emph{functor}, a
+pre-fixed point of it is an \emph{$F$-algebra} and a post-fixed point of it is
+an \emph{$F$-coalgebra}. Thus, a \emph{least} pre-fixed point of $F$ is an
+\emph{initial $F$-algebra} and a \emph{greatest} post-fixed point of $F$ is a
+\emph{final $F$-coalgebra}.
+
+If $L\subseteq X$ is a least pre-fixed point of a monotone $F$, then $L$ is a
+\emph{fixed point} of $F$, which is to say $F(L)=L$. Given that
+$F(L)\subseteq L$, it is enough to show that $L\subseteq F(L)$. Now with $L$ being the meet of
+all pre-fixed points of $F$, it suffices to show that $F(L)$ is a pre-fixed
+point of $F$. But by monotonicity of $F$ we have
+$F(F(L))\subseteq F(L)\subseteq L$. (This is a special case of the theorem in category
+theory stating that an initial algebra for a functor is an isomorphism.)
+
+By duality if $M\subseteq X$ is the greatest post-fixed point of $F$, then $M$ is also a
+fixed point of $F$. (Categorially, a final co-algebra for a functor is an
+isomorphism.)
+
+Every monotone $F:\wp{X}\to\wp{X}$ has a least pre-fixed point and greatest post-fixed
+point, given by the equations
+\begin{align*}
+  \mu(F) & = \bigcap\{\,A\subseteq X\,\mid\, F(A)\subseteq A\,\} \\
+  \nu(F) & = \bigcup\{\,A\subseteq X\,\mid\,A\subseteq F(A)\,\}
+\end{align*}
+By the previous remarks these are, respectively, the least and greatest fixed
+points of $F$.
+
+It is evident that $\mu(F)$ is contained in all pre-fixed points of $F$, being
+their intersection.  It remains to show that $F(\mu(F))\subseteq \mu(F)$.  Being the
+greatest lower bound of all pre-fixed points, it is enough to show that if
+$F(A)\subseteq A$, then $F(\mu(F))\subseteq A$.  If $F(A)\subseteq A$, then $\mu(F)\subseteq A$ by definition, and
+so by monotonicity $F(\mu(F))\subseteq F(A)\subseteq A$, and we are done.
+
+Similarly, $\nu(F)$ contains all post-fixed points of $F$, it being their union,
+and, arguing dually to the preceding, $\nu(F)$ is itself a post-fixed point of
+$F$.  It is thus the greatest post-fixed point, and hence a fixed point.
+
+It is also possible to show that the meet and join of any set of fixed points of
+a monotone function is itself a fixed point, but this fact seems not to be as
+useful as the construction of a least and greatest.
+
+\end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% fill-column: 90
+%%% auto-fill-mode: t
+%%% End:
