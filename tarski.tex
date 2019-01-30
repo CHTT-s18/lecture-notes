@@ -21,9 +21,17 @@
 \usepackage{stackengine}
 \usepackage{scalerel}
 
+\newcommand{\IsNat}[1]{{#1}\,\mathsf{nat}}
+\newcommand{\zeronat}{\mathtt{zero}}
+\newcommand{\succnat}[1]{\mathtt{succ}(#1)}
+
+\newcommand{\IsEven}[1]{{#1}\,\mathsf{even}}
+\newcommand{\IsOdd}[1]{{#1}\,\mathsf{odd}}
+
 \allowdisplaybreaks[1]       %mildly permissible to break up displayed equations
 
 \begin{document}
+
 \title{Tarski's Theorem on Power Sets}
 \author{Robert Harper}
 \date{\today}
@@ -32,26 +40,25 @@
 
 \section{Introduction}
 
-Tarski's theorem states that a monotone function on a complete lattice has a
-complete lattice of fixed points, in particular a least and greatest. A useful
-class of special cases are powerset lattices ordered by inclusion.
+Tarski's theorem states that a monotone function on a complete lattice has a complete
+lattice of fixed points, in particular a least and greatest. A useful class of special
+cases are powerset lattices ordered by inclusion.
 
 \section{Powerset Lattices}
 
-Let $X$ be a set, not necessarily empty, and let $\wp{X}$ be the set of all
-subsets of $X$. The set $\wp{X}$ forms a complete lattice under set inclusion,
-with meets given by intersection and joins given by union. That is, if
-$\mathcal{X}\subset\wp{X}$, then $\bigcap{\mathcal{X}}$ is its meet (greatest lower bound) and
-$\bigcup{\mathcal{X}}$ is its join (least upper bound). The least element is the join
-of the empty set, namely $\emptyset$, and the greatest element is the meet of the empty
-set, namely $X$.
+Let $X$ be a set, not necessarily empty, and let $\wp{X}$ be the set of all subsets of
+$X$. The set $\wp{X}$ forms a complete lattice under set inclusion, with meets given by
+intersection and joins given by union. That is, if $\mathcal{X}\subset\wp{X}$, then
+$\bigcap{\mathcal{X}}$ is its meet (greatest lower bound) and $\bigcup{\mathcal{X}}$ is
+its join (least upper bound). The least element is the join of the empty set, namely
+$\emptyset$, and the greatest element is the meet of the empty set, namely $X$.
 
 A function $F:\wp{X}\to\wp{X}$ is \emph{monotone} if it preserves inclusion: if
 $A\subseteq B\subseteq X$, then $F(A)\subseteq F(B)\subseteq X$. For monotone $F$ on
-$\wp{X}$, a \emph{pre-fixed point} of $F$ is a set $A\subseteq X$ such that
-$F(A)\subseteq A$, and a \emph{post-fixed point} of $F$ is a set $A\subseteq X$ such that
-$X\subseteq F(X)$. A pre-fixed point of $F$ is also said to be \emph{$F$-closed} and a post-fixed
-point of $F$ is said to be \emph{$F$-consistent}.  A \emph{least pre-fixed point} of a
+$\wp{X}$, a \emph{pre-fixed point} of $F$ is a set $A\subseteq X$ such that $F(A)\subseteq
+A$, and a \emph{post-fixed point} of $F$ is a set $A\subseteq X$ such that $X\subseteq
+F(X)$. A pre-fixed point of $F$ is also said to be \emph{$F$-closed} and a post-fixed
+point of $F$ is said to be \emph{$F$-consistent}. A \emph{least pre-fixed point} of a
 monotone $F$ is the \emph{smallest} (with respect to containment) $F$-closed set, and a
 \emph{greatest post-fixed point} of $F$ is the \emph{largest} (with respect to
 containment) $F$-consistent set.
@@ -60,50 +67,106 @@ Viewing the lattice as a (skinny) )category, a monotone function $F$ on it is a
 \emph{functor}, a pre-fixed point of it is an \emph{$F$-algebra} and a post-fixed point of
 it is an \emph{$F$-coalgebra}. Thus, a \emph{least} pre-fixed point of $F$ is an
 \emph{initial $F$-algebra} and a \emph{greatest} post-fixed point of $F$ is a \emph{final
-  $F$-coalgebra}.
+$F$-coalgebra}.
 
-If $L\subseteq X$ is a least pre-fixed point of a monotone $F$, then $L$ is a \emph{fixed point}
-of $F$, which is to say $F(L)=L$. Given that $F(L)\subseteq L$, it is enough to show that
-$L\subseteq F(L)$. Now with $L$ being the meet of all pre-fixed points of $F$, it suffices to show
-that $F(L)$ is a pre-fixed point of $F$. But by monotonicity of $F$ we have
-$F(F(L))\subseteq F(L)\subseteq L$.  (Categorially, an initial algebra for a functor is an isomorphism.)
+If $L\subseteq X$ is a least pre-fixed point of a monotone $F$, then $L$ is a \emph{fixed
+point} of $F$, which is to say $F(L)=L$. Given that $F(L)\subseteq L$, it is enough to
+show that $L\subseteq F(L)$. Now with $L$ being the meet of all pre-fixed points of $F$,
+it suffices to show that $F(L)$ is a pre-fixed point of $F$. But by monotonicity of $F$ we
+have $F(F(L))\subseteq F(L)\subseteq L$. (Categorially, an initial algebra for a functor
+is an isomorphism.)
 
-By duality if $M\subseteq X$ is a greatest post-fixed point of $F$, then $M$ is also a fixed point
-of $F$. (Categorially, a final co-algebra for a functor is an isomorphism.)
+By duality if $M\subseteq X$ is a greatest post-fixed point of $F$, then $M$ is also a
+fixed point of $F$. (Categorially, a final co-algebra for a functor is an isomorphism.)
 
-Every monotone $F:\wp{X}\to\wp{X}$ has a (unique) least pre-fixed point and (unique) greatest
-post-fixed point, given by the equations
-\begin{align*}
-  \mu(F) & = \bigcap\{\,A\subseteq X\,\mid\, F(A)\subseteq A\,\} \\
-  \nu(F) & = \bigcup\{\,A\subseteq X\,\mid\,A\subseteq F(A)\,\}
-\end{align*}
-By the previous remarks these are, respectively, the least and greatest fixed
-points of $F$.
+Every monotone $F:\wp{X}\to\wp{X}$ has a (unique) least pre-fixed point and (unique)
+greatest post-fixed point, given by the equations \begin{align*} \mu(F) & =
+\bigcap\{\,A\subseteq X\,\mid\, F(A)\subseteq A\,\} \\ \nu(F) & = \bigcup\{\,A\subseteq
+X\,\mid\,A\subseteq F(A)\,\} \end{align*} By the previous remarks these are, respectively,
+the least and greatest fixed points of $F$.
 
-It is evident that $\mu(F)$ is contained in all pre-fixed points of $F$, being
-their intersection.  It remains to show that $F(\mu(F))\subseteq \mu(F)$.  Being the
-greatest lower bound of all pre-fixed points, it is enough to show that if
-$F(A)\subseteq A$, then $F(\mu(F))\subseteq A$.  If $F(A)\subseteq A$, then $\mu(F)\subseteq A$ by definition, and
+It is evident that $\mu(F)$ is contained in all pre-fixed points of $F$, being their
+intersection. It remains to show that $F(\mu(F))\subseteq \mu(F)$. Being the greatest
+lower bound of all pre-fixed points, it is enough to show that if $F(A)\subseteq A$, then
+$F(\mu(F))\subseteq A$. If $F(A)\subseteq A$, then $\mu(F)\subseteq A$ by definition, and
 so by monotonicity $F(\mu(F))\subseteq F(A)\subseteq A$, and we are done.
 
-Similarly, $\nu(F)$ contains all post-fixed points of $F$, it being their union,
-and, arguing dually to the preceding, $\nu(F)$ is itself a post-fixed point of
-$F$.  It is thus the greatest post-fixed point, and hence a fixed point.
+Similarly, $\nu(F)$ contains all post-fixed points of $F$, it being their union, and,
+arguing dually to the preceding, $\nu(F)$ is itself a post-fixed point of $F$. It is thus
+the greatest post-fixed point, and hence a fixed point.
 
 The least fixed point of a monotone $F$ on $\wp{X}$ is that it affords the following
 \emph{induction principle}: to show that $\mu(F)\subseteq A$, it suffices to show that
-$F(A)\subseteq A$, which is to say that $A$ is $F$-closed.  Similarly, the greatest post-fixed
-point, $\nu(F)$, of $F$ affords the following \emph{coinduction principle}: to show that
-$A\subseteq \nu(F)$, it suffices to show that $A\subseteq F(A)$, which is to say that $A$ is $F$-consistent.
+$F(A)\subseteq A$, which is to say that $A$ is $F$-closed. Similarly, the greatest
+post-fixed point, $\nu(F)$, of $F$ affords the following \emph{coinduction principle}: to
+show that $A\subseteq \nu(F)$, it suffices to show that $A\subseteq F(A)$, which is to say
+that $A$ is $F$-consistent.
 
 Re-phrased in terms of predicates and implication, the least fixed point of a monotone $F$
 is the \emph{strongest} property $A$ of elements of $X$ such that if $x\in F(A)$, then
-$x\in A$.  Thus, to show that $x\in\mu(F)$ implies $x\in A$, it is enough to show that if
-$x\in F(A)$, then $x\in A$.  A dual characterization applies to the greatest fixed point.
+$x\in A$. Thus, to show that $x\in\mu(F)$ implies $x\in A$, it is enough to show that if
+$x\in F(A)$, then $x\in A$. A dual characterization applies to the greatest fixed point.
 
 It is also possible to show that the meet and join of any set of fixed points of a
 monotone function is itself a fixed point, but this seems not to be as useful as the
 construction of a least and greatest.
+
+\section{Assertions and Rules}
+
+A typical application of the fixed point constructions is to justify the definition of one
+or more \emph{assertions}, or \emph{judgment forms}, by a collection of \emph{rules}. The
+idea is that the rules constitute an inductive definition of the mentioned assertions.  For example,
+the following rules define the judgment $\IsNat{n}$, stating that $n$ is a natural number:
+\begin{mathpar}
+  \inferrule[zero]
+  {\strut}
+  {\IsNat{\zeronat}}
+
+  \inferrule[succ]
+  {\IsNat{n}}
+  {\IsNat{\succnat{n}}}
+\end{mathpar}
+Similarly, the even and odd numbers may be simultaneously defined by the following rules:
+\begin{mathpar}
+  \inferrule[zero-even]
+  {\strut}
+  {\IsEven{\zeronat}}
+
+  \inferrule[succ-odd]
+  {\IsEven{n}}
+  {\IsOdd{\succnat{n}}}
+
+  \inferrule[succ-even]
+  {\IsOdd{n}}
+  {\IsEven{\succnat{n}}}
+\end{mathpar}
+In both cases the subjects of the assertions are abstract binding trees in the sense
+of~\citet{pfpl2}, among which are those used above.
+
+The forms of assertion may be thought of as labels that distinguish one from another.  Thus, the
+underlying set $X$ of the inductive definition is the collection of \emph{assertions} consisting of
+an abt together with a label drawn from the set of such forms.  Each rule $r$ of the form
+\begin{displaymath}
+  \inferrule
+  {j_{1} \dots j_{n}}
+  {j}
+\end{displaymath}
+in which the $j_{i}$'s and $j$ are assertions (elements of $X$), defines a monotone function
+$F_{r}:\wp{X}\to\wp{X}$ that closes up a given $A\subseteq X$ under $r$ in that
+\begin{displaymath}
+  F_{r}(A)=A\cup\{\, j\in X \,\mid\, j_{1},\dots,j_{n}\in A\,\}.
+\end{displaymath}
+A set $R$ of rules induces a monotone function that collectively closes up under each rule in the
+set:
+\begin{displaymath}
+  F_{R}(A) = \bigcup_{r\in R} F_{r}(A).
+\end{displaymath}
+The judgments defined by the set of rules $R$ are precisely those in $\mu(F_{R})$.  The principle of
+\emph{rule induction} is simply the induction principle associated with the least fixed point of
+$F_{R}$.
+
+\bibliographystyle{plainnat}
+\bibliography{notes}
 
 \end{document}
 
