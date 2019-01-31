@@ -95,17 +95,27 @@ Similarly, $\nu(F)$ contains all post-fixed points of $F$, it being their union,
 arguing dually to the preceding, $\nu(F)$ is itself a post-fixed point of $F$. It is thus
 the greatest post-fixed point, and hence a fixed point.
 
-The least fixed point of a monotone $F$ on $\wp{X}$ is that it affords the following
-\emph{induction principle}: to show that $\mu(F)\subseteq A$, it suffices to show that
-$F(A)\subseteq A$, which is to say that $A$ is $F$-closed. Similarly, the greatest
-post-fixed point, $\nu(F)$, of $F$ affords the following \emph{coinduction principle}: to
-show that $A\subseteq \nu(F)$, it suffices to show that $A\subseteq F(A)$, which is to say
-that $A$ is $F$-consistent.
+The least fixed point of a monotone $F$ on $\wp{X}$ affords the following \emph{induction
+  principle}: to show that $\mu(F)\subseteq A$, it suffices to show that
+$F(A)\subseteq A$, which is to say that $A$ is $F$-closed. Similarly, the greatest post-fixed
+point, $\nu(F)$, of $F$ affords the following \emph{coinduction principle}: to show that
+$A\subseteq \nu(F)$, it suffices to show that $A\subseteq F(A)$, which is to say that $A$ is $F$-consistent.
 
 Re-phrased in terms of predicates and implication, the least fixed point of a monotone $F$
 is the \emph{strongest} property $A$ of elements of $X$ such that if $x\in F(A)$, then
 $x\in A$. Thus, to show that $x\in\mu(F)$ implies $x\in A$, it is enough to show that if
-$x\in F(A)$, then $x\in A$. A dual characterization applies to the greatest fixed point.
+$x\in F(A)$, then $x\in A$.  Dually, the greatest fixed point of a monotone $F$ is the
+\emph{weakest} property $A$ of elements of $X$ such that if $x\in A$, then $x\in F(A)$.
+
+As a case in point there are two proofs that $\mu(F)\subseteq\nu(F)$, one using the minimality of
+$\mu(F)$, the other using the maximality of $\nu(F)$.  Because $\mu(F)$ is the least pre-fixed
+point of $F$, it is itself $F$-closed, $F(\mu(F))\subseteq\mu(F)$, and because $\nu(F)$ is the greatest
+post-fixed point of $F$, it is itself $F$-consistent.  Thus, to show the containment it
+suffices to show either that $\nu(F)$ is $F$-closed, $F(\nu(F))\subseteq\nu(F)$, or that
+$\mu(F)$ is $F$-consistent, $\mu(F)\subseteq F(\mu(F))$.  But these are exactly the converse
+containments required to show that $\mu(F)$ and $\nu(F)$ are fixed points of $F$!
+
+\smallskip
 
 It is also possible to show that the meet and join of any set of fixed points of a
 monotone function is itself a fixed point, but this seems not to be as useful as the
@@ -164,6 +174,25 @@ set:
 The judgments defined by the set of rules $R$ are precisely those in $\mu(F_{R})$.  The principle of
 \emph{rule induction} is simply the induction principle associated with the least fixed point of
 $F_{R}$.
+
+\smallskip
+
+What about the greatest fixed point $\nu(F_{R})$?  As remarked earlier, $\nu(F_{R})$ contains
+$\mu(F_{R})$, but is the containment strict?  The answer depends on the choice of subjects
+for the assertions in $X$.  For an object to be in the least fixed point of a rule set
+means that it must be forced to be so by applying rules.  But to be in the greatest fixed
+point means only that if an assertion is in it, and if it arises as the conclusion of some
+rule in $R$, then the premises of that rule must also be present.  This condition allows
+for circular reasoning in the presence of circular syntactic objects.  For example,
+suppose that $\Omega$ is the infinite stack of successors
+$\succnat(\succnat(\succnat(\dots)))$, which is to say that $\Omega=\succnat{\Omega}$, it is its own
+successor.  Considering the greatest fixed point interpretation of the rules defining
+$\IsNat{-}$, it is the case that $\IsNat{\Omega}$, because $\Omega=\succnat{\Omega}$ satisfies the
+requirement that if $\IsNat{\Omega}$, then $\IsNat{\Omega}$, which is tautologous.  It is for this
+reason that greatest fixed points are used when reasoning about data structures, such as
+graphs, that may have such a cyclic structure.
+
+
 
 \bibliographystyle{plainnat}
 \bibliography{notes}
