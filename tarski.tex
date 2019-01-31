@@ -186,11 +186,11 @@ rule in $R$, then the premises of that rule must also be present.  This conditio
 for circular reasoning in the presence of circular syntactic objects.  For example,
 suppose that $\Omega$ is the infinite stack of successors
 $\succnat(\succnat(\succnat(\dots)))$, which is to say that $\Omega=\succnat{\Omega}$, it is its own
-successor.  Considering the greatest fixed point interpretation of the rules defining
-$\IsNat{-}$, it is the case that $\IsNat{\Omega}$, because $\Omega=\succnat{\Omega}$ satisfies the
-requirement that if $\IsNat{\Omega}$, then $\IsNat{\Omega}$, which is tautologous.  It is for this
-reason that greatest fixed points are used when reasoning about data structures, such as
-graphs, that may have such a cyclic structure.
+successor.\footnote{If you are wondering how this could come about, just consider that the
+  syntactic objects are graphs, rather than trees, with cycles allowed.}  Considering the
+greatest fixed point interpretation of the rules defining $\IsNat{-}$, it is the case that
+$\IsNat{\Omega}$, because $\Omega=\succnat{\Omega}$ satisfies the requirement that if
+$\IsNat{\Omega}$, then $\IsNat{\Omega}$, which is tautologous.
 
 
 
