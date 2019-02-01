@@ -156,14 +156,15 @@ of~\citet{pfpl2}, among which are those used above.
 
 The forms of assertion may be thought of as labels that distinguish one from another.  Thus, the
 underlying set $X$ of the inductive definition is the collection of \emph{assertions} consisting of
-an abt together with a label drawn from the set of such forms.  Each rule $r$ of the form
+an abt together with a label drawn from the set of such forms.  Each rule $r$ is of the form
 \begin{displaymath}
   \inferrule
   {j_{1} \dots j_{n}}
   {j}
 \end{displaymath}
-in which the $j_{i}$'s and $j$ are assertions (elements of $X$), defines a monotone function
-$F_{r}:\wp{X}\to\wp{X}$ that applies rule $r$ to a given set $A\subseteq X$ of assertions:
+wherein the $j_{i}$'s and $j$ are assertions (elements of $X$).  Each such rule $r$
+determines a monotone function $F_{r}:\wp{X}\to\wp{X}$ that applies rule $r$ to a given set
+$A\subseteq X$ of assertions:
 \begin{displaymath}
   F_{r}(A)=\{\, j\in X \,\mid\, j_{1},\dots,j_{n}\in A\,\}.
 \end{displaymath}
