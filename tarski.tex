@@ -124,9 +124,10 @@ construction of a least and greatest.
 \section{Assertions and Rules}
 
 A typical application of the fixed point constructions is to justify the definition of one
-or more \emph{assertions}, or \emph{judgment forms}, by a collection of \emph{rules}. The
-idea is that the rules constitute an inductive definition of the mentioned assertions.  For example,
-the following rules define the judgment $\IsNat{n}$, stating that $n$ is a natural number:
+or more \emph{assertions}, or \emph{formal judgments}, by a collection of
+\emph{rules}. The idea is that the rules constitute an inductive definition of the
+mentioned assertions.  For example, the following rules define the judgment $\IsNat{n}$,
+stating that $n$ is a natural number:
 \begin{mathpar}
   \inferrule[zero]
   {\strut}
@@ -171,9 +172,9 @@ set:
 \begin{displaymath}
   F_{R}(A) = \bigcup_{r\in R} F_{r}(A).
 \end{displaymath}
-The judgments defined by the set of rules $R$ are precisely those in $\mu(F_{R})$.  The principle of
-\emph{rule induction} is simply the induction principle associated with the least fixed point of
-$F_{R}$.
+The assertions defined by the set of rules $R$ are precisely those in $\mu(F_{R})$.  The
+principle of \emph{rule induction} is simply the induction principle associated with the
+least fixed point of $F_{R}$.
 
 \smallskip
 
