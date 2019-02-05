@@ -195,6 +195,41 @@ greatest fixed point interpretation of the rules defining $\IsNat{-}$, it is the
 $\IsNat{\omega}$, because $\omega=\succnat{\omega}$ satisfies the requirement that if
 $\IsNat{\omega}$, then $\IsNat{\omega}$, which is tautologous.
 
+\smallskip
+
+Finally, a word about ``side conditions'' on rules is in order\footnote{\citet{avron91:scr} calls these
+  ``impurities.''}.  Often rules are not presented fully schematically, but with so-called
+side conditions that constrain its applicability.  For example, in the typing rule for
+$\lambda$-abstractions it is usual to include the requirement that $x$ is not already declared
+in $\Gamma$:
+\begin{displaymath}
+  \inferrule
+  {\Gamma,x{:}A\vdash M:B \\ x\notin\Gamma}
+  {\Gamma\vdash\lambda x{:}A.M:A\to B}
+\end{displaymath}
+When terms are identified up to $\alpha$-equivalence, the restriction can always be met by
+choosing an appropriate representative, because $\Gamma$ declares only finitely many of the
+infinitely many choices for the bound variable.  In that case the condition may be omitted
+from the rule, it being understood implicitly.
+
+Whereas in the preceding case the restrictions on the applicability of the rule are
+benign, it is entirely possible, even common, to abuse the privilege to the point of
+absurdity.  For example, it is entirely meaningless to state as a premise of a rule the
+\emph{negation} of the judgment being defined, as if to say ``this rule is applicable only
+if the stated assertion is not derivable.''  Doing this, or things tantamount to it, ruins
+the inductive character of the intended definition, precisely because the associated
+operator is no longer monotone!  And without that the rules cannot be said to define
+anything at all.  For a particularly blatant case, consider the supposed inductive
+definition of an assertion $A$ by the rule
+\begin{displaymath}
+  \inferrule
+  {\neg A}
+  {A}
+\end{displaymath}
+Were there a fixed point of the associated (non-monotone) operator, the judgment would be
+derivable iff it is not, so obviously it must not have one.  More subtle examples are
+observed in the wild, so be careful out there!
+
 \bibliographystyle{plainnat}
 \bibliography{notes}
 
