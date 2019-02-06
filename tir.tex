@@ -32,7 +32,7 @@
 
 \begin{document}
 
-\title{Title}
+\title{Strong Normalization as Transfinite Induction on Reduction}
 \author{Robert Harper}
 \date{\today}
 
@@ -40,7 +40,26 @@
 
 \section{Introduction}
 
-\section{The Meat}
+A formal type system is inductively defined by a collection of rules for deriving
+judgments of the form $\Gamma\vdash M:A$ and $\Gamma\vdash M\equiv M':A$ expressing, respectively, that a term
+$M$ is structurally well-typed at type $A$, relative to typing assumptions for variables
+given by the context $\Gamma$, and that well-typed terms $M$ and $M'$ of type $A$ are
+\emph{convertible}, or \emph{definitionally equivalent}, at type $A$, relative to context
+$\Gamma$.
+
+It is common to consider whether or not conversion between terms is decidable. A number of
+methods have been developed to address such questions. Of interest in this note are
+methods that characterize conversion by a \emph{reduction} relation on terms with the
+property that two well-typed terms are convertible iff they have the same fully reduced
+form, known as their common \emph{normal form}. The correctness of this procedure relies
+on showing that a well-typed term has a \emph{unique normal form}. This requirement may be
+broken into two parts, a \emph{normalization theorem} stating that every well-typed term
+has a normal form, and a \emph{confluence theorem} ensuring that the normal form is
+unique.
+
+The specifics of such proofs depend heavily on the type system under consideration, though
+often confluence can be proved independently of typing.
+
 
 \section{Conclusion}
 
