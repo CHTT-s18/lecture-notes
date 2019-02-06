@@ -1,0 +1,57 @@
+\documentclass[11pt,twoside]{article}
+\usepackage[authoryear,semicolon]{natbib}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{textgreek}
+\usepackage{fullpage}
+\usepackage[color=yellow]{todonotes}
+\setlength{\marginparwidth}{1.25in}
+\usepackage{xifthen}
+\usepackage{amsmath,amssymb,amsthm,mathtools,stmaryrd}
+\usepackage{proof,mathpartir}
+\usepackage{colonequals}
+\usepackage{code,verbatim}
+\usepackage{comment}
+\usepackage{textcomp}
+\usepackage[us]{optional}
+\usepackage{color}
+\usepackage{url}
+\usepackage{graphics}
+\usepackage{import}
+\usepackage{stackengine}
+\usepackage{scalerel}
+
+\newcommand{\IsNat}[1]{{#1}\,\mathsf{nat}}
+\newcommand{\zeronat}{\mathtt{zero}}
+\newcommand{\succnat}[1]{\mathtt{succ}(#1)}
+
+\newcommand{\IsEven}[1]{{#1}\,\mathsf{even}}
+\newcommand{\IsOdd}[1]{{#1}\,\mathsf{odd}}
+
+\allowdisplaybreaks[1]       %mildly permissible to break up displayed equations
+
+\begin{document}
+
+\title{Title}
+\author{Robert Harper}
+\date{\today}
+
+\maketitle{}
+
+\section{Introduction}
+
+\section{The Meat}
+
+\section{Conclusion}
+
+\bibliographystyle{plainnat}
+\bibliography{notes}
+
+\end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% fill-column: 90
+%%% auto-fill-mode: t
+%%% End:
