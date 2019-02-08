@@ -1,6 +1,6 @@
 add_cus_dep( 'tex', 'aux', 0, 'makeexternaldocument' );
 
-$pdflatex = 'pdflatex -8bit -etex -halt-on-error -synctex=1 %O %S';
+$pdflatex = 'pdflatex -halt-on-error -synctex=1 %O %S';
 $pdf_mode = 1;
 $bibtex_use = 1;
 
