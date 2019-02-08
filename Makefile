@@ -1,6 +1,6 @@
 # Grab the list of tex files on the top level. We specifically
 # ignore template.tex as it's not suitable for building.
-TEX_FILES=$(filter-out weekly-template.tex notes-template.tex, $(shell ls *.tex))
+TEX_FILES=$(filter-out weekly-template.tex, $(shell ls week*.tex))
 
 # Get a list of the desired pdfs by transforming foo.tex -> foo.pdf
 PDFS=$(TEX_FILES:.tex=.pdf)
