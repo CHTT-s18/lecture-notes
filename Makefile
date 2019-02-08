@@ -1,6 +1,6 @@
 # Grab the list of tex files on the top level. We specifically
 # ignore template.tex as it's not suitable for building.
-TEX_FILES=$(filter-out template.tex, $(shell ls *.tex))
+TEX_FILES=$(filter-out weekly-template.tex notes-template.tex, $(shell ls *.tex))
 
 # Get a list of the desired pdfs by transforming foo.tex -> foo.pdf
 PDFS=$(TEX_FILES:.tex=.pdf)
@@ -17,7 +17,7 @@ print-%  :
 # To build an actual pdf, run latexmk to build a pdf and move the resulting
 # pdf to pdfs/
 %.pdf:
-	@ -mkdir pdfs
+	@ -mkdir -p pdfs
 	latexmk $(*).tex
 	@mv $(*).pdf pdfs/
 
