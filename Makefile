@@ -18,7 +18,7 @@ print-%  :
 # pdf to pdfs/
 %.pdf:
 	@ -mkdir pdfs
-	latexmk -pdf $(*).tex
+	latexmk $(*).tex
 	@mv $(*).pdf pdfs/
 
 clean:
