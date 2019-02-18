@@ -55,56 +55,54 @@ $\emptyset$, and the greatest element is the meet of the empty set, namely $X$.
 
 A function $F:\wp{X}\to\wp{X}$ is \emph{monotone} if it preserves inclusion: if
 $A\subseteq B\subseteq X$, then $F(A)\subseteq F(B)\subseteq X$. For monotone $F$ on
-$\wp{X}$, a \emph{pre-fixed point} of $F$ is a set $A\subseteq X$ such that $F(A)\subseteq
-A$, and a \emph{post-fixed point} of $F$ is a set $A\subseteq X$ such that $X\subseteq
-F(X)$. A pre-fixed point of $F$ is also said to be \emph{$F$-closed} and a post-fixed
+$\wp{X}$, a \emph{pre-fixed point} of $F$ is a set $A\subseteq X$ such that
+$F(A)\subseteq A$, and a \emph{post-fixed point} of $F$ is a set $A\subseteq X$ such that
+$X\subseteq F(X)$. A pre-fixed point of $F$ is also said to be \emph{$F$-closed} and a post-fixed
 point of $F$ is said to be \emph{$F$-consistent}. A \emph{least pre-fixed point} of a
 monotone $F$ is the \emph{smallest} (with respect to containment) $F$-closed set, and a
 \emph{greatest post-fixed point} of $F$ is the \emph{largest} (with respect to
-containment) $F$-consistent set.
-
-Viewing the lattice as a (skinny) category, a monotone function $F$ on it is a
-\emph{functor}, a pre-fixed point of it is an \emph{$F$-algebra} and a post-fixed point of
-it is an \emph{$F$-coalgebra}. Thus, a \emph{least} pre-fixed point of $F$ is an
-\emph{initial $F$-algebra} and a \emph{greatest} post-fixed point of $F$ is a \emph{final
-$F$-coalgebra}.
-
-If $L\subseteq X$ is a least pre-fixed point of a monotone $F$, then $L$ is a \emph{fixed
-point} of $F$, which is to say $F(L)=L$. Given that $F(L)\subseteq L$, it is enough to
-show that $L\subseteq F(L)$. Now with $L$ being the meet of all pre-fixed points of $F$,
-it suffices to show that $F(L)$ is a pre-fixed point of $F$. But by monotonicity of $F$ we
-have $F(F(L))\subseteq F(L)\subseteq L$. (Categorially, an initial algebra for a functor
-is an isomorphism.)
-
-By duality if $M\subseteq X$ is a greatest post-fixed point of $F$, then $M$ is also a
-fixed point of $F$. (Categorially, a final co-algebra for a functor is an isomorphism.)
+containment) $F$-consistent set.  Viewing the lattice as a (skinny) category, a monotone
+function $F$ on it is a \emph{functor}, a pre-fixed point of it is an \emph{$F$-algebra}
+and a post-fixed point of it is an \emph{$F$-coalgebra}. Thus, a \emph{least} pre-fixed
+point of $F$ is an \emph{initial $F$-algebra} and a \emph{greatest} post-fixed point of
+$F$ is a \emph{final $F$-coalgebra}.
 
 Every monotone $F:\wp{X}\to\wp{X}$ has a (unique) least pre-fixed point and (unique)
-greatest post-fixed point, given by the equations \begin{align*} \mu(F) & =
-\bigcap\{\,A\subseteq X\,\mid\, F(A)\subseteq A\,\} \\ \nu(F) & = \bigcup\{\,A\subseteq
-X\,\mid\,A\subseteq F(A)\,\} \end{align*} By the previous remarks these are, respectively,
-the least and greatest fixed points of $F$.
-
+greatest post-fixed point, given by the equations
+\begin{align*}
+  \mu(F) & = \bigcap\{\,A\subseteq X\,\mid\, F(A)\subseteq A\,\} \\
+  \nu(F) & = \bigcup\{\,A\subseteq X\,\mid\,A\subseteq F(A)\,\}
+\end{align*}
 It is evident that $\mu(F)$ is contained in all pre-fixed points of $F$, being their
-intersection. It remains to show that $F(\mu(F))\subseteq \mu(F)$. Being the greatest
-lower bound of all pre-fixed points, it is enough to show that if $F(A)\subseteq A$, then
-$F(\mu(F))\subseteq A$. If $F(A)\subseteq A$, then $\mu(F)\subseteq A$ by definition, and
-so by monotonicity $F(\mu(F))\subseteq F(A)\subseteq A$, and we are done.
+intersection. It remains to show that $F(\mu(F))\subseteq \mu(F)$. Being the greatest lower bound of
+all pre-fixed points, it is enough to show that if $F(A)\subseteq A$, then
+$F(\mu(F))\subseteq A$. If $F(A)\subseteq A$, then $\mu(F)\subseteq A$ by definition, and so by monotonicity
+$F(\mu(F))\subseteq F(A)\subseteq A$, and we are done.  Similarly, $\nu(F)$ contains all post-fixed points of
+$F$, it being their union, and, arguing dually to the preceding, $\nu(F)$ is itself a
+post-fixed point of $F$. It is thus the greatest post-fixed point, and hence a fixed
+point.
 
-Similarly, $\nu(F)$ contains all post-fixed points of $F$, it being their union, and,
-arguing dually to the preceding, $\nu(F)$ is itself a post-fixed point of $F$. It is thus
-the greatest post-fixed point, and hence a fixed point.
+If $L\subseteq X$ is a least pre-fixed point of a monotone $F$, then $L$ is a \emph{fixed point}
+of $F$, which is to say $F(L)=L$. Given that $F(L)\subseteq L$, it is enough to show that
+$L\subseteq F(L)$. Now with $L$ being the meet of all pre-fixed points of $F$, it suffices to show
+that $F(L)$ is a pre-fixed point of $F$. But by monotonicity of $F$ we have
+$F(F(L))\subseteq F(L)\subseteq L$. (Categorially, an initial algebra for a functor is an isomorphism.)
+Dually if $M\subseteq X$ is a greatest post-fixed point of $F$, then $M$ is also a fixed point of
+$F$. (Categorially, a final co-algebra for a functor is an isomorphism.)  Thus, $\mu(F)$ and
+$\nu(F)$ are, respectively, the least and greatest fixed points of the monotone function
+$F$.
+
+\smallskip
 
 The least fixed point of a monotone $F$ on $\wp{X}$ affords the following \emph{induction
   principle}: to show that $\mu(F)\subseteq A$, it suffices to show that
 $F(A)\subseteq A$, which is to say that $A$ is $F$-closed.  Similarly, the greatest post-fixed
 point, $\nu(F)$, of $F$ affords the following \emph{coinduction principle}: to show that
-$A\subseteq \nu(F)$, it suffices to show that $A\subseteq F(A)$, which is to say that $A$ is $F$-consistent.
-
-Re-phrased in terms of predicates and implication, the least fixed point of a monotone $F$
-is the \emph{strongest} property $A$ of elements of $X$ such that if $x\in F(A)$, then
-$x\in A$. Thus, to show that $x\in\mu(F)$ implies $x\in A$, it is enough to show that if
-$x\in F(A)$, then $x\in A$.  Dually, the greatest fixed point of a monotone $F$ is the
+$A\subseteq \nu(F)$, it suffices to show that $A\subseteq F(A)$, which is to say that $A$ is
+$F$-consistent.  Re-phrased in terms of predicates and implication, the least fixed point
+of a monotone $F$ is the \emph{strongest} property $A$ of elements of $X$ such that if
+$x\in F(A)$, then $x\in A$. Thus, to show that $x\in\mu(F)$ implies $x\in A$, it is enough to show
+that if $x\in F(A)$, then $x\in A$.  Dually, the greatest fixed point of a monotone $F$ is the
 \emph{weakest} property $A$ of elements of $X$ such that if $x\in A$, then $x\in F(A)$.
 
 As a case in point there are two proofs that $\mu(F)\subseteq\nu(F)$, one using the minimality of
@@ -120,19 +118,17 @@ $F$.
 
 Yet another perspective on the least pre-fixed point and greatest post-fixed point of a
 monotone $F$ is provided by the following visualization of inductive and coinductive
-proofs.  To show that every element of $\mu(F)$ is also in some set $A$, representing a
-property of interest, it is enough to show that $\mu(F)\cap A$ is closed under the defining
-operator $F$.  For if it is, then $\mu(F)$ is contained in this intersection, and hence in
-$A$.  The intersection $\mu(F)\cap A$ is \emph{a priori} smaller than $\mu(F)$, consisting only
-of those elements of $\mu(F)$ that are ``good enough'' to have property $A$.  But if the
-intersection is not so restrictive as to not be closed under $F$, then in fact the
-intersection is no restriction at all, it being that $\mu(F)\cap A=\mu(F)$.
-
-The dual version of the same viewpoint works as follows.  To show that some collection
+proofs.  To show that every element of $\mu(F)$ is also in some set $A$ representing a
+property of interest, it is enough to show that $\mu(F)\cap A$ is closed under $F$.  For if it
+is, then $\mu(F)$ is contained in this intersection, and hence in $A$.  The intersection
+$\mu(F)\cap A$ is \emph{a priori} smaller than $\mu(F)$, consisting only of those elements of
+$\mu(F)$ that are ``good enough'' to have property $A$.  But if the intersection is not so
+restrictive as to not be closed under $F$, then in fact the intersection is no restriction
+at all, it being that $\mu(F)\cap A=\mu(F)$.  Dually, to show that some collection
 $A\subseteq X$ of elements is contained in $\nu(F)$, it is enough to boldly assert that they are by
 forming $\nu(F)\cup A$, which is \emph{a priori} larger than $\nu(F)$.  But if the union is
-consistent with $F$, then the assertion of $A$ is indefeasible, which means that
-$\nu(F)\cup A\subseteq\nu(F)$, the union is not, in fact, larger than $\nu(F)$ after all---the elements of
+consistent with $F$, then the assertion of $A$ is indefeasible, and hence
+$\nu(F)\cup A\subseteq\nu(F)$.  The union is not, in fact, larger than $\nu(F)$ after all---the elements of
 $A$ were present from the get-go.
 
 \smallskip
