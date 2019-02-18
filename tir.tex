@@ -1,0 +1,102 @@
+\documentclass[11pt,twoside]{article}
+\usepackage[authoryear,semicolon]{natbib}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{textgreek}
+\usepackage{fullpage}
+\usepackage[color=yellow]{todonotes}
+\setlength{\marginparwidth}{1.25in}
+\usepackage{xifthen}
+\usepackage{amsmath,amssymb,amsthm,mathtools,stmaryrd}
+\usepackage{proof,mathpartir}
+\usepackage{colonequals}
+\usepackage{code,verbatim}
+\usepackage{comment}
+\usepackage{textcomp}
+\usepackage[us]{optional}
+\usepackage{color}
+\usepackage{url}
+\usepackage{graphics}
+\usepackage{import}
+\usepackage{stackengine}
+\usepackage{scalerel}
+
+\newcommand{\IsNat}[1]{{#1}\,\mathsf{nat}}
+\newcommand{\zeronat}{\mathtt{zero}}
+\newcommand{\succnat}[1]{\mathtt{succ}(#1)}
+
+\newcommand{\IsEven}[1]{{#1}\,\mathsf{even}}
+\newcommand{\IsOdd}[1]{{#1}\,\mathsf{odd}}
+
+\allowdisplaybreaks[1]       %mildly permissible to break up displayed equations
+
+\begin{document}
+
+\title{Strong Normalization as Transfinite Induction on Reduction}
+\author{Robert Harper}
+\date{\today}
+
+\maketitle{}
+
+\section{Introduction}
+
+A formal type system is inductively defined by a collection of rules for deriving
+judgments of the form $\Gamma\vdash M:A$ and $\Gamma\vdash M\equiv M':A$ expressing, respectively, that a term
+$M$ is structurally well-typed at type $A$, relative to typing assumptions for variables
+given by the context $\Gamma$, and that well-typed terms $M$ and $M'$ of type $A$ are
+\emph{convertible}, or \emph{definitionally equivalent}, at type $A$, relative to context
+$\Gamma$.
+
+The question arises, is conversion decidable for well-typed terms?  By Scott's Theorem
+conversion between untyped terms is undecidable, so the only hope for proving decidability
+is to take advantage of typing.  Many such methods have been developed.
+\emph{Reduction-based} approaches work by checking whether or not two terms of the same
+type can be reduced to a common term by applying simplifications.
+\emph{Normalization-based} approaches demand that the common term be itself irreducible,
+which is to say a common \emph{normal form}.
+
+The use of reduction and normalization-based methods for deciding conversion may be
+justified by the principle of \emph{transfinite induction on reduction}.  Writing $M\to N$
+for reduction, a property $\mathcal{P}$ of terms is said to be \emph{$\to$-inductive} iff
+\begin{displaymath}
+  \forall M.(\forall N.M\to N\supset\mathcal{P}(N))\supset\mathcal{P}(M).
+\end{displaymath}
+The principle of transfinite $\to$-induction states that any $\to$-inductive property holds of
+every term:\footnote{Thinking of $M\to N$ as analogous to $n\leq m$ for natural numbers, this
+  is exactly the statement of ``strong induction,'' which is derivable from mathematical
+  induction.}
+\begin{center}
+  if $\mathcal{P}$ is $\to$-inductive, then $\forall M.\mathcal{P}(M)$.
+\end{center}
+The validity of transfinite $\to$-induction may be taken as the definition of the
+\emph{well-foundedness} of the reduction relation, which is often defined as the
+non-existence of infinite reduction sequences, a property called \emph{strong
+  normalization} for reduction.  Indeed normalization (the existence of normal forms) and
+strong normalization may both be proved by transfinite $\to$-induction once its validity has
+been established.  Moreover, it may be used to prove that two terms are convertible iff
+they may be reduced to a common (possibly normal) form, providing a decision procedure for
+definitional equivalence.
+
+The purpose of this note is to provide a direct proof of the validity of transfinite
+induction on $\beta$-reduction for well-typed terms for what a class of properties called
+reduction properties.
+
+\section{Validity of Transfinite $\beta$-Reduction for Well-Typed Terms}
+
+is this worth writing down???  experts will say they know all that.  there's nothing
+interesting about the proof.  the students probably will not appreciate it.
+
+
+\section{Conclusion}
+
+\bibliographystyle{plainnat}
+\bibliography{notes}
+
+\end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% fill-column: 90
+%%% auto-fill-mode: t
+%%% End:
