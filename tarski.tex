@@ -97,7 +97,7 @@ the greatest post-fixed point, and hence a fixed point.
 
 The least fixed point of a monotone $F$ on $\wp{X}$ affords the following \emph{induction
   principle}: to show that $\mu(F)\subseteq A$, it suffices to show that
-$F(A)\subseteq A$, which is to say that $A$ is $F$-closed. Similarly, the greatest post-fixed
+$F(A)\subseteq A$, which is to say that $A$ is $F$-closed.  Similarly, the greatest post-fixed
 point, $\nu(F)$, of $F$ affords the following \emph{coinduction principle}: to show that
 $A\subseteq \nu(F)$, it suffices to show that $A\subseteq F(A)$, which is to say that $A$ is $F$-consistent.
 
@@ -114,6 +114,25 @@ post-fixed point of $F$, it is itself $F$-consistent.  Thus, to show the contain
 suffices to show either that $\nu(F)$ is $F$-closed, $F(\nu(F))\subseteq\nu(F)$, or that
 $\mu(F)$ is $F$-consistent, $\mu(F)\subseteq F(\mu(F))$.  But these are exactly the converse
 containments required to show that $\mu(F)$ and $\nu(F)$ are fixed points of $F$!
+
+\smallskip
+
+Yet another perspective on the least pre-fixed point and greatest post-fixed point of a
+monotone $F$ is provided by the following visualization of inductive and coinductive
+proofs.  To show that every element of $\mu(F)$ is also in some set $A$, representing a
+property of interest, it is enough to show that $\mu(F)\cap A$ is closed under the defining
+operator $F$.  For if it is, then $\mu(F)$ is contained in this intersection, and hence in
+$A$.  The intersection $\mu(F)\cap A$ is \emph{a priori} smaller than $\mu(F)$, consisting only
+of those elements of $\mu(F)$ that are ``good enough'' to have property $A$.  But if the
+intersection is not so restrictive as to not be closed under $F$, then in fact the
+intersection is no restriction at all, it being that $\mu(F)\cap A=\mu(F)$.
+
+The dual version of the same viewpoint works as follows.  To show that some collection
+$A\subseteq X$ of elements is contained in $\nu(F)$, it is enough to boldly assert that they are by
+forming $\nu(F)\cup A$, which is \emph{a priori} larger than $\nu(F)$.  But if the union is
+consistent with $F$, then the assertion of $A$ is indefeasible, which means that
+$\nu(F)\cup A\subseteq\nu(F)$, the union is not, in fact, larger than $\nu(F)$ after all---the elements of
+$A$ were present from the get-go.
 
 \smallskip
 
