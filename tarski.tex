@@ -28,6 +28,8 @@
 \newcommand{\IsEven}[1]{{#1}\,\mathsf{even}}
 \newcommand{\IsOdd}[1]{{#1}\,\mathsf{odd}}
 
+\newcommand{\eqdef}{\mathrel{\triangleq}}
+
 \allowdisplaybreaks[1]       %mildly permissible to break up displayed equations
 
 \begin{document}
@@ -132,18 +134,31 @@ It is also possible to show that the meet and join of any set of fixed points of
 monotone function is itself a fixed point, but this seems not to be as useful as the
 construction of a least and greatest.
 
-% \smallskip
+\smallskip
 
-% It often arises that two sets (properties) are to be inductively (or coinductively)
-% defined \emph{simultaneously}, because each depends on the other.  Let $F$ be a monotone
-% operator on $\wp{X}\times \wp{X}$ ordered componentwise by inclusion so that meets and joins are
-% also given componentwise.  By arguments analogous to those given above, such an $F$ has a
-% least and a greatest fixed point, $\mu(F)$ and $\nu(F)$, respectively.  Bekic's Lemma reduces
-% this simultaneous inductive to a parameterized, iterated inductive definition.
-% \begin{lemma}[Bekic]
-%   For $F$ a monotone operator on $\wp{X}\times\wp{X}$, the least fixed point $\mu(F)$, given by the
-%   meet of all pre-fixed points of $F$, is equal to the iterated fixed points 
-% \end{lemma}
+It sometimes arises that two sets (properties) are to be \emph{simultaneously} inductively
+(or coinductively) defined because the definition of each depends on the other.  This
+situation can be expressed by considering two monotone operators
+$F, G : \wp{X}\times\wp{X}\to\wp{X}$ in the sense that if $A\subseteq A'$ and
+$B\subseteq B'$, then $F(A,B)\subseteq A'$ and $G(A,B)\subseteq B'$.  The operator
+$(F,G)(A,B)\eqdef (F(A,B),G(A,B))$ is therefore monotone with respect to the componentwise
+ordering, $(A,B)\subseteq (A',B')$ iff $A\subseteq A'$ and $B\subseteq B'$.  By arguments analogous to those given
+above\footnote{This is where the (mild) generalization of Tarski's Theorem to complete
+  lattices is helpful.} it has a least, $\mu(F\times G)$, and greatest, $\nu(F\times G)$, fixed point,
+each of which is a pair $(A_{0},B_{0})$ of subsets of $X$ such that $F(A_{0},B_{0})=A_{0}$
+and $G(A_{0},B_{0})=B_{0}$, each ``cross-referencing'' the other as intended.
+
+Rather than pass to the product $\wp{X}\times\wp{X}$ it is possible to manage the interdependencies
+by an iterated process of taking fixed points of monotone operators on $\wp{X}$.  This
+reduction of simultaneous to iterated fixed points is known as \emph{Bekic's
+  Lemma}.\footnote{The formulation given here is adapted from~\citet{davey-priestley}
+  Chapter 8, exercises 8.30 and 8.31.}  Given $F$ and $G$ as above, define their curried
+forms by $F_{B}(A)\eqdef{} F(A,B)$, which fixes $B$, and $G^{A}(B)=G(A,B)$, which fixes
+$A$.  These are both monotone on $\wp{X}$, and hence admit least fixed points points,
+$\mu(F_{B})=F(\mu(F_{B}),B)$, a function of $B$, and $\mu(G^{A})=G(A,\mu(G^{A}))$, a function of
+$A$.  Bekic's Lemma states that the simultaneous and iterated fixed points agree:
+$$\mu(F,G) = (\mu(F_{B}),\mu(G_{A}))=(\mu(B\mapsto F(\mu(A\mapsto F(A,B)))),\mu(A\mapsto G(\mu(B\mapsto G(A,B))))).$$
+
 
 \section{Assertions and Rules}
 
