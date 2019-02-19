@@ -137,28 +137,50 @@ construction of a least and greatest.
 \smallskip
 
 It sometimes arises that two sets (properties) are to be \emph{simultaneously} inductively
-(or coinductively) defined because the definition of each depends on the other.  This
-situation can be expressed by considering two monotone operators
-$F, G : \wp{X}\times\wp{X}\to\wp{X}$ in the sense that if $A\subseteq A'$ and
-$B\subseteq B'$, then $F(A,B)\subseteq A'$ and $G(A,B)\subseteq B'$.  The operator
-$(F,G)(A,B)\eqdef (F(A,B),G(A,B))$ is therefore monotone with respect to the componentwise
-ordering, $(A,B)\subseteq (A',B')$ iff $A\subseteq A'$ and $B\subseteq B'$.  By arguments analogous to those given
-above\footnote{This is where the (mild) generalization of Tarski's Theorem to complete
-  lattices is helpful.} it has a least, $\mu(F\times G)$, and greatest, $\nu(F\times G)$, fixed point,
-each of which is a pair $(A_{0},B_{0})$ of subsets of $X$ such that $F(A_{0},B_{0})=A_{0}$
-and $G(A_{0},B_{0})=B_{0}$, each ``cross-referencing'' the other as intended.
+defined because the definition of each depends on the other.  This situation can be
+expressed by considering two monotone operators $F, G : \wp{X}\times\wp{X}\to\wp{X}$ in the sense that
+if $A\subseteq A'$ and $B\subseteq B'$, then $F(A,B)\subseteq A'$ and
+$G(A,B)\subseteq B'$.  The operator $(F,G)(A,B)\eqdef (F(A,B),G(A,B))$ is therefore monotone with
+respect to the componentwise ordering, $(A,B)\subseteq (A',B')$ iff $A\subseteq A'$ and
+$B\subseteq B'$.  By arguments analogous to those given above\footnote{This is where the (mild)
+  generalization of Tarski's Theorem to complete lattices is helpful.} it has a least
+fixed point, $\mu(F\times G)$, a pair $(A_{0},B_{0})$ of subsets of $X$ such that
+$F(A_{0},B_{0})=A_{0}$ and $G(A_{0},B_{0})=B_{0}$, each ``cross-referencing'' the other as
+intended.
 
-Rather than pass to the product $\wp{X}\times\wp{X}$ it is possible to manage the interdependencies
-by an iterated process of taking fixed points of monotone operators on $\wp{X}$.  This
-reduction of simultaneous to iterated fixed points is known as \emph{Bekic's
-  Lemma}.\footnote{The formulation given here is adapted from~\citet{davey-priestley}
-  Chapter 8, exercises 8.30 and 8.31.}  Given $F$ and $G$ as above, define their curried
-forms by $F_{B}(A)\eqdef{} F(A,B)$, which fixes $B$, and $G^{A}(B)=G(A,B)$, which fixes
-$A$.  These are both monotone on $\wp{X}$, and hence admit least fixed points points,
-$\mu(F_{B})=F(\mu(F_{B}),B)$, a function of $B$, and $\mu(G^{A})=G(A,\mu(G^{A}))$, a function of
-$A$.  Bekic's Lemma states that the simultaneous and iterated fixed points agree:
-$$\mu(F,G) = (\mu(F_{B}),\mu(G_{A}))=(\mu(B\mapsto F(\mu(A\mapsto F(A,B)))),\mu(A\mapsto G(\mu(B\mapsto G(A,B))))).$$
+It is also possible to manage the interdependencies by an iterated process of taking least
+fixed points of monotone operators on $\wp{X}$.  This reduction of simultaneous to iterated
+least fixed points is known as \emph{Bekic's Lemma}.\footnote{The formulation given here
+  is adapted from~\citet{davey-priestley} Chapter 8, exercises 8.30 and 8.31.}  Given $F$
+and $G$ as above, define their curried forms by $F_{B}(A)\eqdef{} F(A,B)$, which fixes the
+$B$ argument of $F$, and $G^{A}(B)=G(A,B)$, which fixes the $A$ argument of $G$.  These
+are both monotone, and hence admit least fixed points, $\mu(F_{B})=F(\mu(F_{B}),B)$, which
+solves for $A$ parametrically in $B$, and $\mu(G^{A})=G(A,\mu(G^{A}))$, which solves for
+$B$ parametrically in $A$.  These can in turn be solved, forming
+$\mu(B\mapsto F_{B})=\mu(B\mapsto F(\mu(F_{B}),B))$, which solves for $B$, and
+$\mu(A\mapsto G^{A})=\mu(A\mapsto G(A,\mu(G^{A})))$, which solves for $A$.  Bekic's Lemma states that the
+simultaneous and iterated fixed points agree:
+$$\mu(F,G) = (\mu(B\mapsto F(\mu(A\mapsto F(A,B)))),\mu(A\mapsto G(\mu(B\mapsto G(A,B))))).$$
 
+The proof of Bekic's Lemma is not difficult, but it is easy to get lost in the morass of
+fixed points.  As suggested in \textit{loc. cit.} it is clearer to separate the pattern of
+diagonalization, and then instantiate it to the present situation.  Suppose that
+$F:\wp{X}\times\wp{X}\to\wp{X}$ is monotone in each argument.  Define
+$\Delta_{F}(A)=F(A,A)$, the diagonalization of $F$.  Let
+$L_{F}(B) \eqdef{} \mu(A\mapsto F(A,B))$ and $R_{F}(A) \eqdef{} \mu(B\mapsto F(A,B))$.  The Diagonal Lemma
+states that $\mu(\Delta_{F})=\mu(L_{F})=\mu(R_{F})$: the simultaneous and iterated fixed points
+coincide.  Calculating,
+\begin{align*}
+  \mu(L_{F}) & = L_{F}(\mu(L_{F})) \\
+           & = \mu(A\mapsto F(A,\mu(L_{F}))) \\
+           & = F(\mu(L_{F}),\mu(L_{F})) \\
+           & = \Delta_{F}(\mu(L_{F})). 
+\end{align*}
+Thus, in particular, $\mu(L_{F})$ is a pre-fixed point of $\Delta_{F}$, and hence contains
+$\mu(\Delta_{F})$.  The proof that $\mu(\Delta_{F}) = \mu(R_{F})$ is analogous, establishing the Diagonal
+
+To prove Bekic's Lemma, simply apply the Diagonal Lemma to $\Delta_{(F,G)}$, and note that
+$\mu(L_{(F,G)})$ and $\mu(R_{(F,G)})$ are equal to the desired iterated forms.
 
 \section{Assertions and Rules}
 
