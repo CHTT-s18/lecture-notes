@@ -154,11 +154,12 @@ least fixed points is known as \emph{Bekic's Lemma}.\footnote{The formulation gi
   is adapted from~\citet{davey-priestley} Chapter 8, exercises 8.30 and 8.31.}  Given $F$
 and $G$ as above, define their curried forms by $F_{B}(A)\eqdef{} F(A,B)$, which fixes the
 $B$ argument of $F$, and $G^{A}(B)=G(A,B)$, which fixes the $A$ argument of $G$.  These
-are both monotone, and hence admit least fixed points, $\mu(F_{B})=F(\mu(F_{B}),B)$, which
-solves for $A$ parametrically in $B$, and $\mu(G^{A})=G(A,\mu(G^{A}))$, which solves for
-$B$ parametrically in $A$.  These can in turn be solved, forming
-$\mu(B\mapsto F_{B})=\mu(B\mapsto F(\mu(F_{B}),B))$, which solves for $B$, and
-$\mu(A\mapsto G^{A})=\mu(A\mapsto G(A,\mu(G^{A})))$, which solves for $A$.  Bekic's Lemma states that the
+are both monotone, and hence admit least fixed points,
+$\mu(F_{B})=F_{B}(\mu(F_{B}))=F(\mu(F_{B}),B)$, which solves for $A$ parametrically in
+$B$, and $\mu(G^{A})=G^{A}(\mu(G^{A}))=G(A,\mu(G^{A}))$, which solves for $B$ parametrically in
+$A$.  These can in turn be solved, forming
+$\mu(B\mapsto \mu(F_{B}))=\mu(B\mapsto F(\mu(F_{B}),B))$, which solves for $B$, and
+$\mu(A\mapsto \mu(G^{A}))=\mu(A\mapsto G(A,\mu(G^{A})))$, which solves for $A$.  Bekic's Lemma states that the
 simultaneous and iterated fixed points agree:
 $$\mu(F,G) = (\mu(B\mapsto F(\mu(A\mapsto F(A,B)))),\mu(A\mapsto G(\mu(B\mapsto G(A,B))))).$$
 
@@ -168,8 +169,8 @@ diagonalization, and then instantiate it to the present situation.  Suppose that
 $F:\wp{X}\times\wp{X}\to\wp{X}$ is monotone in each argument.  Define
 $\Delta_{F}(A)=F(A,A)$, the diagonalization of $F$.  Let
 $L_{F}(B) \eqdef{} \mu(A\mapsto F(A,B))$ and $R_{F}(A) \eqdef{} \mu(B\mapsto F(A,B))$.  The Diagonal Lemma
-states that $\mu(\Delta_{F})=\mu(L_{F})=\mu(R_{F})$: the simultaneous and iterated fixed points
-coincide.  Calculating,
+states that the simultaneous and iterated fixed points coincide,
+$\mu(\Delta_{F})=\mu(L_{F})=\mu(R_{F})$.  Calculating,
 \begin{align*}
   \mu(L_{F}) & = L_{F}(\mu(L_{F})) \\
            & = \mu(A\mapsto F(A,\mu(L_{F}))) \\
