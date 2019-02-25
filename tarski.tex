@@ -139,9 +139,9 @@ construction of a least and greatest.
 It sometimes arises that two sets (properties) are to be \emph{simultaneously} inductively
 defined because the definition of each depends on the other.  This situation can be
 expressed by considering two monotone operators $F, G : \wp{X}\times\wp{X}\to\wp{X}$ in the sense that
-if $A\subseteq A'$ and $B\subseteq B'$, then $F(A,B)\subseteq A'$ and
-$G(A,B)\subseteq B'$.  The operator $(F,G)(A,B)\eqdef (F(A,B),G(A,B))$ is therefore monotone with
-respect to the componentwise ordering, $(A,B)\subseteq (A',B')$ iff $A\subseteq A'$ and
+if $A\subseteq A'$ and $B\subseteq B'$, then $F(A,B)\subseteq F(A',B)$ and
+$G(A,B)\subseteq G(A,B')$.  The operator $(F,G)(A,B)\eqdef (F(A,B),G(A,B))$ is therefore monotone
+with respect to the componentwise ordering, $(A,B)\subseteq (A',B')$ iff $A\subseteq A'$ and
 $B\subseteq B'$.  By arguments analogous to those given above\footnote{This is where the (mild)
   generalization of Tarski's Theorem to complete lattices is helpful.} it has a least
 fixed point, $\mu(F\times G)$, a pair $(A_{0},B_{0})$ of subsets of $X$ such that
