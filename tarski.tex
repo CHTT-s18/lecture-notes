@@ -165,19 +165,30 @@ $$\mu(F,G) = (\mu(B\mapsto F(\mu(A\mapsto F(A,B)))),\mu(A\mapsto G(\mu(B\mapsto 
 The proof of Bekic's Lemma is not difficult, but it is easy to get lost in the morass of
 fixed points.  As suggested in \textit{loc. cit.} it is clearer to separate the pattern of
 diagonalization, and then instantiate it to the present situation.  Suppose that
-$F:\wp{X}\times\wp{X}\to\wp{X}$ is monotone in each argument.  Define
-$\Delta_{F}(A)=F(A,A)$, the diagonalization of $F$.  Let
-$L_{F}(B) \eqdef{} \mu(A\mapsto F(A,B))$ and $R_{F}(A) \eqdef{} \mu(B\mapsto F(A,B))$.  The Diagonal Lemma
-states that $\mu(\Delta_{F})=\mu(L_{F})=\mu(R_{F})$: the simultaneous and iterated fixed points
-coincide.  Calculating,
+$H:\wp{X}\times\wp{X}\to\wp{X}$ is monotone in each argument.  Define
+$\Delta_{H}(A)=H(A,A)$, the diagonalization of $H$.  Let $L_{H}(A) \eqdef{} \mu(H^{A})$ and
+$R_{H}(B) \eqdef{} \mu(H_{B})$.  Note that $L_{H}(A)=H(A,L_{H}(A))$ and
+$R_{H}(B) = H(R_{H}(B),B)$.  The Diagonal Lemma states that
+$\mu(\Delta_{H})=\mu(L_{H})=\mu(R_{H})$.  For the first of these equations, calculate:
 \begin{align*}
-  \mu(L_{F}) & = L_{F}(\mu(L_{F})) \\
-           & = \mu(A\mapsto F(A,\mu(L_{F}))) \\
-           & = F(\mu(L_{F}),\mu(L_{F})) \\
-           & = \Delta_{F}(\mu(L_{F})). 
+  \mu(L_{H}) & = L_{H}(\mu(L_{H})) \\
+           & = H(\mu(L_{H}),L_{H}(\mu(L_{H}))) \\
+           & = H(\mu(L_{H}),\mu(L_{H})) \\
+           & = \Delta_{H}(\mu(L_{H})).
 \end{align*}
-Thus, in particular, $\mu(L_{F})$ is a pre-fixed point of $\Delta_{F}$, and hence contains
-$\mu(\Delta_{F})$.  The proof that $\mu(\Delta_{F}) = \mu(R_{F})$ is analogous, establishing the Diagonal
+But then $\mu(\Delta_{H})\subseteq\mu(L_{H})$, it being the least pre-fixed point of
+$\Delta_{H}$.  Conversely, to show that $\mu(L_{H})\subseteq\mu(\Delta_{H})$, it suffices to show that
+$L_{H}(\mu(\Delta_{H}))\subseteq\mu(\Delta_{H})$.  But since $L_{H}(\mu(\Delta_{H}))=\mu(H^{\mu(\Delta_{H})})$, it is enough to
+show that $H^{\mu(\Delta_{H})}(\mu(\Delta_{H}))\subseteq\mu(\Delta_{H})$, as follows:
+\begin{align*}
+  H^{\mu(\Delta_{H})}(\mu(\Delta_{H}))
+  & = H(\mu(\Delta_{H}),\mu(\Delta_{H})) \\
+  & = \Delta_{H}(\mu(\Delta_{H})) \\
+  & = \mu(\Delta_{H}).
+\end{align*}
+A similar calculation shows that $\mu(R_{H})=\mu(\Delta_{H})$, which completes the proof.
+
+
 
 To prove Bekic's Lemma, simply apply the Diagonal Lemma to $\Delta_{(F,G)}$, and note that
 $\mu(L_{(F,G)})$ and $\mu(R_{(F,G)})$ are equal to the desired iterated forms.
