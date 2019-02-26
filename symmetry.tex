@@ -1,0 +1,133 @@
+\documentclass[11pt,twoside]{article}
+\usepackage[authoryear,semicolon]{natbib}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{textgreek}
+\usepackage{fullpage}
+\usepackage[color=yellow]{todonotes}
+\setlength{\marginparwidth}{1.25in}
+\usepackage{xifthen}
+\usepackage{amsmath,amssymb,amsthm,mathtools,stmaryrd}
+\usepackage{proof,mathpartir}
+\usepackage{colonequals}
+\usepackage{code,verbatim}
+\usepackage{comment}
+\usepackage{textcomp}
+\usepackage[us]{optional}
+\usepackage{color}
+\usepackage{url}
+\usepackage{graphics}
+\usepackage{import}
+\usepackage{stackengine}
+\usepackage{scalerel}
+
+\newcommand{\eqdef}{\mathrel{\triangleq}}
+\newcommand{\isdef}{\eqdef}
+
+\newcommand{\DFun}[3]{{#2}{:}{#1}\to{#3}}
+
+\allowdisplaybreaks[1]       %mildly permissible to break up displayed equations
+
+\begin{document}
+
+\title{Proving the Symmetry Condition on Type Systems}
+\author{Robert Harper}
+\date{\today}
+
+\maketitle{}
+
+The candidate type system $\mu$ is constructed using Tarski's Theorem as the least pre-fixed
+point of an operator $\textsc{Types}(-)$ on candidate type systems.  The c.t.s. operator
+\textsc{Types} is defined by several clauses, one of which is given by the c.t.s. operator
+\textsc{Funs}:
+\begin{displaymath}
+  \textsc{Types}(\tau) \eqdef{} \dots \cup \textsc{Funs}(\tau) \cup \dots,
+\end{displaymath}
+where
+\begin{gather}
+  \textsc{Funs}(\tau)(\DFun{A_{1}}{a}{A_{2}},\DFun{A_{1}'}{a}{A_{2}'},\phi) \\
+  \textit{iff} \\
+  \phi\eqdef{} \DFun{\phi_{1}}{a}{\phi_{2}}\quad\textit{and} \\
+  A_{1}\sim A_{1}'\downarrow\phi_{1}\in\tau \quad\textit{and}\\
+  \forall M,M'\ \textit{if}\ \phi_{1}(M,M')\ \textit{then}\ A_{2}[M/a]\sim A_{2}'[M'/a]\downarrow\phi_{2}[M,M']\in\tau \
+\end{gather}
+and
+\begin{gather}
+  (\DFun{\phi_{1}}{a}{\phi_{2}})(\lambda a.N,\lambda a.N')\\
+  \textit{iff}\  \\
+  \forall M,M'\ \textit{if}\ \phi_{1}(M,M')\ \textit{then}\ \phi_{2}[M,M](N[M/a],N'[M'/a]).
+\end{gather}
+
+\bigskip
+
+A candidate type system $\tau$ is a type system iff it satisfies the following conditions:
+\begin{enumerate}
+\item Unicity: if $\tau(A_{0},A_{0}',\phi)$ and $\tau(A_{0},A_{0}',\phi')$, then $\phi'=\phi$.
+\item Symmetry: if $\tau(A_{0},A_{0}',\phi)$, then $\tau(A_{0}',A_{0},\phi)$;
+\item Transitivity: if $\tau(A_{0},A_{0}',\phi)$ and $\tau(A_{0}',A_{0}'',\phi)$, then
+  $\tau(A_{0},A_{0}'',\phi)$.
+\item PER Valuation: if $\tau(A_{0},A_{0}',\phi)$, then $\phi$ is symmetric and transitive.
+\end{enumerate}
+
+The goal is to prove that $\mu$ is a type system.  The unicity condition may be proved
+outright by proving that $\textsc{Types}(\Phi)\subseteq\Phi$, where
+$\Phi(A_{0},A_{0}',\phi)$ iff $\mu(A_{0},A_{0}',\phi)$ and if $\mu(A_{0},A_{0}',\phi')$, then
+$\phi'=\phi$.  For then $\mu\subseteq\Phi$, which means that $\mu$ enjoys unicity.  The proof was sketched in
+class, and presents no further difficulties.
+
+It is necessary to prove symmetry, transitivity, and PER valuation of $\mu$ simultaneously.
+To do so, define $\Phi(A_{0},A_{0}',\phi)$ iff
+\begin{enumerate}
+\item $\mu(A_{0},A_{0}',\phi)$;
+\item $\mu(A_{0}',A_{0},\phi)$.
+\item if $\mu(B_0,A_0,\phi')$, then $\mu(B_{0},A_{0}',\phi')$ and $\phi'=\phi$.
+\item if $\mu(A_{0}',B_{0}',\phi')$, then $\mu(A_{0},B_{0}',\phi')$ and $\phi'=\phi$.
+\item $\phi$ is symmetric and transitive.
+\end{enumerate}
+If $\textsc{Types}(\Phi)\subseteq\Phi$, then $\mu\subseteq\Phi$, and so $\mu$ is a type system.  Note that by
+definition $\Phi\subseteq\mu$.
+
+\bigskip
+
+The proof breaks into cases, one for each operator defining $\textsc{Types}$.  In
+particular it is necessary to show that $\textsc{Fun}(\Phi)\subseteq\Phi$.  Suppose that
+$\textsc{Fun}(\Phi)(A_{0},A_{0}',\phi)$, Then by definition
+$A_{0}=\DFun{A_{1}}{a}{A_{2}}$, $A_{0}'=\DFun{A_{1}'}{a}{A_{2}'}$, and
+$\phi=\DFun{\phi_{1}}{a}{\phi_{2}[a]}$, where
+\begin{enumerate}
+\item $A_{1}\sim A_{1}'\downarrow\phi_{1}\in\Phi$;
+\item if $M\sim M'\in\phi_{1}$, then $A_{2}[M/a]\sim A_{2}'[M'/a]\downarrow\phi_{2}[M,M']\in\Phi$.
+\end{enumerate}
+These conditions imply that $\phi_{1}$ is a PER, and that
+$A'_{2}[M'/a]\sim A_{2}[M/a]\downarrow \phi_{2}[M,M']\in\mu$, with $\phi_{2}[M,M']$ being a PER, whenever
+$M\sim M'\in\phi_{1}$.
+% and $\phi[M,M']$ is a PER.
+
+The overall obligation is to show that $\Phi(A_{0},A_{0}',\phi)$, which includes the particular
+requirement that $\mu(A_{0}',A_{0},\phi)$.  Because $\textsc{Funs}(\mu)\subseteq\mu$, it suffices for this
+case to show these two conditions:
+\begin{enumerate}
+\item $A_{1}'\sim A_{1}\downarrow\phi_{1}\in\mu$, and
+\item if $M\sim M'\in\phi_{1}$, then $A_{2}'[M/a]\sim A_{2}[M'/a]\downarrow\phi_{2}[M,M']\in\mu$.
+\end{enumerate}
+The first of these follows directly from the assumption
+$A_{1}\sim A_{1}'\downarrow\phi_{1}\in\Phi$.  For the second, suppose that
+$M\sim M'\in\phi_{1}$, with the intent to show that
+$A_{2}'[M/a]\sim A_{2}[M'/a]\downarrow \phi_{2}[M,M']\in\mu$.  Because $\phi_{1}$ is symmetric,
+$M'\sim M\in\phi_{1}$, and so by the second assumption
+$A_{2}[M'/a] \sim A_{2}'[M/a]\downarrow\phi_{2}[M',M]\in\mu$ and $\phi_{2}[M',M]$ is a PER.  But then by
+symmetry $A_{2}'[M/a]\sim A_{2}[M'/a]\downarrow\phi_{2}[M',M]\in\mu$.  The proof of this case would be
+complete if $\phi_{2}[M',M]=\phi_{2}[M,M']$.
+
+
+
+
+
+\end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% fill-column: 90
+%%% auto-fill-mode: t
+%%% End:
