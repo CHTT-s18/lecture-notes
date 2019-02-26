@@ -90,38 +90,61 @@ definition $\Phi\subseteq\mu$.
 \bigskip
 
 The proof breaks into cases, one for each operator defining $\textsc{Types}$.  In
-particular it is necessary to show that $\textsc{Fun}(\Phi)\subseteq\Phi$.  Suppose that
-$\textsc{Fun}(\Phi)(A_{0},A_{0}',\phi)$, Then by definition
+particular it is necessary to show that $\textsc{Funs}(\Phi)\subseteq\Phi$.  Suppose that
+$\textsc{Funs}(\Phi)(A_{0},A_{0}',\phi)$, Then by definition
 $A_{0}=\DFun{A_{1}}{a}{A_{2}}$, $A_{0}'=\DFun{A_{1}'}{a}{A_{2}'}$, and
 $\phi=\DFun{\phi_{1}}{a}{\phi_{2}[a]}$, where
 \begin{enumerate}
 \item $A_{1}\sim A_{1}'\downarrow\phi_{1}\in\Phi$;
-\item if $M\sim M'\in\phi_{1}$, then $A_{2}[M/a]\sim A_{2}'[M'/a]\downarrow\phi_{2}[M,M']\in\Phi$.
+\item if $M_1\sim M_1'\in\phi_{1}$, then $A_{2}[M_1/a]\sim A_{2}'[M_1'/a]\downarrow\phi_{2}[M_1,M_1']\in\Phi$.
 \end{enumerate}
 These conditions imply that $\phi_{1}$ is a PER, and that
-$A'_{2}[M'/a]\sim A_{2}[M/a]\downarrow \phi_{2}[M,M']\in\mu$, with $\phi_{2}[M,M']$ being a PER, whenever
-$M\sim M'\in\phi_{1}$.
-% and $\phi[M,M']$ is a PER.
+$A'_{2}[M_1'/a]\sim A_{2}[M_1/a]\downarrow \phi_{2}[M_1,M_1']\in\mu$, with $\phi_{2}[M_1,M_1']$ being a PER, whenever
+$M_1\sim M_1'\in\phi_{1}$.
+% and $\phi[M_1,M_1']$ is a PER.
 
 The overall obligation is to show that $\Phi(A_{0},A_{0}',\phi)$, which includes the particular
 requirement that $\mu(A_{0}',A_{0},\phi)$.  Because $\textsc{Funs}(\mu)\subseteq\mu$, it suffices for this
 case to show these two conditions:
 \begin{enumerate}
 \item $A_{1}'\sim A_{1}\downarrow\phi_{1}\in\mu$, and
-\item if $M\sim M'\in\phi_{1}$, then $A_{2}'[M/a]\sim A_{2}[M'/a]\downarrow\phi_{2}[M,M']\in\mu$.
+\item if $M_1\sim M_1'\in\phi_{1}$, then $A_{2}'[M_1/a]\sim A_{2}[M_1'/a]\downarrow\phi_{2}[M_1,M_1']\in\mu$.
 \end{enumerate}
 The first of these follows directly from the assumption
 $A_{1}\sim A_{1}'\downarrow\phi_{1}\in\Phi$.  For the second, suppose that
-$M\sim M'\in\phi_{1}$, with the intent to show that
-$A_{2}'[M/a]\sim A_{2}[M'/a]\downarrow \phi_{2}[M,M']\in\mu$.  Because $\phi_{1}$ is symmetric,
-$M'\sim M\in\phi_{1}$, and so by the second assumption
-$A_{2}[M'/a] \sim A_{2}'[M/a]\downarrow\phi_{2}[M',M]\in\mu$ and $\phi_{2}[M',M]$ is a PER.  But then by
-symmetry $A_{2}'[M/a]\sim A_{2}[M'/a]\downarrow\phi_{2}[M',M]\in\mu$.  The proof of this case would be
-complete if $\phi_{2}[M',M]=\phi_{2}[M,M']$.
+$M_1\sim M_1'\in\phi_{1}$, with the intent to show that
+$$A_{2}'[M_1/a]\sim A_{2}[M_1'/a]\downarrow \phi_{2}[M_1,M_1']\in\mu.$$  Because $\phi_{1}$ is symmetric,
+$M_1'\sim M_1\in\phi_{1}$, and so by the second assumption
+$$A_{2}[M_1'/a] \sim A_{2}'[M_1/a]\downarrow\phi_{2}[M_1',M_1]\in\Phi$$.  Therefore $\phi_{2}[M_1',M_1]$ is a
+PER, and
+$$A_{2}'[M_1/a]\sim A_{2}[M_1'/a]\downarrow\phi_{2}[M_1',M_1]\in\mu$$.  To complete the proof it is
+enough to show that $\phi_{2}[M_1',M_1]=\phi_{2}[M_1,M_1']$.
 
+This equation is proved in two steps by showing that each side is equal to
+$\phi_{2}[M_{1}',M_{1}']$.
+\begin{enumerate}
+\item By transitivity and symmetry of $\phi_{1}$, it follows that $M_{1}'\sim M_{1}'\in\phi_{1}$, and
+  hence by the second assumption $$A_{2}[M_{1}'/a]\sim
+  A_{2}'[M_{1}'/a]\downarrow\phi_{2}(M_{1}',M_{1}')\in\Phi,$$ and so
+  $$A_{2}'[M_{1}'/a]\sim A_{2}[M_{1}'/a]\downarrow\phi_{2}(M_{1}',M_{1}')\in\mu.$$
+  Moreover, by the second assumption, $$A_{2}[M_{1}'/a] \sim
+  A_{2}'[M_{1}/a]\downarrow\phi_{2}[M_{1}',M_{1}]\in\Phi\subseteq\mu.$$
+  Therefore by right transitivity
+  $$A_{2}'[M_{1}'/a]\sim A_{2}'[M_{1}/a]\downarrow\phi_{2}[M_{1}',M_{1}']\ \textit{and}\ \phi_{2}(M_{1}',M_{1}')=\phi_{2}(M_{1}',M_{1}).$$
+\item As in the previous case $$A_{2}'[M_{1}'/a] \sim A_{2}[M_{1}'/a] \downarrow \phi_{2}[M_{1}',M_{1}']\in\mu,$$
+  and $$A_{2}[M_{1}/a]\sim A_{2}[M_{1}'/a]\downarrow\phi_{2}[M_{1},M_{1}']\in\Phi\subseteq\mu.$$
+  By left transitivity
+  $$A_{2}[M_{1}/a] \sim A_{2}[M_{1}'/a] \downarrow \phi_{2}[M_{1}',M_{1}']\in\mu\ \textit{and}\
+  \phi_2[M_1',M_1]=\phi_2[M_1',M_1'].$$
+\end{enumerate}
+Thus $\phi_{2}[M_{1},M_{1}']=\phi_{2}[M_{1},M_{1}']$, as desired.
 
+\bigskip
 
-
+There is of course much more to the proof: the remaining conditions in $\Phi$ have to be
+verified for the \textsc{Funs} case, and all of the other cases defining \textsc{Types}
+must be considered as well.  However, the same devices used here apply in all of these
+cases as well to complete the proof that $\mu$ is, in fact, a type system.
 
 \end{document}
 
