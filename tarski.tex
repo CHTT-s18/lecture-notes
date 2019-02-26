@@ -139,9 +139,9 @@ construction of a least and greatest.
 It sometimes arises that two sets (properties) are to be \emph{simultaneously} inductively
 defined because the definition of each depends on the other.  This situation can be
 expressed by considering two monotone operators $F, G : \wp{X}\times\wp{X}\to\wp{X}$ in the sense that
-if $A\subseteq A'$ and $B\subseteq B'$, then $F(A,B)\subseteq A'$ and
-$G(A,B)\subseteq B'$.  The operator $(F,G)(A,B)\eqdef (F(A,B),G(A,B))$ is therefore monotone with
-respect to the componentwise ordering, $(A,B)\subseteq (A',B')$ iff $A\subseteq A'$ and
+if $A\subseteq A'$ and $B\subseteq B'$, then $F(A,B)\subseteq F(A',B)$ and
+$G(A,B)\subseteq G(A,B')$.  The operator $(F,G)(A,B)\eqdef (F(A,B),G(A,B))$ is therefore monotone
+with respect to the componentwise ordering, $(A,B)\subseteq (A',B')$ iff $A\subseteq A'$ and
 $B\subseteq B'$.  By arguments analogous to those given above\footnote{This is where the (mild)
   generalization of Tarski's Theorem to complete lattices is helpful.} it has a least
 fixed point, $\mu(F\times G)$, a pair $(A_{0},B_{0})$ of subsets of $X$ such that
@@ -154,11 +154,12 @@ least fixed points is known as \emph{Bekic's Lemma}.\footnote{The formulation gi
   is adapted from~\citet{davey-priestley} Chapter 8, exercises 8.30 and 8.31.}  Given $F$
 and $G$ as above, define their curried forms by $F_{B}(A)\eqdef{} F(A,B)$, which fixes the
 $B$ argument of $F$, and $G^{A}(B)=G(A,B)$, which fixes the $A$ argument of $G$.  These
-are both monotone, and hence admit least fixed points, $\mu(F_{B})=F(\mu(F_{B}),B)$, which
-solves for $A$ parametrically in $B$, and $\mu(G^{A})=G(A,\mu(G^{A}))$, which solves for
-$B$ parametrically in $A$.  These can in turn be solved, forming
-$\mu(B\mapsto F_{B})=\mu(B\mapsto F(\mu(F_{B}),B))$, which solves for $B$, and
-$\mu(A\mapsto G^{A})=\mu(A\mapsto G(A,\mu(G^{A})))$, which solves for $A$.  Bekic's Lemma states that the
+are both monotone, and hence admit least fixed points,
+$\mu(F_{B})=F_{B}(\mu(F_{B}))=F(\mu(F_{B}),B)$, which solves for $A$ parametrically in
+$B$, and $\mu(G^{A})=G^{A}(\mu(G^{A}))=G(A,\mu(G^{A}))$, which solves for $B$ parametrically in
+$A$.  These can in turn be solved, forming
+$\mu(B\mapsto \mu(F_{B}))=\mu(B\mapsto F(\mu(F_{B}),B))$, which solves for $B$, and
+$\mu(A\mapsto \mu(G^{A}))=\mu(A\mapsto G(A,\mu(G^{A})))$, which solves for $A$.  Bekic's Lemma states that the
 simultaneous and iterated fixed points agree:
 $$\mu(F,G) = (\mu(B\mapsto F(\mu(A\mapsto F(A,B)))),\mu(A\mapsto G(\mu(B\mapsto G(A,B))))).$$
 
@@ -187,8 +188,6 @@ show that $H^{\mu(\Delta_{H})}(\mu(\Delta_{H}))\subseteq\mu(\Delta_{H})$, as fol
   & = \mu(\Delta_{H}).
 \end{align*}
 A similar calculation shows that $\mu(R_{H})=\mu(\Delta_{H})$, which completes the proof.
-
-
 
 To prove Bekic's Lemma, simply apply the Diagonal Lemma to $\Delta_{(F,G)}$, and note that
 $\mu(L_{(F,G)})$ and $\mu(R_{(F,G)})$ are equal to the desired iterated forms.
