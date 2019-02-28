@@ -226,8 +226,25 @@ completes the proof.
 
 \bigskip
 
+\newtheorem{lemma}{Lemma}
 
-
+Here is Beki\'c's formulation and proof of his eponymous lemma:
+\begin{lemma}[Beki\'c]  For monotone $F,G:\wp{X}\times\wp{X}\to\wp{X}$, 
+  \begin{displaymath}
+    \mu(F,G) = (A_{0},B_{0}),\ \text{where}\ A_{0}= \mu(A\mapsto F(A,\mu(G^{A})))\ \text{and}\ B_{0} = \mu(G^{A_{0}}).
+  \end{displaymath}
+\end{lemma}
+\begin{proof}
+  First, note that $A_{0}=F(A_{0},\mu(G^{A_{0}}))=F(A_0,B_{0})$ and
+  $B_{0}=G(A_{0},B_{0})$, so $(F,G)(A_{0},B_{0})=(A_{0},B_{0})$ is a pre-fixed point of
+  $(F,G)$.  Then, suppose that $(F,G)(A,B)\subseteq(A,B)$ is another pre-fixed point of
+  $(F,G)$, and show that $(A_{0},B_{0})\subseteq(A,B)$.  Expanding,
+  $(F,G)(A,B)=(F(A,B),G(A,B))$, and so $G^{A}(B)=G(A,B)\subseteq B$, and therefore
+  $\mu(G^{A})\subseteq B$, and so by monotonicity
+  $F(A,\mu(G^{A}))\subseteq F(A,B)\subseteq A$.  But $A_{0}$ is the least such set, so
+  $A_{0}\subseteq A$.  Moreover, $B_{0}\subseteq B$ because
+  $\mu(G^{A_{0}})\subseteq\mu(G^{A})\subseteq B$ by monotonicity, and $B_{0}$ is the least such set.
+\end{proof}
 
 \section{Assertions and Rules}
 
