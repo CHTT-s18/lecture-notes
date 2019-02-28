@@ -151,7 +151,8 @@ intended.
 It is also possible to manage the interdependencies by an iterated process of taking least
 fixed points of monotone operators on $\wp{X}$.  This reduction of simultaneous to iterated
 least fixed points is known as \emph{Bekic's Lemma}.\footnote{The formulation given here
-  is adapted from~\citet{davey-priestley} Chapter 8, exercises 8.30 and 8.31.}  Given $F$
+  is adapted from~\citet{davey-priestley} Chapter 8, exercises 8.30 and 8.31.  The
+  original article is reproduced as~\citet{bekic84}.}  Given $F$
 and $G$ as above, define their curried forms by $F_{B}(A)\eqdef{} F(A,B)$, which fixes the
 $B$ argument of $F$, and $G^{A}(B)=G(A,B)$, which fixes the $A$ argument of $G$.  These
 are both monotone, and hence admit least fixed points,
@@ -222,6 +223,8 @@ Then $L_{2} = G(F(L_{1},L_{2}),G(L_{1}',L_{2}')) = G(L_{1},L_{2})$, which is to 
 $L_{2}=\mu(B\mapsto G(L_{1},B))$.  Then $L_{1} = F(L_{1}, \mu(B\mapsto G(L_{1},B)))$, which is to say that
 $L_{1}=\mu(A\mapsto F(A,\mu(B\mapsto G(A,B))))$, the desired left component.  A similar calculation
 completes the proof.
+
+
 
 \section{Assertions and Rules}
 
@@ -330,8 +333,6 @@ definition of an assertion $j$ by the rule
 Were there a fixed point of the associated (non-monotone) operator, the assertion would be
 derivable iff it is not, so obviously it must not have one.  More subtle examples are
 observed in the wild, so it is wise to be careful out there!
-
-\nocite{davey-priestley}
 
 \bibliographystyle{plainnat}
 \bibliography{notes}
