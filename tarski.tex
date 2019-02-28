@@ -34,7 +34,7 @@
 
 \begin{document}
 
-\title{Tarski's Theorem on Power Sets}
+\title{Tarski's Fixed Point Theorem for Power Sets}
 \author{Robert Harper}
 \date{\today}
 
@@ -46,7 +46,7 @@ Tarski's theorem states that a monotone function on a complete lattice has a com
 lattice of fixed points, in particular a least and greatest. A useful class of special
 cases are powerset lattices ordered by inclusion.
 
-\section{Powerset Lattices}
+\section{Tarski's Theorem}
 
 Let $X$ be a set, not necessarily non-empty, and let $\wp{X}$ be the set of all subsets of
 $X$. The set $\wp{X}$ forms a complete lattice under set inclusion, with meets given by
@@ -134,7 +134,7 @@ It is also possible to show that the meet and join of any set of fixed points of
 monotone function is itself a fixed point, but this seems not to be as useful as the
 construction of a least and greatest.
 
-\smallskip
+\section{Bekic's Lemma}
 
 It sometimes arises that two sets (properties) are to be \emph{simultaneously} inductively
 defined because the definition of each depends on the other.  This situation can be
@@ -194,8 +194,35 @@ $\Delta_{H}(\mu(A\mapsto\mu(H^{A})))\subset \mu(A\mapsto\mu(H^{A}))$.  Let $H'(A
   & = \mu(H').
 \end{align*}
 
-To prove Bekic's Lemma, simply apply the Diagonal Lemma to $\Delta_{(F,G)}$, and note that
-$\mu(L_{(F,G)})$ and $\mu(R_{(F,G)})$ are equal to the desired iterated forms.
+To prove Bekic's Lemma, simply apply the Diagonal Lemma to $\Delta_{(F,G)}$, and note that its
+left and right equivalents are equal to the desired forms.  The trick is to separate
+variables and follow the dependencies.  First, specialize the left iterated form to
+$H=(F,G)$, and obtain
+\begin{displaymath}
+  \mu((A,B)\mapsto\mu(A',B')\mapsto(F(A,B),G(A',B'))).
+\end{displaymath}
+Let $L(A,B)\eqdef\mu(L'(A,B))$, where $L'(A,B)(A',B')=(F(A,B),G(A',B'))$, so that the
+displayed formula can be written more concisely as $\mu(L)$, where $L(A,B)=\mu(L'(A,B))$.
+Calculating,
+\begin{align*}
+  \mu(L)
+  & = L(\mu(L)) \\
+  & = L(L_{1},L_{2}) \\
+  & = (F(L_{1},L_{2}),G(\mu(L'(L_{1},L_{2})))),
+\end{align*}
+where $L_{1}\eqdef \mu(L)\cdot 1$ and $L_{2}\eqdef \mu(L)\cdot 2$ are the two components of
+$\mu(L)$.  Similarly define $L'_{1}\eqdef \mu(L'(L_{1},L_{2}))\cdot 1$ and
+$L'_{2}\eqdef \mu(L'(L_{1},L_{2}))\cdot 2$, and calculate to obtain these equations:
+\begin{align*}
+  L_{1}   & = F(L_{1},L_{2}) \\
+  L_{2}   & = G(L_{1}',L_{2}') \\
+  L_{1}' & = F(L_{1}, L_{2}) \\
+  L_{2}' & = G(L_{1}',L_{2}').
+\end{align*}
+Then $L_{2} = G(F(L_{1},L_{2}),G(L_{1}',L_{2}')) = G(L_{1},L_{2})$, which is to say that
+$L_{2}=\mu(B\mapsto G(L_{1},B))$.  Then $L_{1} = F(L_{1}, \mu(B\mapsto G(L_{1},B)))$, which is to say that
+$L_{1}=\mu(A\mapsto F(A,\mu(B\mapsto G(A,B))))$, the desired left component.  A similar calculation
+completes the proof.
 
 \section{Assertions and Rules}
 
