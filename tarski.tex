@@ -167,7 +167,7 @@ fixed points.  As suggested in \textit{loc. cit.} it is clearer to separate the 
 diagonalization, and then instantiate it for the proof of the Bekic Lemma.  Suppose that
 $H:\wp{X}\times\wp{X}\to\wp{X}$ is monotone in each argument.  Define
 $\Delta_{H}(A)=H(A,A)$, the diagonalization of $H$.  The least fixed point of the diagonal
-satisfies the equation $\mu(\Delta_{H})=H(\mu(\Delta_{H}),\mu(\Delta_{H}))$, the simultaneous fixed point of
+satisfies the equation $\mu(\Delta_{H})=H(\mu(\Delta_{H}),\mu(\Delta_{H}))$, the least simultaneous fixed point of
 $H$.  The diagonal lemma states that the simultaneous and iterated fixed points coincide,
 $$\mu(A\mapsto\mu(B\mapsto H^{A}(B)))=\mu((A,B)\mapsto \Delta_{H}(A,B))=\mu(B\mapsto\mu(A\mapsto H_{B}(A))),$$
 or, more concisely,
@@ -175,7 +175,7 @@ $$\mu(A\mapsto \mu(H^{A}))=\mu(\Delta_{H})=\mu(B\mapsto\mu(H_{B})).$$
 The proof of the first of these equations proceeds by showing that each side is contained
 in the other using the universal property of the least pre-fixed point.  (The proof of the
 second proceeds analogously.)  For the left-to-right containment, it suffices to show that
-$\mu(H^{\mu(\Delta_{H})})\subseteq\Delta_{H}$:
+$\mu(H^{\mu(\Delta_{H})})\subseteq\mu(\Delta_{H})$:
 \begin{align*}
   H^{\mu(\Delta_{H})}(\mu(\Delta_{H}))
   & = H(\mu(\Delta_{H}),\mu(\Delta_{H})) \\
@@ -183,7 +183,7 @@ $\mu(H^{\mu(\Delta_{H})})\subseteq\Delta_{H}$:
   & = \mu(\Delta_{H}).
 \end{align*}
 For the opposite containment it suffices to show that
-$\Delta_{H}(\mu(A\mapsto\mu(H^{A})))\subset \mu(A\mapsto\mu(H^{A}))$.  Writing the left-hand side as $\mu(H')$, calculate
+$\Delta_{H}(\mu(A\mapsto\mu(H^{A})))\subset \mu(A\mapsto\mu(H^{A}))$.  Let $H'(A)=\mu(H^{A})$, and calculate:
 \begin{align*}
   \Delta_{H}(\mu(H'))
   & = H(\mu(H'),\mu(H')) \\
