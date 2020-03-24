@@ -79,8 +79,8 @@ It is evident that $\mu(F)$ is contained in all pre-fixed points of $F$, it bein
 intersection.  In fact $\mu(F)$ is itself a pre-fixed point of $F$,
 $F(\mu(F))\subseteq \mu(F)$, and it is thereby the least pre-fixed point.  To see this, it is enough
 to show that if $F(A)\subseteq A$, then $F(\mu(F))\subseteq A$.  But if $F(A)\subseteq A$, then
-$\mu(F)\subseteq A$ by definition of $\mu(F)$ as the greatest lower bound of all pre-fixed point.
-Then, by monotonicity, $F(\mu(F))\subseteq F(A)\subseteq A$, as required.  Then again by monotonicity
+$\mu(F)\subseteq A$ by definition of $\mu(F)$, and so, by monotonicity,
+$F(\mu(F))\subseteq F(A)\subseteq A$, as required.  Then again by monotonicity
 $F(F(\mu(F)))\subseteq F(\mu(F))$, which is to say that $F(\mu(F))$ is a pre-fixed point of
 $F$, and therefore $\mu(F)\subseteq F(\mu(F))$.  That is, $\mu(F)$ is a fixed point of
 $F$, and, because any fixed point is a pre-fixed point, it is the least such.  Dually,
@@ -104,12 +104,11 @@ that if $x\in F(A)$, then $x\in A$.  Dually, the greatest fixed point of a monot
 
 As a case in point there are two proofs that $\mu(F)\subseteq\nu(F)$, one using the minimality of
 $\mu(F)$, the other using the maximality of $\nu(F)$.  Because $\mu(F)$ is the least pre-fixed
-point of $F$, it is itself $F$-closed, $F(\mu(F))\subseteq\mu(F)$, and because $\nu(F)$ is the greatest
-post-fixed point of $F$, it is itself $F$-consistent.  Thus, to show the containment it
-suffices to show either that $\nu(F)$ is $F$-closed, $F(\nu(F))\subseteq\nu(F)$, or that
-$\mu(F)$ is $F$-consistent, $\mu(F)\subseteq F(\mu(F))$.  But these are exactly the converse
-containments that were obtained earlier to show that $\mu(F)$ and $\nu(F)$ are fixed points of
-$F$.
+point of $F$, it is itself $F$-closed, and because $\nu(F)$ is the greatest post-fixed point
+of $F$, it is itself $F$-consistent.  Thus, to show the containment it suffices to show
+either that $\nu(F)$ is $F$-closed, $F(\nu(F))\subseteq\nu(F)$, or that $\mu(F)$ is
+$F$-consistent, $\mu(F)\subseteq F(\mu(F))$.  But these are exactly the converse containments that
+were obtained earlier to show that $\mu(F)$ and $\nu(F)$ are fixed points of $F$.
 
 \smallskip
 
@@ -132,7 +131,11 @@ $A$ were present from the get-go.
 
 It is also possible to show that the meet and join of any set of fixed points of a
 monotone function is itself a fixed point, but this seems not to be as useful as the
-construction of a least and greatest.
+construction of a least and greatest.  Because the development relies only on the
+universal properties of intersection and union, their being the meet and join,
+respectively, with respect to set containment, it is straightforward to obtain Tarski's
+Theorem in full, which is stated for complete lattices, those pre-orders for which all
+subsets have meets and joins.
 
 \section{Beki\'{c}'s Lemma}
 
@@ -163,13 +166,14 @@ least fixed points.  Beki\'{c}'s Lemma states that the simultaneous fixed point 
 separated into a pair of iterated fixed points:
 $$\mu(F,G) = (\mu(A\mapsto F(A,\mu(B\mapsto G(A,B)))),\mu(B\mapsto G(\mu(A\mapsto F(A,B)),B))).$$
 
-The proof of Beki\'{c}'s Lemma is not difficult, but it is easy to get lost in the morass of
-fixed points.  As suggested in \textit{loc. cit.} it is clearer to separate the pattern of
-diagonalization, and then instantiate it for the proof of Beki\'{c}'s Lemma.  Suppose that
-$H:\wp{X}\times\wp{X}\to\wp{X}$ is monotone in each argument.  Define
+The proof of Beki\'{c}'s Lemma is not difficult, but it is easy to get lost in the morass
+of fixed points.  As suggested in \textit{loc. cit.} it is helpful to separate the pattern
+of diagonalization, and then instantiate it for the proof of Beki\'{c}'s Lemma.  Suppose
+that $H:\wp{X}\times\wp{X}\to\wp{X}$ is monotone in each argument.  Define
 $\Delta_{H}(A)=H(A,A)$, the diagonalization of $H$.  The least fixed point of the diagonal
-satisfies the equation $\mu(\Delta_{H})=H(\mu(\Delta_{H}),\mu(\Delta_{H}))$, the least simultaneous fixed point of
-$H$.  The diagonal lemma states that the simultaneous and iterated fixed points coincide,
+satisfies the equation $\mu(\Delta_{H})=H(\mu(\Delta_{H}),\mu(\Delta_{H}))$, the least simultaneous fixed point
+of $H$.  The diagonal lemma states that the simultaneous and iterated fixed points
+coincide,
 $$\mu(A\mapsto\mu(B\mapsto H^{A}(B)))=\mu((A,B)\mapsto \Delta_{H}(A,B))=\mu(B\mapsto\mu(A\mapsto H_{B}(A))),$$
 or, more concisely,
 $$\mu(A\mapsto \mu(H^{A}))=\mu(\Delta_{H})=\mu(B\mapsto\mu(H_{B})).$$
@@ -339,8 +343,8 @@ from the rule, it being understood implicitly.
 Whereas in the preceding case the restrictions on the applicability of the rule are
 benign, it is entirely possible, even common, to abuse the privilege to the point of
 absurdity.  For example, it is entirely meaningless to state as a premise of a rule the
-\emph{negation} of the judgment being defined, as if to say ``this rule is applicable only
-if the stated assertion is not derivable.''  Doing this, or things tantamount to it, ruins
+\emph{negation} of the judgment being defined, as if to say ``this rule is applicable if
+the stated assertion is not derivable.''  Doing this, or things tantamount to it, ruins
 the inductive character of the intended definition, precisely because the associated
 operator is no longer monotone!  And without that the rules cannot be said to define
 anything at all.  For a particularly blatant case, consider the supposed inductive
