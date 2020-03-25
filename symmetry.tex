@@ -84,10 +84,15 @@ To do so, define $\Phi(A_{0},A_{0}',\phi)$ iff
 \item if $\mu(A_{0}',B_{0}',\phi')$, then $\mu(A_{0},B_{0}',\phi')$ and $\phi'=\phi$.
 \item $\phi$ is symmetric and transitive.
 \end{enumerate}
-If $\textsc{Types}(\Phi)\subseteq\Phi$, then $\mu\subseteq\Phi$, and so $\mu$ is a type system.  Note that by
-definition $\Phi\subseteq\mu$.
+The third and fourth conditions are called \emph{left transitivity} and \emph{right
+  transitivity}, respectively.  They may be read as stating that if it is determined that
+a type is equal to either of two equal types, then it is equal to the other, and their
+membership relations coincide.  If $\textsc{Types}(\Phi)\subseteq\Phi$, then $\mu\subseteq\Phi$, which implies that
+$\mu$ is a type system.
 
 \bigskip
+
+\newcommand{\relto}[1]{(\text{rel.}\,#1)}
 
 The proof breaks into cases, one for each operator defining $\textsc{Types}$.  In
 particular it is necessary to show that $\textsc{Funs}(\Phi)\subseteq\Phi$.  Suppose that
@@ -95,11 +100,11 @@ $\textsc{Funs}(\Phi)(A_{0},A_{0}',\phi)$, Then by definition
 $A_{0}=\DFun{A_{1}}{a}{A_{2}}$, $A_{0}'=\DFun{A_{1}'}{a}{A_{2}'}$, and
 $\phi=\DFun{\phi_{1}}{a}{\phi_{2}[a]}$, where
 \begin{enumerate}
-\item $A_{1}\sim A_{1}'\downarrow\phi_{1}\in\Phi$;
-\item if $M_1\sim M_1'\in\phi_{1}$, then $A_{2}[M_1/a]\sim A_{2}'[M_1'/a]\downarrow\phi_{2}[M_1,M_1']\in\Phi$.
+\item $A_{1}\sim A_{1}'\downarrow\phi_{1} \ \relto{\Phi}$;
+\item if $M_1\sim M_1'\in\phi_{1}$, then $A_{2}[M_1/a]\sim A_{2}'[M_1'/a]\downarrow\phi_{2}[M_1,M_1']\ \relto{\Phi}$.
 \end{enumerate}
 These conditions imply that $\phi_{1}$ is a PER, and that
-$A'_{2}[M_1'/a]\sim A_{2}[M_1/a]\downarrow \phi_{2}[M_1,M_1']\in\mu$, with
+$A'_{2}[M_1'/a]\sim A_{2}[M_1/a]\downarrow \phi_{2}[M_1,M_1']\ \relto{\mu}$, with
 $\phi_{2}[M_1,M_1']$ also a PER, whenever $M_1\sim M_1'\in\phi_{1}$.
 % and $\phi[M_1,M_1']$ is a PER.
 
@@ -107,17 +112,17 @@ The overall obligation is to show that $\Phi(A_{0},A_{0}',\phi)$, which includes
 requirement that $\mu(A_{0}',A_{0},\phi)$.  Because $\textsc{Funs}(\mu)\subseteq\mu$, it suffices for this
 case to show these two conditions:
 \begin{enumerate}
-\item $A_{1}'\sim A_{1}\downarrow\phi_{1}\in\mu$, and
-\item if $M_1\sim M_1'\in\phi_{1}$, then $A_{2}'[M_1/a]\sim A_{2}[M_1'/a]\downarrow\phi_{2}[M_1,M_1']\in\mu$.
+\item $A_{1}'\sim A_{1}\downarrow\phi_{1}\ \relto{\mu}$, and
+\item if $M_1\sim M_1'\in\phi_{1}$, then $A_{2}'[M_1/a]\sim A_{2}[M_1'/a]\downarrow\phi_{2}[M_1,M_1']\ \relto{\mu}$.
 \end{enumerate}
 The first of these follows directly from the assumption
-$A_{1}\sim A_{1}'\downarrow\phi_{1}\in\Phi$.  For the second, suppose that
+$A_{1}\sim A_{1}'\downarrow\phi_{1}\ \relto{\Phi}$.  For the second, suppose that
 $M_1\sim M_1'\in\phi_{1}$, with the intent to show that
-$$A_{2}'[M_1/a]\sim A_{2}[M_1'/a]\downarrow \phi_{2}[M_1,M_1']\in\mu.$$  Because $\phi_{1}$ is symmetric,
+$$A_{2}'[M_1/a]\sim A_{2}[M_1'/a]\downarrow \phi_{2}[M_1,M_1']\ \relto{\mu}.$$  Because $\phi_{1}$ is symmetric,
 $M_1'\sim M_1\in\phi_{1}$, and so by the second assumption
-$$A_{2}[M_1'/a] \sim A_{2}'[M_1/a]\downarrow\phi_{2}[M_1',M_1]\in\Phi.$$  Therefore $\phi_{2}[M_1',M_1]$ is a
+$$A_{2}[M_1'/a] \sim A_{2}'[M_1/a]\downarrow\phi_{2}[M_1',M_1]\ \relto{\Phi}.$$  Therefore $\phi_{2}[M_1',M_1]$ is a
 PER, and
-$$A_{2}'[M_1/a]\sim A_{2}[M_1'/a]\downarrow\phi_{2}[M_1',M_1]\in\mu.$$  To complete the proof it is
+$$A_{2}'[M_1/a]\sim A_{2}[M_1'/a]\downarrow\phi_{2}[M_1',M_1]\ \relto{\mu}.$$  To complete the proof it is
 enough to show that $\phi_{2}[M_1',M_1]=\phi_{2}[M_1,M_1']$.
 
 This equation is proved in two steps by showing that each side is equal to
@@ -125,16 +130,17 @@ $\phi_{2}[M_{1}',M_{1}']$.
 \begin{enumerate}
 \item By transitivity and symmetry of $\phi_{1}$, it follows that $M_{1}'\sim M_{1}'\in\phi_{1}$, and
   hence by the second assumption $$A_{2}[M_{1}'/a]\sim
-  A_{2}'[M_{1}'/a]\downarrow\phi_{2}(M_{1}',M_{1}')\in\Phi,$$ and so by symmetry
-  $$A_{2}'[M_{1}'/a]\sim A_{2}[M_{1}'/a]\downarrow\phi_{2}(M_{1}',M_{1}')\in\mu.$$
+  A_{2}'[M_{1}'/a]\downarrow\phi_{2}(M_{1}',M_{1}')\ \relto{\Phi},$$ and so by symmetry
+  $$A_{2}'[M_{1}'/a]\sim A_{2}[M_{1}'/a]\downarrow\phi_{2}(M_{1}',M_{1}')\ \relto{\mu}.$$
   Moreover, by the second assumption, $$A_{2}[M_{1}'/a] \sim
-  A_{2}'[M_{1}/a]\downarrow\phi_{2}[M_{1}',M_{1}]\in\Phi\subseteq\mu.$$
+  A_{2}'[M_{1}/a]\downarrow\phi_{2}[M_{1}',M_{1}]\ \relto{\Phi},$$ and hence $\relto{\mu}$.
   Therefore by right transitivity
   $$A_{2}'[M_{1}'/a]\sim A_{2}'[M_{1}/a]\downarrow\phi_{2}[M_{1}',M_{1}']\ \textit{and}\ \phi_{2}[M_{1}',M_{1}']=\phi_{2}[M_{1}',M_{1}].$$
-\item As in the previous case $$A_{2}'[M_{1}'/a] \sim A_{2}[M_{1}'/a] \downarrow \phi_{2}[M_{1}',M_{1}']\in\mu,$$
-  and $$A_{2}[M_{1}/a]\sim A_{2}[M_{1}'/a]\downarrow\phi_{2}[M_{1},M_{1}']\in\Phi\subseteq\mu.$$
+\item
+  As in the previous case $$A_{2}'[M_{1}'/a] \sim A_{2}[M_{1}'/a] \downarrow \phi_{2}[M_{1}',M_{1}']\ \relto{\mu},$$
+  and $$A_{2}[M_{1}/a]\sim A_{2}[M_{1}'/a]\downarrow\phi_{2}[M_{1},M_{1}']\ \relto{\Phi}.$$
   By left transitivity
-  $$A_{2}[M_{1}/a] \sim A_{2}[M_{1}'/a] \downarrow \phi_{2}[M_{1}',M_{1}']\in\mu\ \textit{and}\
+  $$A_{2}[M_{1}/a] \sim A_{2}[M_{1}'/a] \downarrow \phi_{2}[M_{1}',M_{1}']\ \relto{\mu}\ \textit{and}\
   \phi_2[M_1',M_1]=\phi_2[M_1',M_1'].$$
 \end{enumerate}
 Thus $\phi_{2}[M_{1},M_{1}']=\phi_{2}[M_{1}',M_{1}]$, as desired.
