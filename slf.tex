@@ -36,20 +36,39 @@
 
 \section{Introduction}
 
-A \emph{syntactic logical framework}~\citep{harper-etal:lf} is a formalism codifying the logic of the
-\emph{hypothetico-general judgment}.  As such it incorporates \emph{higher-order abstract
-  syntax} as well as \emph{higher-order derivations} of formal judgments.  A formalism is
-presented by a \emph{signature}, which is essentially a context presenting a collection of
-\emph{generators} populating the \emph{sorts} it declares with \emph{objects}.  Type
-checking relative to a signature is decidable.
+A \emph{logical framework} is language for defining logical systems, in particular type
+theories.  The definition of a logical system consists of a collection of
+\emph{generators} that populate a collection of classifying \emph{sorts}, and a collection
+of \emph{equations} that govern the objects of those sorts.  The generators specify the
+sorts of the objects that constitute the logical system---say, the sort of types and, for
+each type, the sort of its elements---and in addition specify the objects of each of these
+sorts.  These objects comprise the syntactic entities of the logical system---the types and
+their elements---and are specified using \emph{higher-order abstract syntax} to express the
+binding and scopes of variables.  The native equality of the framework is a congruence---an
+equivalence relation compatible with the generators---and defines substitution of objects
+for variables in another object.  The defining equations of a logical system enrich the
+native equality to specify the behavior of the represented objects---such as the inversion
+and unicity properties of type constructors or connectives.
 
-A \emph{semantic logic framework}~\citep{smith1990programming} is a syntactic logical
-framework equipped with an extensional equality type that permits equational postulates
-that constrain the interpretation of the objects presented by it.  A signature thus
-defines generators, as just mentioned, and also \emph{equations} among the generated
-objects.  Because equality is extensional type checking relative to a signature need not
-be decidable; each signature presents a decision problem of its own that must be handled
-on a case-by-case basis.
+The integration of the defining equations with the native equations of the framework
+constrains the \emph{meaning} of the defined system within the framework in the sense that
+any interpretation must obey the specified laws.  There being no limitations on the nature
+of these equations, the enriched equality judgment of the framework may or may not be
+(feasibly or infeasibly) decidable.  A \emph{syntactic logical
+  framework}~\cite{harper-etal:lf} is one that presents a logical system using only
+generators, and no relations, so that the induced equational theory is the native one,
+which is decidable.  A \emph{semantic logical theory}~\cite{smith1990programming} admits
+the specification of equations, with the consequence that the decidability of a defined
+logical system presents a question that must be resolved for each case separately.
+
+This note defines a semantic logical framework suitable for defining a broad---but by no
+means comprehensive---class of logical systems, including full-scale dependent type
+theories.  It is a dependently typed language with a single Russellian universe of sorts,
+and extensional equality types governing the objects of a sort.  The definition of a
+logical system is a form of context, called a \emph{signature}, that specifies generators
+that populate the sorts and the equality types that govern them.  The \emph{adequacy} of a
+signature expresses the intended correspondence between the components of the represented
+logical system and their counterpart objects in the logical framework.
 
 \section{The Meat}
 
