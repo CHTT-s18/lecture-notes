@@ -173,13 +173,15 @@ The rules defining the \LF{} judgment forms are given in Figures~\ref{fig:lf-is}
 \ref{fig:lf-str}, and~\ref{fig:lf-eq} which are to be understood as constituting one
 simultaneous inductive definition.  Rule~\textsc{incl} specifies that every sort is itself
 a class; the class $\sortclass$ is thus formulated as a Russellian universe of ``small''
-classes.  Rule~\textsc{eq} defines the class of equations between objects of a sort;
-rule~\textsc{self} specifies that every object is equal to itself.  Rules~\textsc{obj-cls}
-and~\textsc{obj-eq-cls} specifies that equal classes classify the same objects.
-Rules~\textsc{app-lam} and~\textsc{lam-app} specify the inversion principles governing
-abstraction and application.  Rule~\textsc{reflection} specifies that the equality class
-internalizes equality, and rule~\textsc{unicity} specifies that an equation is ``at most
-true,'' there being no distinction between two objects witnessing its truth.
+classes.  Rule~\textsc{pi}, and associated rules~\textsc{lam} and~\textsf{app}, could be
+restricted without loss to require that $K_{1}$ be a small class.  Rule~\textsc{eq}
+defines the class of equations between objects of a sort; rule~\textsc{self} specifies
+that every object is equal to itself.  Rules~\textsc{obj-cls} and~\textsc{obj-eq-cls}
+specifies that equal classes classify the same objects.  Rules~\textsc{app-lam}
+and~\textsc{lam-app} specify the inversion principles governing abstraction and
+application.  Rule~\textsc{reflection} specifies that the equality class internalizes
+equality, and rule~\textsc{unicity} specifies that an equation is ``at most true,'' there
+being no distinction between two objects witnessing its truth.
 
 \begin{lemma}[Presuppositions]
   \label{lemma:presup}
