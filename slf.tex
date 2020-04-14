@@ -24,6 +24,27 @@
 \newcommand{\eqdef}{\mathrel{\triangleq}}
 \newcommand{\isdef}{\eqdef}
 
+\newcommand{\LF}[1][]{\ensuremath{\mathsf{LF}_{#1}}}
+\newcommand{\bnfdef}{\mathrel{{:}{:}{=}}}
+\newcommand{\bnfalt}{\mathrel{\mid}}
+
+\newcommand{\sortclass}{\ensuremath{\mathsf{sort}}}
+\newcommand{\eqclass}[3]{{#2}=_{#1}{#3}}
+\newcommand{\piclass}[3]{({#2}\mathord{:}{#1}){#3}}
+\newcommand{\lamobj}[3]{[{#2}\mathord{:}{#1}]{#3}}
+\newcommand{\appobj}[2]{{#1}\,{#2}}
+\newcommand{\reflobj}{\star}
+\newcommand{\empctx}{\varepsilon}
+\newcommand{\snocctx}[3]{{#1},{#2}{:}{#3}}
+
+\newcommand{\issig}[1]{{#1}\,\mathsf{sig}}
+\newcommand{\isctx}[2][]{{#2}\,\mathsf{ctx}_{#1}}
+\newcommand{\eqctx}[3][]{{#2}={#3}\,\mathsf{ctx}_{#1}}
+\newcommand{\iscls}[3][]{{#2}\vdash_{#1}{#3}\,\mathsf{cls}}
+\newcommand{\eqcls}[4][]{{#2}\vdash_{#1}{#3}={#4}\,\mathsf{cls}}
+\newcommand{\isobj}[4][]{{#2}\vdash_{#1}{#3}:{#4}}
+\newcommand{\eqobj}[5][]{{#2}\vdash_{#1}{#3}={#4}:{#5}}
+
 \allowdisplaybreaks[1]       %mildly permissible to break up displayed equations
 
 \begin{document}
@@ -64,13 +85,88 @@ logical system presents a question that must be resolved for each case separatel
 This note defines a semantic logical framework suitable for defining a broad---but by no
 means comprehensive---class of logical systems, including full-scale dependent type
 theories.  It is a dependently typed language with a single Russellian universe of sorts,
-and extensional equality types governing the objects of a sort.  The definition of a
-logical system is a form of context, called a \emph{signature}, that specifies generators
-that populate the sorts and the equality types that govern them.  The \emph{adequacy} of a
-signature expresses the intended correspondence between the components of the represented
-logical system and their counterpart objects in the logical framework.
+an extensional equality types governing the objects of a sort, and closed under the
+formation of dependent function types.  The definition of a logical system is a form of
+context, called a \emph{signature}, that specifies generators that populate the sorts and
+the equality types that govern them.  The \emph{adequacy} of a signature expresses the
+intended correspondence between the components of the represented logical system and their
+counterpart objects in the logical framework.
 
-\section{The Meat}
+\section{A Logical Framework}
+
+The syntax of the logical framework \LF{} is given in Figure~\ref{fig:lf-syntax}.  It is a
+dependently typed $\lambda$-calculus with the structure specified in the introduction.  The
+types of \LF{} are called \emph{classes}, or \emph{kinds}, $K$ or $S$, and their elements
+are called \emph{objects}, $O$ or $S$.\footnote{The double role of the meta-variable $S$
+  will be explained shortly.}  The notation is inspired by \textsf{AUTOMATH}, using square
+brackets for $\lambda$-abstraction, round brackets for $\Pi$-types, and juxtaposition for
+application.  The binding and scopes of identifiers are understood; all classes and
+objects are identified up to renaming of bound variables.  Substitution of an object for a
+variable within a class or kind is defined in the usual way up to such renamings.
+
+\begin{figure}[tp]
+  
+  \begin{displaymath}
+    \begin{array}{lrcl}
+      \textit{Variables} & X,x \\
+      \textit{Kinds} & K, S & \bnfdef{} & S \bnfalt \sortclass \bnfalt \piclass{K_{1}}{X}{K_{2}}
+                                          \bnfalt \eqclass{S}{O_{1}}{O_{2}} \\
+      \textit{Objects} & O, S & \bnfdef & X \bnfalt \lamobj{K_{1}}{X}{K_{2}} \bnfalt
+                                          \appobj{O_{1}}{O_{2}} \bnfalt \reflobj{} \\
+      \textit{Contexts} & \Gamma & \bnfdef & \empctx{} \bnfalt \snocctx{\Gamma}{X}{K}
+    \end{array}
+  \end{displaymath}
+
+  \caption{Abstract Syntax of \LF{}}
+  \label{fig:lf-syntax}
+\end{figure}
+
+\LF{} uses dependent function classes to define the \emph{hypothetico-general judgment
+  form} that is central to the definition of many logical systems.  It uses (extensional)
+equality classes as a convenient way to present equational theories, and it uses the
+objects of class \sortclass{} for the syntactic categories of a logical system.  It is
+itself defined in the conventional manner in terms of the hypothetico-general judgment
+forms given in Figure~\ref{fig:lf-judgments}.
+
+\begin{figure}[tp]
+  \centering
+  \begin{tabular}{l@{\qquad}l}
+    $\isctx{\Gamma}$ & $\Gamma$ is a context \\
+    $\iscls{\Gamma}{K}$ & $K$ is a class in context $\Gamma$ \\
+    $\isobj{\Gamma}{O}{K}$ & $O$ is an object of class $K$ in context $\Gamma$ \\[1ex]
+    $\eqctx{\Gamma}{\Gamma'}$ & $\Gamma$ and $\Gamma'$ are equal contexts \\
+    $\eqcls{\Gamma}{K}{K'}$ & $K$ and $K'$ are equal classes in context $\Gamma$ \\
+    $\eqobj{\Gamma}{O}{O'}{K}$ & $O$ and $O'$ are equal objects of class $K$ in context $\Gamma$
+  \end{tabular}
+  \caption{Judgment Forms of \LF{}}
+  \label{fig:lf-judgments}
+\end{figure}
+
+A \emph{signature} $\Sigma$ is a context.  The variables declared in a signature are written
+$C$ and $c$ to suggest their role as constants, or generators.  The specialization of the
+judgment forms of \LF{} to a particular signature $\Sigma$ are defined in Figure~\ref{fig:lf-specialized}.
+
+\begin{figure}[tp]
+  \centering
+  \begin{tabular}{l@{\quad\textit{means}\quad}l}
+    $\issig{\Sigma}$             & $\isctx{\Sigma}$ \\[1ex]
+
+    $\isctx[\Sigma]{\Gamma}$           & $\isctx{\Sigma\,\Gamma}$  \\
+    $\iscls[\Sigma]{\Gamma}{K}$           & $\iscls{\Sigma\,\Gamma}{K}$ \\
+    $\isobj[\Sigma]{\Gamma}{O}{K}$     & $\isobj{\Sigma\,\Gamma}{O}{K}$ \\[1ex]
+
+    $\eqctx[\Sigma]{\Gamma}{\Gamma'}$     & $\eqctx{\Sigma\,\Gamma}{\Sigma\,\Gamma'}$ \\
+    $\eqcls[\Sigma]{\Gamma}{K}{K'}$   & $\eqcls{\Sigma\,\Gamma}{K}{K'}$ \\
+    $\eqobj[\Sigma]{\Gamma}{O}{O'}{K}$ & $\eqobj{\Sigma\,\Gamma}{O}{O'}{K}$
+  \end{tabular}
+  \caption{Specialized Judgment Forms of \LF{}}
+  \label{fig:lf-specialized}
+\end{figure}
+
+\begin{center}
+\end{center}
+
+\section{Two Type Theories}
 
 \section{Conclusion}
 
