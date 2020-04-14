@@ -203,14 +203,25 @@ true,'' there being no distinction between two objects witnessing its truth.
 
 \begin{lemma}[Substitution]
   \label{lemma:subst}
-  Suppose that $\isctx{\Gamma_1\,X{:}K_{1}\,\Gamma_2}$ and $\isobj{\Gamma}{O_{1}}{K_{1}}$.
+  Suppose that $\isctx{\Gamma_{1}\,X{:}K_{1}\,\Gamma_{2}}$ and $\isobj{\Gamma}{O_{1}}{K_{1}}$.
   \begin{enumerate}
-  \item $\isctx{\Gamma_1\,\subst{O_{1}}{X}{\Gamma_2}}$.
-  \item If\/ $\iscls{\Gamma_1\,X{:}K_{1}\,\Gamma_2}{K_{2}}$, then
-    $\iscls{\Gamma_1\,\subst{O_{1}}{X}{\Gamma_2}}{\subst{O_{1}}{X}{K_{2}}}$, and similarly for class equality.
-  \item If\/ $\isobj{\Gamma_1\,X{:}K_{1}\,\Gamma_2}{O_{2}}{K_{2}}$, then
-    $\isobj{\Gamma_1\,\subst{O_{1}}{X}{\Gamma_2}}{\subst{O_{1}}{X}{O_{2}}}{\subst{O_{1}}{X}{K_{2}}}$,
+%  \item $\isctx{\Gamma_{1}\,\subst{O_{1}}{X}{\Gamma_{2}}}$.
+  \item If\/ $\iscls{\Gamma_{1}\,X{:}K_{1}\,\Gamma_{2}}{K_{2}}$, then
+    $\iscls{\Gamma_{1}\,\subst{O_{1}}{X}{\Gamma_{2}}}{\subst{O_{1}}{X}{K_{2}}}$, and similarly for class equality.
+  \item If\/ $\isobj{\Gamma_{1}\,X{:}K_{1}\,\Gamma_{2}}{O_{2}}{K_{2}}$, then
+    $\isobj{\Gamma_{1}\,\subst{O_{1}}{X}{\Gamma_{2}}}{\subst{O_{1}}{X}{O_{2}}}{\subst{O_{1}}{X}{K_{2}}}$,
     and similarly for object equality.
+  \end{enumerate}
+\end{lemma}
+
+\begin{lemma}[Functionality]
+  \label{lemma:func}
+  Suppose that $\isctx{\Gamma_{1}\,X{:}K_{1}\,\Gamma_{2}}$ and $\eqobj{\Gamma}{O_{1}}{O_{1}'}{K_{1}}$.
+  \begin{enumerate}
+  \item If\/ $\iscls{\Gamma_{1}\,X{:}K_{1}\,\Gamma_{2}}{K_{2}}$, then
+    $\eqcls{\Gamma_{1}\,\subst{O_{1}}{X}{\Gamma_{2}}}{\subst{O_{1}}{X}{K_{2}}}{\subst{O_{1}'}{X}{K_{2}}}$.
+  \item If\/ $\isobj{\Gamma_{1}\,X{:}K_{1}\,\Gamma_{2}}{O_{2}}{K_{2}}$, then
+    $\eqobj{\Gamma_{1}\,\subst{O_{1}}{X}{\Gamma_{2}}}{\subst{O_{1}}{X}{O_{2}}}{\subst{O_{1}'}{X}{O_{2}}}{\subst{O_{1}}{X}{K_{2}}}$,
   \end{enumerate}
 \end{lemma}
 
@@ -227,24 +238,24 @@ true,'' there being no distinction between two objects witnessing its truth.
     {\iscls{\Gamma}{S}}
 
     \inferrule[pi]
-    {\iscls{\Gamma}{K_1} \\ \iscls{\snocctx{\Gamma}{X}{K_1}}{K_2}}
-    {\iscls{\Gamma}{\piclass{K_1}{X}{K_2}}}
+    {\iscls{\Gamma}{K_{1}} \\ \iscls{\snocctx{\Gamma}{X}{K_{1}}}{K_{2}}}
+    {\iscls{\Gamma}{\piclass{K_{1}}{X}{K_{2}}}}
 
     \inferrule[eq]
-    {\isobj{\Gamma}{S}{\sortclass} \\ \isobj{\Gamma}{O_1}{S} \\ \isobj{\Gamma}{O_2}{S}}
-    {\iscls{\Gamma}{\eqclass{S}{O_1}{O_2}}}
+    {\isobj{\Gamma}{S}{\sortclass} \\ \isobj{\Gamma}{O_{1}}{S} \\ \isobj{\Gamma}{O_{2}}{S}}
+    {\iscls{\Gamma}{\eqclass{S}{O_{1}}{O_{2}}}}
 
   \end{mathpar}
 
   \begin{mathpar}
 
     \inferrule[lam]
-    {\iscls{\Gamma}{K_1} \\ \isobj{\snocctx{\Gamma}{X}{K_1}}{O_2}{K_2}}
-    {\isobj{\Gamma}{\lamobj{K_1}{X}{O_2}}{\piclass{K_1}{X}{K_2}}}
+    {\iscls{\Gamma}{K_{1}} \\ \isobj{\snocctx{\Gamma}{X}{K_{1}}}{O_{2}}{K_{2}}}
+    {\isobj{\Gamma}{\lamobj{K_{1}}{X}{O_{2}}}{\piclass{K_{1}}{X}{K_{2}}}}
 
     \inferrule[app]
-    {\isobj{\Gamma}{O}{\piclass{K_1}{X}{K_2}} \\ \isobj{\Gamma}{O_1}{K_1}}
-    {\isobj{\Gamma}{\appobj{O}{O_1}}{\subst{O_1}{X}{K_2}}}
+    {\isobj{\Gamma}{O}{\piclass{K_{1}}{X}{K_{2}}} \\ \isobj{\Gamma}{O_{1}}{K_{1}}}
+    {\isobj{\Gamma}{\appobj{O}{O_{1}}}{\subst{O_{1}}{X}{K_{2}}}}
 
     \inferrule[self]
     {\isobj{\Gamma}{O}{S}}
@@ -269,8 +280,8 @@ true,'' there being no distinction between two objects witnessing its truth.
     {\isctx{\snocctx{\Gamma}{X}{K}}}
 
     \inferrule[var]
-    {\isctx{\Gamma_1\,X{:}K\,\Gamma_2}}
-    {\isobj{\Gamma_1\,X{:}K\,\Gamma_2}{X}{K}}
+    {\isctx{\Gamma_{1}\,X{:}K\,\Gamma_{2}}}
+    {\isobj{\Gamma_{1}\,X{:}K\,\Gamma_{2}}{X}{K}}
 
   \end{mathpar}
 
@@ -323,48 +334,48 @@ true,'' there being no distinction between two objects witnessing its truth.
     {\eqcls{\Gamma}{S}{S'}}
 
     \inferrule[pi-eq]
-    {\eqcls{\Gamma}{K_1}{K_1'} \\ \eqcls{\snocctx{\Gamma}{X}{K_1}}{K_2}{K_2'}}
-    {\eqcls{\Gamma}{\piclass{K_1}{X}{K_2}}{\piclass{K_1'}{X}{K_2'}}}
+    {\eqcls{\Gamma}{K_{1}}{K_{1}'} \\ \eqcls{\snocctx{\Gamma}{X}{K_{1}}}{K_{2}}{K_{2}'}}
+    {\eqcls{\Gamma}{\piclass{K_{1}}{X}{K_{2}}}{\piclass{K_{1}'}{X}{K_{2}'}}}
 
     \inferrule[eq-eq]
-    {\eqobj{\Gamma}{S}{S'}{\sortclass} \\ \eqobj{\Gamma}{O_1}{O_1'}{S} \\ \eqobj{\Gamma}{O_2}{O_2'}{S}}
-    {\eqcls{\Gamma}{\eqclass{S}{O_1}{O_2}}{\eqclass{S'}{O_1'}{O_2'}}}
+    {\eqobj{\Gamma}{S}{S'}{\sortclass} \\ \eqobj{\Gamma}{O_{1}}{O_{1}'}{S} \\ \eqobj{\Gamma}{O_{2}}{O_{2}'}{S}}
+    {\eqcls{\Gamma}{\eqclass{S}{O_{1}}{O_{2}}}{\eqclass{S'}{O_{1}'}{O_{2}'}}}
 
   \end{mathpar}
 
   \begin{mathpar}
     
     \inferrule[lam-eq]
-    {\eqcls{\Gamma}{K_1}{K_1'} \\ \eqobj{\snocctx{\Gamma}{X}{K_1}}{O_2}{O_2'}{K_2}}
-    {\eqobj{\Gamma}{\lamobj{K_1}{X}{O_2}}{\lamobj{K_1'}{X}{O_2'}}{\piclass{K_1}{X}{K_2}}}
+    {\eqcls{\Gamma}{K_{1}}{K_{1}'} \\ \eqobj{\snocctx{\Gamma}{X}{K_{1}}}{O_{2}}{O_{2}'}{K_{2}}}
+    {\eqobj{\Gamma}{\lamobj{K_{1}}{X}{O_{2}}}{\lamobj{K_{1}'}{X}{O_{2}'}}{\piclass{K_{1}}{X}{K_{2}}}}
 
     \inferrule[app-eq]
-    {\eqobj{\Gamma}{O}{O'}{\piclass{K_1}{X}{K_2}} \\ \eqobj{\Gamma}{O_1}{O_1'}{K_1}}
-    {\eqobj{\Gamma}{\appobj{O}{O_1}}{\appobj{O'}{O_1'}}{\subst{O_1}{X}{K_2}}}
+    {\eqobj{\Gamma}{O}{O'}{\piclass{K_{1}}{X}{K_{2}}} \\ \eqobj{\Gamma}{O_{1}}{O_{1}'}{K_{1}}}
+    {\eqobj{\Gamma}{\appobj{O}{O_{1}}}{\appobj{O'}{O_{1}'}}{\subst{O_{1}}{X}{K_{2}}}}
 
   \end{mathpar}
 
   \begin{mathpar}
     
     \inferrule[app-lam]
-    {\isobj{\snocctx{\Gamma}{X}{K_1}}{O_2}{K_2} \\ \isobj{\Gamma}{O_1}{K_1}}
-    {\eqobj{\Gamma}{\appobj{(\lamobj{K_1}{X}{O_2})}{O_1}}{\subst{O_1}{X}{O_2}}{\subst{O_1}{X}{K_2}}}
+    {\isobj{\snocctx{\Gamma}{X}{K_{1}}}{O_{2}}{K_{2}} \\ \isobj{\Gamma}{O_{1}}{K_{1}}}
+    {\eqobj{\Gamma}{\appobj{(\lamobj{K_{1}}{X}{O_{2}})}{O_{1}}}{\subst{O_{1}}{X}{O_{2}}}{\subst{O_{1}}{X}{K_{2}}}}
 
     \inferrule[lam-app]
-    {\isobj{\Gamma}{O}{\piclass{K_1}{X}{K_2}}}
-    {\eqobj{\Gamma}{O}{\lamobj{K_1}{X}{(\appobj{O}{X})}}{\piclass{K_1}{X}{K_2}}}
+    {\isobj{\Gamma}{O}{\piclass{K_{1}}{X}{K_{2}}}}
+    {\eqobj{\Gamma}{O}{\lamobj{K_{1}}{X}{(\appobj{O}{X})}}{\piclass{K_{1}}{X}{K_{2}}}}
 
   \end{mathpar}
 
   \begin{mathpar}
     
     \inferrule[reflection]
-    {\isobj{\Gamma}{O}{\eqclass{S}{O_1}{O_2}}}
-    {\eqobj{\Gamma}{O_1}{O_2}{S}}
+    {\isobj{\Gamma}{O}{\eqclass{S}{O_{1}}{O_{2}}}}
+    {\eqobj{\Gamma}{O_{1}}{O_{2}}{S}}
 
     \inferrule[unicity]
-    {\isobj{\Gamma}{O}{\eqclass{S}{O_1}{O_2}} \\ \isobj{\Gamma}{O'}{\eqclass{S}{O_1}{O_2}}}
-    {\eqobj{\Gamma}{O}{O'}{\eqclass{S}{O_1}{O_2}}}
+    {\isobj{\Gamma}{O}{\eqclass{S}{O_{1}}{O_{2}}} \\ \isobj{\Gamma}{O'}{\eqclass{S}{O_{1}}{O_{2}}}}
+    {\eqobj{\Gamma}{O}{O'}{\eqclass{S}{O_{1}}{O_{2}}}}
 
   \end{mathpar}
 
