@@ -704,6 +704,46 @@ to eliminate into a $\nattp$-indexed family of result types.
   \label{fig:t-sig-dep}
 \end{figure}
 
+Dependent types become interesting only when there are families of types, the principal
+examples of which are the extensional and intensional equality types.  Their formulations
+are given in Figures~\ref{fig:dep-eq} and~\ref{fig:dep-id}.
+
+\newcommand{\eqcon}{\const{eq}}
+\newcommand{\eqof}[3]{\appobj{\appobj{\appobj{\eqcon}{#1}}{#2}}{#3}}
+\newcommand{\selfcon}{\const{star}}
+\newcommand{\selfof}{\selfcon}
+\newcommand{\eqrefcon}{\const{eqref}}
+\newcommand{\equnicon}{\const{equni}}
+
+\begin{figure}
+  
+  \begin{align*}
+    \eqcon & : \piclass{\tpsort}{A}{\arrclass{\elof{A}}{\arrclass{\elof{A}}{\tpsort}}} \\
+    \selfcon & : \piclass{\tpsort}{A}{\piclass{\elof{A}}{M}{\eqof{A}{M}{M}}} \\
+    \eqrefcon  & :
+         \piclass{\tpsort}{A}{\piclass{\elof{A}}{M_{1},M_{2}}{\arrclass{\elofp{\eqof{A}{M_{1}}{M_{2}}}}{\eqclass{\elof{A}}{M_{1}}{M_{2}}}}}  \\
+    \equnicon & :
+          \piclass{\tpsort}{A}{\piclass{\elof{A}}{M_{1},M_{2}}{\piclass{\elofp{\eqof{A}{M_{1}}{M_{2}}}}{M,M'}{\eqclass{\elofp{\eqof{A}{M_{1}}{M_{2}}}}{M}{M'}}}}
+  \end{align*}
+
+  \caption{Dependent Equality Type}
+  \label{fig:dep-eq}
+\end{figure}
+
+\newcommand{\idcon}{\const{id}}
+\newcommand{\idof}[3]{\appobj{\appobj{\appobj{\idcon}{#1}}{#2}}{#3}}
+\newcommand{\reflcon}{\const{refl}}
+
+\begin{figure}
+  
+  \begin{align*}
+    x & : y
+  \end{align*}
+
+  \caption{Dependent Identity Type}
+  \label{fig:dep-id}
+\end{figure}
+
 \bibliographystyle{plainnat}
 \bibliography{notes}
 
