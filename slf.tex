@@ -30,6 +30,7 @@
 \newcommand{\isdef}{\eqdef}
 
 \newcommand{\parens}[1]{(#1)}
+\newcommand{\noparens}[1]{}
 
 \newcommand{\const}[1]{\text{#1}}
 
@@ -409,7 +410,7 @@ theories, or other logical systems, as a signature.
 
 \newcommand{\elfam}{\const{el}}
 \newcommand{\elof}[1]{\appobj{\elfam}{#1}}
-\newcommand{\elofp}[1]{\parens{\elof{#1}}}
+\newcommand{\elofp}[1]{\appobj{\elfam}{\parens{#1}}}
 
 \newcommand{\zerocon}{\const{zero}}
 \newcommand{\succcon}{\const{succ}}
@@ -437,7 +438,7 @@ safely omitted when their class is evident.  For example, it would be sensible t
 quantification over objects of sort $\tpsort$ in Figure~\ref{fig:t-sig}.  For example, the
 declaration of $\lamcon$ could be abbreviated to
 \begin{align*}
-  \lamcon & : \arrclass{\parens{\arrclass{\elof{A_{1}}}{\elof{A_{2}}}}}{\elof{\parens{\arrof{A_{1}}{A_{2}}}}},
+  \lamcon & : \arrclass{\parens{\arrclass{\elof{A_{1}}}{\elof{A_{2}}}}}{\elofp{\arrof{A_{1}}{A_{2}}}},
 \end{align*}
 with the outermost quantification over $A_{1}$ and $A_{2}$ of sort $\tpsort$ being
 understood.  Correspondinly, it would be sensible to write $\lamof{\_{}}{\_{}}{F}$ when
@@ -482,7 +483,9 @@ Figure~\ref{fig:t-sig-abbr} for comparison.
       \piclass{\arrclass{\elof{\nattp}}{\arrclass{\elof{A}}{\elof{A}}}}{s}{
       \piclass{\elof{\nattp}}{n}{
       \eqclass{\elof{A}}
-      {\recof{A}{b}{s}{\parens{\succof{n}}}}{\appobj{\appobj{s}{n}}{\parens{\recof{A}{b}{s}{n}}}}}}}} \\[1ex]
+      {\recof{A}{b}{s}{\parens{\succof{n}}}}
+      {\appobj{\appobj{s}{n}}{\parens{\recof{A}{b}{s}{n}}}}}
+      }}} \\[1ex]
 %
     \lamcon
     & :
@@ -494,7 +497,7 @@ Figure~\ref{fig:t-sig-abbr} for comparison.
     & :
       \piclass{\tpsort}{A_{1}}{
       \piclass{\tpsort}{A_{2}}{
-      \arrclass{\elof{\parens{\arrof{A_{1}}{A_{2}}}}}{
+      \arrclass{\elofp{\arrof{A_{1}}{A_{2}}}}{
       \arrclass{\elof{A_{1}}}{\elof{A_{2}}}}}} \\[1ex]
 %
     \betacon
@@ -510,8 +513,8 @@ Figure~\ref{fig:t-sig-abbr} for comparison.
     & :
       \piclass{\tpsort}{A_{1}}{
       \piclass{\tpsort}{A_{2}}{
-      \piclass{\elof{\parens{\arrof{A_{1}}{A_{2}}}}}{M}{
-      \eqclass{\elof{\parens{\arrof{A_{1}}{A_{2}}}}}
+      \piclass{\elofp{\arrof{A_{1}}{A_{2}}}}{M}{
+      \eqclass{\elofp{\arrof{A_{1}}{A_{2}}}}
       {M}
       {\lamof{A_{1}}{A_{2}}{\parens{\lamobj{\elof{A_{1}}}{x}{\appof{A_{1}}{A_{2}}{M}{x}}}}}}}}
   \end{align*}
@@ -563,7 +566,7 @@ Figure~\ref{fig:t-sig-abbr} for comparison.
       \elfam{\parens{\arrof{A_{1}}{A_{2}}}}} \\
     \appcon
     & :
-      \arrclass{\elof{\parens{\arrof{A_{1}}{A_{2}}}}}{
+      \arrclass{\elofp{\arrof{A_{1}}{A_{2}}}}{
       \arrclass{\elof{A_{1}}}{\elof{A_{2}}}} \\[1ex]
 %
     \betacon
@@ -575,8 +578,8 @@ Figure~\ref{fig:t-sig-abbr} for comparison.
       {\appobj{F}{M_1}}}} \\
     \etacon
     & :
-      \piclass{\elof{\parens{\arrof{A_{1}}{A_{2}}}}}{M}{
-      \eqclass{\elof{\parens{\arrof{A_{1}}{A_{2}}}}}
+      \piclass{\elofp{\arrof{A_{1}}{A_{2}}}}{M}{
+      \eqclass{\elofp{\arrof{A_{1}}{A_{2}}}}
       {M}
       {\lamof{\_{}}{\_{}}{\parens{\lamobj{\elof{A_{1}}}{x}{\appof{\_{}}{\_{}}{M}{x}}}}}}
   \end{align*}
@@ -619,32 +622,32 @@ to eliminate into a $\nattp$-indexed family of result types.
     \reccon
     &  :
       \piclass{\arrclass{\elof{\nattp}}{\tpsort}}{A}{
-      \arrclass{\elof{\parens{\appobj{A}{\zerocon}}}}{
+      \arrclass{\elofp{\appobj{A}{\zerocon}}}{
       \arrclass{\parens{
       \piclass{\elof{\nattp}}{m}{
-        \arrclass{\elof{\parens{\appobj{A}{m}}}}{\elof{\parens{\appobj{A}{\parens{\succof{m}}}}}}}}}
-      {\piclass{\elof{\nattp}}{n}{\elof{\parens{\appobj{A}{n}}}}}}} \\[1ex] 
+        \arrclass{\elofp{\appobj{A}{m}}}{\elofp{\appobj{A}{\parens{\succof{m}}}}}}}}
+      {\piclass{\elof{\nattp}}{n}{\elofp{\appobj{A}{n}}}}}} \\[1ex] 
 %
     \reczcon
     & :
       \piclass{\arrclass{\elof{\nattp}}{\tpsort}}{A}{
-      \piclass{\elof{\parens{\appobj{A}{\zerocon}}}}{b}{
-      \piclass{\piclass{\elof{\nattp}}{m}{\arrclass{\elof{\parens{\appobj{A}{m}}}}{\elof{\parens{\appobj{A}{\parens{\succof{m}}}}}}}}{s}{
+      \piclass{\elofp{\appobj{A}{\zerocon}}}{b}{
+      \piclass{\piclass{\elof{\nattp}}{m}{\arrclass{\elofp{\appobj{A}{m}}}{\elofp{\appobj{A}{\parens{\succof{m}}}}}}}{s}{
       % next line
       }}} \\
     & \qquad
-      \eqclass{\elof{\parens{\appobj{A}{\zerocon}}}}{\recof{A}{b}{s}{\zerocon}}{b} \\
+      \eqclass{\elofp{\appobj{A}{\zerocon}}}{\recof{A}{b}{s}{\zerocon}}{b} \\
 %
     \recscon
     & :
       \piclass{\arrclass{\elof{\nattp}}{\tpsort}}{A}{
-      \piclass{\elof{\parens{\appobj{A}{\zerocon}}}}{b}{
-      \piclass{\piclass{\elof{\nattp}}{m}{\arrclass{\elof{\parens{\appobj{A}{m}}}}{\elof{\parens{\appobj{A}{\parens{\succof{m}}}}}}}}{s}{
+      \piclass{\elofp{\appobj{A}{\zerocon}}}{b}{
+      \piclass{\piclass{\elof{\nattp}}{m}{\arrclass{\elofp{\appobj{A}{m}}}{\elofp{\appobj{A}{\parens{\succof{m}}}}}}}{s}{
       % next line
       }}} \\
     & \qquad
       \piclass{\elof{\nattp}}{n}{
-      \eqclass{\elof{\parens{\appobj{A}{n}}}}
+      \eqclass{\elofp{\appobj{A}{n}}}
       {\recof{A}{b}{s}{\parens{\succof{n}}}}
       {\appobj{\appobj{s}{n}}{\parens{\recof{A}{b}{s}{n}}}}} \\[1ex]
 %
@@ -652,36 +655,36 @@ to eliminate into a $\nattp$-indexed family of result types.
     & :
       \piclass{\tpsort}{A_{1}}{
       \piclass{\arrclass{\elof{A_{1}}}{\tpsort}}{A_{2}}{
-      \arrclass{\parens{\piclass{\elof{A_{1}}}{x}{\elof{\parens{\appobj{A_{2}}{x}}}}}}{
+      \arrclass{\parens{\piclass{\elof{A_{1}}}{x}{\elofp{\appobj{A_{2}}{x}}}}}{
       \elfam{\parens{\piof{A_{1}}{A_{2}}}}}}} \\
     \appcon
     & :
       \piclass{\tpsort}{A_{1}}{
       \piclass{\arrclass{\elof{A_{1}}}{\tpsort}}{A_{2}}{
-      \arrclass{\elof{\parens{\piof{A_{1}}{A_{2}}}}}{
-      \piclass{\elof{A_{1}}}{x}{\elof{\parens{\appobj{A_{2}}{x}}}}}}} \\[1ex]
+      \arrclass{\elofp{\piof{A_{1}}{A_{2}}}}{
+      \piclass{\elof{A_{1}}}{x}{\elofp{\appobj{A_{2}}{x}}}}}} \\[1ex]
 %
     \betacon
     & :
       \piclass{\tpsort}{A_{1}}{
       \piclass{\arrclass{\elof{A_{1}}}{\tpsort}}{A_{2}}{
-      \piclass{\piclass{\elof{A_{1}}}{x}{\elof{\parens{\appobj{A_{2}}{x}}}}}{F}{
+      \piclass{\piclass{\elof{A_{1}}}{x}{\elofp{\appobj{A_{2}}{x}}}}{F}{
       \piclass{\elof{A_{1}}}{M_{1}}{
       % equation on next line
       }}}} \\
     & \qquad
-      \eqclass{\elof{\parens{\appobj{A_{2}}{M_{1}}}}}
+      \eqclass{\elofp{\appobj{A_{2}}{M_{1}}}}
       {\appof{A_{1}}{A_{2}}{\parens{\lamof{A_{1}}{A_{2}}{F}}}{M_{1}}}
       {\appobj{F}{M_{1}}} \\
     \etacon
     & :
       \piclass{\tpsort}{A_{1}}{
       \piclass{\arrclass{\elof{A_{1}}}{\tpsort}}{A_{2}}{
-      \piclass{\elof{\parens{\piof{A_{1}}{A_{2}}}}}{M}{
+      \piclass{\elofp{\piof{A_{1}}{A_{2}}}}{M}{
       % equation on next line
       }}} \\
     & \qquad
-      \eqclass{\elof{\parens{\piof{A_{1}}{A_{2}}}}}
+      \eqclass{\elofp{\piof{A_{1}}{A_{2}}}}
       {M}
       {\lamof{A_{1}}{A_{2}}{\parens{\lamobj{\elof{A_{1}}}{x}{\appof{A_{1}}{A_{2}}{M}{x}}}}}
   \end{align*}
