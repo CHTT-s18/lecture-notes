@@ -735,6 +735,7 @@ are given in Figures~\ref{fig:dep-eq} and~\ref{fig:dep-id}.
 \newcommand{\reflcon}{\const{refl}}
 \newcommand{\reflof}[2]{\appobj{\appobj{\reflcon}{#1}}{#2}}
 \newcommand{\jcon}{\const{j}}
+\newcommand{\jof}[6]{\appobj{\appobj{\appobj{\appobj{\appobj{\appobj{\jcon}{#1}}{#2}}{#3}}{#4}}{#5}}{#6}}
 \newcommand{\idbetacon}{\const{id-$\beta$}}
 
 \begin{figure}
@@ -754,7 +755,21 @@ are given in Figures~\ref{fig:dep-eq} and~\ref{fig:dep-id}.
              }}} \\
              & \qquad
                \piclass{\elofp{\idof{A}{m}{m'}}}{p}{\elofp{\appobj{\appobj{\appobj{B}{m}}{m'}}{p}}} \\
-    \idbetacon & : 
+    \idbetacon & :
+            \piclass{\tpsort}{A}{
+            \piclass{\piclass{\elof{A}}{x_{1}}{\piclass{\elof{A}}{x_{2}}{\arrclass{\idof{A}{x_{1}}{x_{2}}}{\tpsort}}}}{B}{
+            % next line
+            }} \\
+           & \qquad
+             \piclass{\piclass{\elof{A}}{x}{\elofp{\appobj{\appobj{\appobj{B}{x}}{x}}{\parens{\reflof{A}{x}}}}}}{r}{
+             \piclass{\elof{A}}{m}{
+             % next line
+             }} \\
+           & \qquad
+             \eqclass
+             {\elof{\appobj{\appobj{\appobj{B}{m}}{m}}{\parens{\reflof{A}{m}}}}}
+             {\jof{A}{B}{r}{m}{m}{\parens{\reflof{A}{m}}}}
+             {\appobj{r}{m}}
   \end{align*}
 
   \caption{Dependent Identity Type}
