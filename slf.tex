@@ -218,9 +218,9 @@ being no distinction between two objects witnessing its truth.
   \begin{enumerate}
 %  \item $\isctx{\extctx{\Gamma_1}{\subst{O_1}{X}{\Gamma_2}}}$.
   \item If\/ $\iscls{\Gamma}{K_{2}}$, then
-    $\iscls{\extctx{\Gamma_1}{\subst{O_1}{X}{\Gamma_2}}}{\subst{O_{1}}{X}{K_{2}}}$, and similarly for class equality.
+    $\iscls{\appctx{\Gamma_1}{\subst{O_1}{X}{\Gamma_2}}}{\subst{O_{1}}{X}{K_{2}}}$, and similarly for class equality.
   \item If\/ $\isobj{\Gamma}{O_{2}}{K_{2}}$, then
-    $\isobj{\extctx{\Gamma_1}{\subst{O_1}{X}{\Gamma_2}}}{\subst{O_{1}}{X}{O_{2}}}{\subst{O_{1}}{X}{K_{2}}}$,
+    $\isobj{\appctx{\Gamma_1}{\subst{O_1}{X}{\Gamma_2}}}{\subst{O_{1}}{X}{O_{2}}}{\subst{O_{1}}{X}{K_{2}}}$,
     and similarly for object equality.
   \end{enumerate}
 \end{lemma}
@@ -231,9 +231,9 @@ being no distinction between two objects witnessing its truth.
     $\isctx{\Gamma}$ and $\eqobj{\Gamma_{1}}{O_{1}}{O_{1}'}{K_{1}}$.
   \begin{enumerate}
   \item If\/ $\iscls{\Gamma}{K_{2}}$, then
-    $\eqcls{\extctx{\Gamma_1}{\subst{O_1}{X}{\Gamma_2}}}{\subst{O_{1}}{X}{K_{2}}}{\subst{O_{1}'}{X}{K_{2}}}$.
+    $\eqcls{\appctx{\Gamma_1}{\subst{O_1}{X}{\Gamma_2}}}{\subst{O_{1}}{X}{K_{2}}}{\subst{O_{1}'}{X}{K_{2}}}$.
   \item If\/ $\isobj{\Gamma}{O_{2}}{K_{2}}$, then
-    $\eqobj{\extctx{\Gamma_1}{\subst{O_1}{X}{\Gamma_2}}}{\subst{O_{1}}{X}{O_{2}}}{\subst{O_{1}'}{X}{O_{2}}}{\subst{O_{1}}{X}{K_{2}}}$,
+    $\eqobj{\appctx{\Gamma_1}{\subst{O_1}{X}{\Gamma_2}}}{\subst{O_{1}}{X}{O_{2}}}{\subst{O_{1}'}{X}{O_{2}}}{\subst{O_{1}}{X}{K_{2}}}$,
   \end{enumerate}
 \end{lemma}
 
@@ -292,8 +292,8 @@ being no distinction between two objects witnessing its truth.
     {\isctx{\snocctx{\Gamma}{X}{K}}}
 
     \inferrule[var]
-    {\isctx{\Gamma_{1}\,X{:}K\,\Gamma_{2}}}
-    {\isobj{\Gamma_{1}\,X{:}K\,\Gamma_{2}}{X}{K}}
+    {\isctx{\appctx{\appctx{\Gamma_{1}}{X{:}K_{1}}}{\Gamma_{2}}}}
+    {\isobj{\appctx{\appctx{\Gamma_{1}}{X{:}K_{1}}}{\Gamma_{2}}}{X}{K}}
 
   \end{mathpar}
 
