@@ -475,17 +475,22 @@ Figure~\ref{fig:t-sig-abbr} for comparison.
       \piclass{\tpsort}{A}{
       \piclass{\elof{A}}{b}{
       \piclass{\arrclass{\elof{\nattp}}{\arrclass{\elof{A}}{\elof{A}}}}{s}{
-      \eqclass{\elof{A}}{\recof{A}{b}{s}{\zerocon}}{b}}}} \\
+      % next line
+      }}} \\
+    & \qquad
+      \eqclass{\elof{A}}{\recof{A}{b}{s}{\zerocon}}{b} \\
     \recscon
     & :
       \piclass{\tpsort}{A}{
       \piclass{\elof{A}}{b}{
       \piclass{\arrclass{\elof{\nattp}}{\arrclass{\elof{A}}{\elof{A}}}}{s}{
+      % next line
+      }}} \\
+    & \qquad
       \piclass{\elof{\nattp}}{n}{
       \eqclass{\elof{A}}
       {\recof{A}{b}{s}{\parens{\succof{n}}}}
-      {\appobj{\appobj{s}{n}}{\parens{\recof{A}{b}{s}{n}}}}}
-      }}} \\[1ex]
+      {\appobj{\appobj{s}{n}}{\parens{\recof{A}{b}{s}{n}}}}} \\[1ex]
 %
     \lamcon
     & :
@@ -506,17 +511,23 @@ Figure~\ref{fig:t-sig-abbr} for comparison.
       \piclass{\tpsort}{A_{2}}{
       \piclass{\arrclass{\elof{A_{1}}}{\elof{A_{2}}}}{F}{
       \piclass{\elof{A_{1}}}{M_1}{
+      % next line
+      }}}} \\
+    & \qquad
       \eqclass{\elof{A_{2}}}
       {\appof{A_{1}}{A_{2}}{\parens{\lamof{A_{1}}{A_{2}}{F}}}{M_1}}
-      {\appobj{F}{M_1}}}}}} \\
+      {\appobj{F}{M_1}} \\
     \etacon
     & :
       \piclass{\tpsort}{A_{1}}{
       \piclass{\tpsort}{A_{2}}{
       \piclass{\elofp{\arrof{A_{1}}{A_{2}}}}{M}{
+      % next line
+      }}} \\
+    & \qquad
       \eqclass{\elofp{\arrof{A_{1}}{A_{2}}}}
       {M}
-      {\lamof{A_{1}}{A_{2}}{\parens{\lamobj{\elof{A_{1}}}{x}{\appof{A_{1}}{A_{2}}{M}{x}}}}}}}}
+      {\lamof{A_{1}}{A_{2}}{\parens{\lamobj{\elof{A_{1}}}{x}{\appof{A_{1}}{A_{2}}{M}{x}}}}}
   \end{align*}
 
   \caption{Signature of G\"odel's T}
