@@ -497,10 +497,10 @@ Figure~\ref{fig:t-sig-abbr} for comparison.
       \piclass{\tpsort}{A_{1}}{
       \piclass{\tpsort}{A_{2}}{
       \piclass{\arrclass{\elof{A_{1}}}{\elof{A_{2}}}}{F}{
-      \piclass{\elof{A_{1}}}{M}{
+      \piclass{\elof{A_{1}}}{M_1}{
       \eqclass{\elof{A_{2}}}
-      {\appof{A_{1}}{A_{2}}{\parens{\lamof{A_{1}}{A_{2}}{F}}}{M}}
-      {\appobj{F}{M}}}}}} \\
+      {\appof{A_{1}}{A_{2}}{\parens{\lamof{A_{1}}{A_{2}}{F}}}{M_1}}
+      {\appobj{F}{M_1}}}}}} \\
     \etacon
     & :
       \piclass{\tpsort}{A_{1}}{
@@ -562,10 +562,10 @@ Figure~\ref{fig:t-sig-abbr} for comparison.
     \betacon
     & :
       \piclass{\arrclass{\elof{A_{1}}}{\elof{A_{2}}}}{F}{
-      \piclass{\elof{A_{1}}}{M}{
+      \piclass{\elof{A_{1}}}{M_{1}}{
       \eqclass{\elof{A_{2}}}
-      {\appof{\_{}}{\_{}}{\parens{\lamof{\_{}}{\_{}}{F}}}{M}}
-      {\appobj{F}{M}}}} \\
+      {\appof{\_{}}{\_{}}{\parens{\lamof{\_{}}{\_{}}{F}}}{M_1}}
+      {\appobj{F}{M_1}}}} \\
     \etacon
     & :
       \piclass{\elof{\parens{\arrof{A_{1}}{A_{2}}}}}{M}{
@@ -644,17 +644,27 @@ to eliminate into a $\nattp$-indexed family of result types.
 %
     \betacon
     & :
-      \piclass{\arrclass{\elof{A_{1}}}{\elof{A_{2}}}}{F}{
-      \piclass{\elof{A_{1}}}{M}{
-      \eqclass{\elof{A_{2}}}
-      {\appof{\_{}}{\_{}}{\parens{\lamof{\_{}}{\_{}}{F}}}{M}}
-      {\appobj{F}{M}}}} \\
+      \piclass{\tpsort}{A_{1}}{
+      \piclass{\arrclass{\elof{A_{1}}}{\tpsort}}{A_{2}}{
+      \piclass{\piclass{\elof{A_{1}}}{x}{\elof{\parens{\appobj{A_{2}}{x}}}}}{F}{
+      \piclass{\elof{A_{1}}}{M_{1}}{
+      % equation on next line
+      }}}} \\
+    & \qquad
+      \eqclass{\elof{\parens{\appobj{A_{2}}{M_{1}}}}}
+      {\appof{\_{}}{\_{}}{\parens{\lamof{\_{}}{\_{}}{F}}}{M_{1}}}
+      {\appobj{F}{M_{1}}} \\
     \etacon
     & :
-      \piclass{\elof{\parens{\arrof{A_{1}}{A_{2}}}}}{M}{
-      \eqclass{\elof{\parens{\arrof{A_{1}}{A_{2}}}}}
+      \piclass{\tpsort}{A_{1}}{
+      \piclass{\arrclass{\elof{A_{1}}}{\tpsort}}{A_{2}}{
+      \piclass{\elof{\parens{\piof{A_{1}}{A_{2}}}}}{M}{
+      % equation on next line
+      }}} \\
+    & \qquad
+      \eqclass{\elof{\parens{\piof{A_{1}}{A_{2}}}}}
       {M}
-      {\lamof{\_{}}{\_{}}{\parens{\lamobj{\elof{A_{1}}}{x}{\appof{\_{}}{\_{}}{M}{x}}}}}}
+      {\lamof{\_{}}{\_{}}{\parens{\lamobj{\elof{A_{1}}}{x}{\appof{\_{}}{\_{}}{M}{x}}}}}
   \end{align*}
 
   \caption{Signature of Dependent G\"odel's T}
