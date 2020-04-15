@@ -711,7 +711,7 @@ are given in Figures~\ref{fig:dep-eq} and~\ref{fig:dep-id}.
 \newcommand{\eqcon}{\const{eq}}
 \newcommand{\eqof}[3]{\appobj{\appobj{\appobj{\eqcon}{#1}}{#2}}{#3}}
 \newcommand{\selfcon}{\const{star}}
-\newcommand{\selfof}{\selfcon}
+\newcommand{\selfof}[2]{\appobj{\appobj{\selfcon}{#1}}{#2}}
 \newcommand{\eqrefcon}{\const{eqref}}
 \newcommand{\equnicon}{\const{equni}}
 
@@ -733,11 +733,28 @@ are given in Figures~\ref{fig:dep-eq} and~\ref{fig:dep-id}.
 \newcommand{\idcon}{\const{id}}
 \newcommand{\idof}[3]{\appobj{\appobj{\appobj{\idcon}{#1}}{#2}}{#3}}
 \newcommand{\reflcon}{\const{refl}}
+\newcommand{\reflof}[2]{\appobj{\appobj{\reflcon}{#1}}{#2}}
+\newcommand{\jcon}{\const{j}}
+\newcommand{\idbetacon}{\const{id-$\beta$}}
 
 \begin{figure}
   
   \begin{align*}
-    x & : y
+    \idcon & : \piclass{\tpsort}{A}{\arrclass{\elof{A}}{\arrclass{\elof{A}}{\tpsort}}} \\
+    \reflcon & : \piclass{\tpsort}{A}{\piclass{\elof{A}}{M}{\idof{A}{M}{M}}} \\
+    \jcon & :
+            \piclass{\tpsort}{A}{
+            \piclass{\piclass{\elof{A}}{x_{1}}{\piclass{\elof{A}}{x_{2}}{\arrclass{\idof{A}{x_{1}}{x_{2}}}{\tpsort}}}}{B}{
+            % next line
+            }} \\
+           & \qquad
+             \piclass{\piclass{\elof{A}}{x}{\elofp{\appobj{\appobj{\appobj{B}{x}}{x}}{\parens{\reflof{A}{x}}}}}}{r}{
+             \piclass{\elof{A}}{m}{\piclass{\elof{A}}{m'}{
+             % next line
+             }}} \\
+             & \qquad
+               \piclass{\elofp{\idof{A}{m}{m'}}}{p}{\elofp{\appobj{\appobj{\appobj{B}{m}}{m'}}{p}}} \\
+    \idbetacon & : 
   \end{align*}
 
   \caption{Dependent Identity Type}
