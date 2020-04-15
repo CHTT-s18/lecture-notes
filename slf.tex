@@ -399,8 +399,6 @@ theories, or other logical systems, as a signature.
 
 \subsection{G\"odel's T}
 
-The signature $\Sigma_{T}$ defining G\"{o}del's System T is given in Figure~\ref{fig:t-sig}.
-
 \newcommand{\tpsort}{\const{tp}}
 \newcommand{\nattp}{\const{nat}}
 \newcommand{\arrtp}{\const{arr}}
@@ -425,51 +423,156 @@ The signature $\Sigma_{T}$ defining G\"{o}del's System T is given in Figure~\ref
 \newcommand{\betacon}{\const{arr-$\beta$}}
 \newcommand{\etacon}{\const{arr-$\eta$}}
 
+The signature $\Sigma_{T}$ defining G\"{o}del's System T is given in Figure~\ref{fig:t-sig}.
+The specifications are verbose, but an implementation would eliminate much of the
+redundancy.  In particular the outermost quantifiers on the classes of constants can be
+safely omitted when their class is evident.  For example, it would be sensible to drop the
+quantification over objects of sort $\tpsort$ in Figure~\ref{fig:t-sig}.  For example, the
+declaration of $\lamcon$ could be abbreviated to
+\begin{align*}
+  \lamcon & : \arrclass{\parens{\arrclass{\elof{A_{1}}}{\elof{A_{2}}}}}{\elof{\parens{\arrof{A_{1}}{A_{2}}}}},
+\end{align*}
+with the outermost quantification over $A_{1}$ and $A_{2}$ of sort $\tpsort$ being
+understood.  Correspondinly, it would be sensible to write $\lamof{\_{}}{\_{}}{F}$ when
+the class of $F$ is given as $\arrclass{\elof{A_{1}}}{\elof{A_{2}}}$, the omitted
+arguments being inferrable from context.  An abbreviated form of $\Sigma_{T}$ is given in
+Figure~\ref{fig:t-sig-abbr} for comparison.
+
 \begin{figure}
   
   \begin{align*}
-    \tpsort                    & : \sortclass \\
-    \nattp               & : \tpsort \\
-    \arrtp                & : \arrclass{\tpsort}{\arrclass{\tpsort}{\tpsort}} \\[1ex]
-    \elfam               & : \arrclass{\tpsort}{\sortclass} \\
-    \zerocon            & : \elof{\nattp} \\
-    \succcon           & : \arrclass {\elof{\nattp}}{\elof{\nattp}} \\
-    \reccon             &  :
-     \piclass{\tpsort}{A}{\arrclass{\elof{A}}{\arrclass{\parens{\arrclass{\elof{\nattp}}{\arrclass{\elof{A}}{\elof{A}}}}}{\elof{A}}}} \\[1ex] 
-    \lamcon            & : \piclass{\tpsort}{A_{1}}{\piclass{\tpsort}{A_{2}}{\arrclass{\parens{\arrclass{\elof{A_{1}}}{\elof{A_{2}}}}}{\elfam{\parens{\arrof{A_{1}}{A_{2}}}}}}} \\
-    \appcon            & :
-                         \piclass{\tpsort}{A_{1}}{\piclass{\tpsort}{A_{2}}{\arrclass{\elof{\parens{\arrof{A_{1}}{A_{2}}}}}{\arrclass{\elof{A_{1}}}{\elof{A_{2}}}}}} \\[1ex]
-    \reczcon     & :
-                   \piclass{\tpsort}{A}{
-                   \piclass{\elof{A}}{b}{
-                   \piclass{\arrclass{\elof{\nattp}}{\arrclass{\elof{A}}{\elof{A}}}}{s}{
-                   \eqclass{\elof{A}}{\recof{A}{b}{s}{\zerocon}}{b}}}} \\
-    \recscon  & :
-                \piclass{\tpsort}{A}{
-                \piclass{\elof{A}}{b}{
-                \piclass{\arrclass{\elof{\nattp}}{\arrclass{\elof{A}}{\elof{A}}}}{s}{
-                \piclass{\elof{\nattp}}{n}{
-                \eqclass{\elof{A}}
-                {\recof{A}{b}{s}{\parens{\succof{n}}}}{\appobj{\appobj{s}{n}}{\parens{\recof{A}{b}{s}{n}}}}}}}} \\[1ex]
-    \betacon & :
-               \piclass{\tpsort}{A_{1}}{
-               \piclass{\tpsort}{A_{2}}{
-               \piclass{\arrclass{\elof{A_{1}}}{\elof{A_{2}}}}{F}{
-               \piclass{\elof{A_{1}}}{M}{
-               \eqclass{\elof{A_{2}}}
-               {\appof{A_{1}}{A_{2}}{\parens{\lamof{A_{1}}{A_{2}}{F}}}{M}}
-               {\appobj{F}{M}}}}}} \\
-    \etacon & :
-              \piclass{\tpsort}{A_{1}}{
-              \piclass{\tpsort}{A_{2}}{
-              \piclass{\elof{\parens{\arrof{A_{1}}{A_{2}}}}}{M}{
-              \eqclass{\elof{\parens{\arrof{A_{1}}{A_{2}}}}}
-              {M}
-              {\lamof{A_{1}}{A_{2}}{\parens{\lamobj{\elof{A_{1}}}{x}{\appof{A_{1}}{A_{2}}{M}{x}}}}}}}}
+    \tpsort
+    & : \sortclass \\
+    \nattp
+    & : \tpsort \\
+    \arrtp
+    & : \arrclass{\tpsort}{\arrclass{\tpsort}{\tpsort}} \\[1ex]
+    \elfam
+%
+    & : \arrclass{\tpsort}{\sortclass} \\
+    \zerocon
+    & : \elof{\nattp} \\
+    \succcon
+    & : \arrclass {\elof{\nattp}}{\elof{\nattp}} \\
+    \reccon
+    &  :
+      \piclass{\tpsort}{A}{
+      \arrclass{\elof{A}}{
+      \arrclass{\parens{\arrclass{\elof{\nattp}}{\arrclass{\elof{A}}{\elof{A}}}}}{
+      \elof{A}}}} \\[1ex] 
+%
+    \lamcon
+    & :
+      \piclass{\tpsort}{A_{1}}{
+      \piclass{\tpsort}{A_{2}}{
+      \arrclass{\parens{\arrclass{\elof{A_{1}}}{\elof{A_{2}}}}}{
+      \elfam{\parens{\arrof{A_{1}}{A_{2}}}}}}} \\
+    \appcon
+    & :
+      \piclass{\tpsort}{A_{1}}{
+      \piclass{\tpsort}{A_{2}}{
+      \arrclass{\elof{\parens{\arrof{A_{1}}{A_{2}}}}}{
+      \arrclass{\elof{A_{1}}}{\elof{A_{2}}}}}} \\[1ex]
+%
+    \reczcon
+    & :
+      \piclass{\tpsort}{A}{
+      \piclass{\elof{A}}{b}{
+      \piclass{\arrclass{\elof{\nattp}}{\arrclass{\elof{A}}{\elof{A}}}}{s}{
+      \eqclass{\elof{A}}{\recof{A}{b}{s}{\zerocon}}{b}}}} \\
+    \recscon
+    & :
+      \piclass{\tpsort}{A}{
+      \piclass{\elof{A}}{b}{
+      \piclass{\arrclass{\elof{\nattp}}{\arrclass{\elof{A}}{\elof{A}}}}{s}{
+      \piclass{\elof{\nattp}}{n}{
+      \eqclass{\elof{A}}
+      {\recof{A}{b}{s}{\parens{\succof{n}}}}{\appobj{\appobj{s}{n}}{\parens{\recof{A}{b}{s}{n}}}}}}}} \\[1ex]
+%
+    \betacon
+    & :
+      \piclass{\tpsort}{A_{1}}{
+      \piclass{\tpsort}{A_{2}}{
+      \piclass{\arrclass{\elof{A_{1}}}{\elof{A_{2}}}}{F}{
+      \piclass{\elof{A_{1}}}{M}{
+      \eqclass{\elof{A_{2}}}
+      {\appof{A_{1}}{A_{2}}{\parens{\lamof{A_{1}}{A_{2}}{F}}}{M}}
+      {\appobj{F}{M}}}}}} \\
+    \etacon
+    & :
+      \piclass{\tpsort}{A_{1}}{
+      \piclass{\tpsort}{A_{2}}{
+      \piclass{\elof{\parens{\arrof{A_{1}}{A_{2}}}}}{M}{
+      \eqclass{\elof{\parens{\arrof{A_{1}}{A_{2}}}}}
+      {M}
+      {\lamof{A_{1}}{A_{2}}{\parens{\lamobj{\elof{A_{1}}}{x}{\appof{A_{1}}{A_{2}}{M}{x}}}}}}}}
   \end{align*}
 
   \caption{Signature of G\"odel's T}
   \label{fig:t-sig}
+\end{figure}
+
+\begin{figure}
+  
+  \begin{align*}
+    \tpsort
+    & : \sortclass \\
+    \nattp
+    & : \tpsort \\
+    \arrtp
+    & : \arrclass{\tpsort}{\arrclass{\tpsort}{\tpsort}} \\[1ex]
+    \elfam
+%
+    & : \arrclass{\tpsort}{\sortclass} \\
+    \zerocon
+    & : \elof{\nattp} \\
+    \succcon
+    & : \arrclass {\elof{\nattp}}{\elof{\nattp}} \\
+    \reccon
+    &  :
+      \arrclass{\elof{A}}{
+      \arrclass{\parens{\arrclass{\elof{\nattp}}{\arrclass{\elof{A}}{\elof{A}}}}}{
+      \elof{A}}} \\[1ex] 
+%
+    \lamcon
+    & :
+      \arrclass{\parens{\arrclass{\elof{A_{1}}}{\elof{A_{2}}}}}{
+      \elfam{\parens{\arrof{A_{1}}{A_{2}}}}} \\
+    \appcon
+    & :
+      \arrclass{\elof{\parens{\arrof{A_{1}}{A_{2}}}}}{
+      \arrclass{\elof{A_{1}}}{\elof{A_{2}}}} \\[1ex]
+%
+    \reczcon
+    & :
+      \piclass{\elof{A}}{b}{
+      \piclass{\arrclass{\elof{\nattp}}{\arrclass{\elof{A}}{\elof{A}}}}{s}{
+      \eqclass{\elof{A}}{\recof{\_{}}{b}{s}{\zerocon}}{b}}} \\
+    \recscon
+    & :
+      \piclass{\elof{A}}{b}{
+      \piclass{\arrclass{\elof{\nattp}}{\arrclass{\elof{A}}{\elof{A}}}}{s}{
+      \piclass{\elof{\nattp}}{n}{
+      \eqclass{\elof{A}}
+      {\recof{\_{}}{b}{s}{\parens{\succof{n}}}}{\appobj{\appobj{s}{n}}{\parens{\recof{\_{}}{b}{s}{n}}}}}}} \\[1ex]
+%
+    \betacon
+    & :
+      \piclass{\arrclass{\elof{A_{1}}}{\elof{A_{2}}}}{F}{
+      \piclass{\elof{A_{1}}}{M}{
+      \eqclass{\elof{A_{2}}}
+      {\appof{\_{}}{\_{}}{\parens{\lamof{\_{}}{\_{}}{F}}}{M}}
+      {\appobj{F}{M}}}} \\
+    \etacon
+    & :
+      \piclass{\elof{\parens{\arrof{A_{1}}{A_{2}}}}}{M}{
+      \eqclass{\elof{\parens{\arrof{A_{1}}{A_{2}}}}}
+      {M}
+      {\lamof{\_{}}{\_{}}{\parens{\lamobj{\elof{A_{1}}}{x}{\appof{\_{}}{\_{}}{M}{x}}}}}}
+  \end{align*}
+
+  \caption{Signature of G\"odel's T, Abbreviated}
+  \label{fig:t-sig-abbr}
 \end{figure}
 
 \subsection{Dependent Types}
