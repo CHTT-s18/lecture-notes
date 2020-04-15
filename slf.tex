@@ -29,18 +29,24 @@
 \newcommand{\eqdef}{\mathrel{\triangleq}}
 \newcommand{\isdef}{\eqdef}
 
+\newcommand{\parens}[1]{(#1)}
+
+\newcommand{\const}[1]{\text{#1}}
+
 \newcommand{\LF}[1][]{\ensuremath{\mathsf{LF}_{#1}}}
 \newcommand{\bnfdef}{\mathrel{{:}{:}{=}}}
 \newcommand{\bnfalt}{\mathrel{\mid}}
 
 \newcommand{\sortclass}{\ensuremath{\textbf{sort}}}
 \newcommand{\eqclass}[3]{{#2}=_{#1}{#3}}
-\newcommand{\piclass}[3]{({#2}\mathord{:}{#1}){#3}}
-\newcommand{\lamobj}[3]{[{#2}\mathord{:}{#1}]{#3}}
+\newcommand{\piclass}[3]{({#2}\mathbin{:}{#1})\,{#3}}
+\newcommand{\arrclass}[2]{{#1}\to{#2}}
+\newcommand{\lamobj}[3]{[{#2}\mathbin{:}{#1}]\,{#3}}
 \newcommand{\appobj}[2]{{#1}\,{#2}}
 \newcommand{\reflobj}{\star}
 \newcommand{\empctx}{\varepsilon}
-\newcommand{\snocctx}[3]{{#1},{#2}{:}{#3}}
+\newcommand{\snocctx}[3]{{#1}\mathbin{,}{#2}{:}{#3}}
+\newcommand{\appctx}[2]{{#1}\,{#2}}
 
 \newcommand{\issig}[1]{{#1}\;\mathsf{sig}}
 \newcommand{\isctx}[2][]{{#2}\;\mathsf{ctx}_{#1}}
@@ -392,6 +398,79 @@ The benefit of a logical framework is that it permits the concise specification 
 theories, or other logical systems, as a signature.
 
 \subsection{G\"odel's T}
+
+The signature $\Sigma_{T}$ defining G\"{o}del's System T is given in Figure~\ref{fig:t-sig}.
+
+\newcommand{\tpsort}{\const{tp}}
+\newcommand{\nattp}{\const{nat}}
+\newcommand{\arrtp}{\const{arr}}
+\newcommand{\arrof}[2]{\appobj{\appobj{\arrtp}{#1}}{#2}}
+
+\newcommand{\elfam}{\const{el}}
+\newcommand{\elof}[1]{\appobj{\elfam}{#1}}
+
+\newcommand{\zerocon}{\const{zero}}
+\newcommand{\succcon}{\const{succ}}
+\newcommand{\succof}[1]{\appobj{\succcon}{#1}}
+\newcommand{\reccon}{\const{rec}}
+\newcommand{\recof}[4]{\appobj{\appobj{\appobj{\appobj{\reccon}{#1}}{#2}}{#3}}{#4}}
+
+\newcommand{\lamcon}{\const{lam}}
+\newcommand{\lamof}[3]{\appobj{\appobj{\appobj{\lamcon}{#1}}{#2}}{#3}}
+\newcommand{\appcon}{\const{app}}
+\newcommand{\appof}[4]{\appobj{\appobj{\appobj{\appobj{\appcon}{#1}}{#2}}{#3}}{#4}}
+
+\newcommand{\reczcon}{\const{rec-z}}
+\newcommand{\recscon}{\const{rec-s}}
+\newcommand{\betacon}{\beta}
+\newcommand{\etacon}{\eta}
+
+\begin{figure}
+  
+  \begin{align*}
+    \tpsort                    & : \sortclass \\
+    \nattp               & : \tpsort \\
+    \arrtp                & : \arrclass{\tpsort}{\arrclass{\tpsort}{\tpsort}} \\[1ex]
+    \elfam               & : \arrclass{\tpsort}{\sortclass} \\
+    \zerocon            & : \elof{\nattp} \\
+    \succcon           & : \arrclass {\elof{\nattp}}{\elof{\nattp}} \\
+    \reccon             &  :
+     \piclass{\tpsort}{A}{\arrclass{\elof{A}}{\arrclass{\parens{\arrclass{\elof{\nattp}}{\arrclass{\elof{A}}{\elof{A}}}}}{\elof{A}}}} \\[1ex] 
+    \lamcon            & : \piclass{\tpsort}{A_{1}}{\piclass{\tpsort}{A_{2}}{\arrclass{\parens{\arrclass{\elof{A_{1}}}{\elof{A_{2}}}}}{\elfam{\parens{\arrof{A_{1}}{A_{2}}}}}}} \\
+    \appcon            & :
+                         \piclass{\tpsort}{A_{1}}{\piclass{\tpsort}{A_{2}}{\arrclass{\elof{\parens{\arrof{A_{1}}{A_{2}}}}}{\arrclass{\elof{A_{1}}}{\elof{A_{2}}}}}} \\[1ex]
+    \reczcon     & :
+                   \piclass{\tpsort}{A}{
+                   \piclass{\elof{A}}{b}{
+                   \piclass{\arrclass{\elof{\nattp}}{\arrclass{\elof{A}}{\elof{A}}}}{s}{
+                   \eqclass{\elof{A}}{\recof{A}{b}{s}{\zerocon}}{b}}}} \\
+    \recscon  & :
+                \piclass{\tpsort}{A}{
+                \piclass{\elof{A}}{b}{
+                \piclass{\arrclass{\elof{\nattp}}{\arrclass{\elof{A}}{\elof{A}}}}{s}{
+                \piclass{\elof{\nattp}}{n}{
+                \eqclass{\elof{A}}
+                {\recof{A}{b}{s}{\parens{\succof{n}}}}{\appobj{\appobj{s}{n}}{\parens{\recof{A}{b}{s}{n}}}}}}}} \\[1ex]
+    \betacon & :
+               \piclass{\tpsort}{A_{1}}{
+               \piclass{\tpsort}{A_{2}}{
+               \piclass{\arrclass{\elof{A_{1}}}{\elof{A_{2}}}}{F}{
+               \piclass{\elof{A_{1}}}{M}{
+               \eqclass{\elof{A_{2}}}
+               {\appof{A_{1}}{A_{2}}{\parens{\lamof{A_{1}}{A_{2}}{F}}}{M}}
+               {\appobj{F}{M}}}}}} \\
+    \etacon & :
+              \piclass{\tpsort}{A_{1}}{
+              \piclass{\tpsort}{A_{2}}{
+              \piclass{\elof{\parens{\arrof{A_{1}}{A_{2}}}}}{M}{
+              \eqclass{\elof{\parens{\arrof{A_{1}}{A_{2}}}}}
+              {M}
+              {\lamof{A_{1}}{A_{2}}{\parens{\lamobj{\elof{A_{1}}}{x}{\appof{A_{1}}{A_{2}}{M}{x}}}}}}}}
+  \end{align*}
+
+  \caption{Signature of G\"odel's T}
+  \label{fig:t-sig}
+\end{figure}
 
 \subsection{Dependent Types}
 
