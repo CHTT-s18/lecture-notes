@@ -164,13 +164,13 @@ manner.
   \begin{tabular}{l@{\qquad\qquad}l}
     $\issig{\Sigma}$             & $\isctx{\Sigma}$ \\[1ex]
 
-    $\isctx[\Sigma]{\Gamma}$           & $\isctx{\Sigma\,\Gamma}$  \\[1ex]
+    $\isctx[\Sigma]{\Gamma}$           & $\isctx{\appctx{\Sigma}{\Gamma}}$  \\[1ex]
     
-    $\iscls[\Sigma]{\Gamma}{K}$           & $\iscls{\Sigma\,\Gamma}{K}$ \\
-    $\isobj[\Sigma]{\Gamma}{O}{K}$     & $\isobj{\Sigma\,\Gamma}{O}{K}$ \\[1ex]
+    $\iscls[\Sigma]{\Gamma}{K}$           & $\iscls{\appctx{\Sigma}{\Gamma}}{K}$ \\
+    $\isobj[\Sigma]{\Gamma}{O}{K}$     & $\isobj{\appctx{\Sigma}{\Gamma}}{O}{K}$ \\[1ex]
 
-    $\eqcls[\Sigma]{\Gamma}{K}{K'}$   & $\eqcls{\Sigma\,\Gamma}{K}{K'}$ \\
-    $\eqobj[\Sigma]{\Gamma}{O}{O'}{K}$ & $\eqobj{\Sigma\,\Gamma}{O}{O'}{K}$
+    $\eqcls[\Sigma]{\Gamma}{K}{K'}$   & $\eqcls{\appctx{\Sigma}{\Gamma}}{K}{K'}$ \\
+    $\eqobj[\Sigma]{\Gamma}{O}{O'}{K}$ & $\eqobj{\appctx{\Sigma}{\Gamma}}{O}{O'}{K}$
   \end{tabular}
   \caption{Specialized Judgment Forms of \LF{}}
   \label{fig:lf-specialized}
@@ -202,35 +202,38 @@ being no distinction between two objects witnessing its truth.
 
 \begin{lemma}[Weakening]
   \label{lemma:weak}
-  Suppose that $\isctx[\Gamma]{\Gamma'}$.
+  Suppose that $\isctx[\Gamma_1]{\Gamma_2}$.
   \begin{enumerate}
-  \item If\/ $\iscls{\Gamma}{K}$, then $\iscls{\Gamma\,\Gamma'}{K}$, and if\/ $\eqcls{\Gamma}{K}{K'}$, then $\eqcls{\Gamma\,\Gamma'}{K}{K'}$.
-  \item If\/ $\isobj{\Gamma}{O}{K}$, then $\isobj{\Gamma\,\Gamma'}{O}{K}$, and if\/
-    $\eqobj{\Gamma}{O}{O'}{K}$, then $\eqobj{\Gamma\,\Gamma'}{O}{O'}{K}$.
+  \item If\/ $\iscls{\Gamma_1}{K}$, then $\iscls{\appctx{\Gamma_{1}}{\Gamma_2}}{K}$, and if\/
+    $\eqcls{\Gamma_1}{K}{K'}$, then $\eqcls{\appctx{\Gamma_1}{\Gamma_2}}{K}{K'}$.
+  \item If\/ $\isobj{\Gamma_1}{O}{K}$, then $\isobj{\appctx{\Gamma_1}{\Gamma_2}}{O}{K}$, and if\/
+    $\eqobj{\Gamma_1}{O}{O'}{K}$, then $\eqobj{\appctx{\Gamma_1}{\Gamma_2}}{O}{O'}{K}$.
   \end{enumerate}
 \end{lemma}
 
 \begin{lemma}[Substitution]
   \label{lemma:subst}
-  Suppose that $\isctx{\Gamma_{1}\,X{:}K_{1}\,\Gamma_{2}}$ and $\isobj{\Gamma}{O_{1}}{K_{1}}$.
+  Let $\Gamma\isdef{}\appctx{\appctx{\Gamma_{1}}{X{:}K_{1}}}{\Gamma_{2}}$, and suppose that
+  $\isctx{\Gamma}$ and $\isobj{\Gamma_{1}}{O_{1}}{K_{1}}$.
   \begin{enumerate}
-%  \item $\isctx{\Gamma_{1}\,\subst{O_{1}}{X}{\Gamma_{2}}}$.
-  \item If\/ $\iscls{\Gamma_{1}\,X{:}K_{1}\,\Gamma_{2}}{K_{2}}$, then
-    $\iscls{\Gamma_{1}\,\subst{O_{1}}{X}{\Gamma_{2}}}{\subst{O_{1}}{X}{K_{2}}}$, and similarly for class equality.
-  \item If\/ $\isobj{\Gamma_{1}\,X{:}K_{1}\,\Gamma_{2}}{O_{2}}{K_{2}}$, then
-    $\isobj{\Gamma_{1}\,\subst{O_{1}}{X}{\Gamma_{2}}}{\subst{O_{1}}{X}{O_{2}}}{\subst{O_{1}}{X}{K_{2}}}$,
+%  \item $\isctx{\extctx{\Gamma_1}{\subst{O_1}{X}{\Gamma_2}}}$.
+  \item If\/ $\iscls{\Gamma}{K_{2}}$, then
+    $\iscls{\extctx{\Gamma_1}{\subst{O_1}{X}{\Gamma_2}}}{\subst{O_{1}}{X}{K_{2}}}$, and similarly for class equality.
+  \item If\/ $\isobj{\Gamma}{O_{2}}{K_{2}}$, then
+    $\isobj{\extctx{\Gamma_1}{\subst{O_1}{X}{\Gamma_2}}}{\subst{O_{1}}{X}{O_{2}}}{\subst{O_{1}}{X}{K_{2}}}$,
     and similarly for object equality.
   \end{enumerate}
 \end{lemma}
 
 \begin{lemma}[Functionality]
   \label{lemma:func}
-  Suppose that $\isctx{\Gamma_{1}\,X{:}K_{1}\,\Gamma_{2}}$ and $\eqobj{\Gamma}{O_{1}}{O_{1}'}{K_{1}}$.
+    Let $\Gamma\isdef{}\appctx{\appctx{\Gamma_{1}}{X{:}K_{1}}}{\Gamma_{2}}$, and suppose that
+    $\isctx{\Gamma}$ and $\eqobj{\Gamma_{1}}{O_{1}}{O_{1}'}{K_{1}}$.
   \begin{enumerate}
-  \item If\/ $\iscls{\Gamma_{1}\,X{:}K_{1}\,\Gamma_{2}}{K_{2}}$, then
-    $\eqcls{\Gamma_{1}\,\subst{O_{1}}{X}{\Gamma_{2}}}{\subst{O_{1}}{X}{K_{2}}}{\subst{O_{1}'}{X}{K_{2}}}$.
-  \item If\/ $\isobj{\Gamma_{1}\,X{:}K_{1}\,\Gamma_{2}}{O_{2}}{K_{2}}$, then
-    $\eqobj{\Gamma_{1}\,\subst{O_{1}}{X}{\Gamma_{2}}}{\subst{O_{1}}{X}{O_{2}}}{\subst{O_{1}'}{X}{O_{2}}}{\subst{O_{1}}{X}{K_{2}}}$,
+  \item If\/ $\iscls{\Gamma}{K_{2}}$, then
+    $\eqcls{\extctx{\Gamma_1}{\subst{O_1}{X}{\Gamma_2}}}{\subst{O_{1}}{X}{K_{2}}}{\subst{O_{1}'}{X}{K_{2}}}$.
+  \item If\/ $\isobj{\Gamma}{O_{2}}{K_{2}}$, then
+    $\eqobj{\extctx{\Gamma_1}{\subst{O_1}{X}{\Gamma_2}}}{\subst{O_{1}}{X}{O_{2}}}{\subst{O_{1}'}{X}{O_{2}}}{\subst{O_{1}}{X}{K_{2}}}$,
   \end{enumerate}
 \end{lemma}
 
@@ -586,6 +589,7 @@ extend simple function types to dependent function types, and to generalize the 
 to eliminate into a $\nattp$-indexed family of result types.
 
 \newcommand{\pitp}{\const{pi}}
+\newcommand{\piof}[2]{\appobj{\appobj{\pitp}{#1}}{#2}}
 
 \begin{figure}
   
@@ -614,12 +618,16 @@ to eliminate into a $\nattp$-indexed family of result types.
 %
     \lamcon
     & :
-      \arrclass{\parens{\arrclass{\elof{A_{1}}}{\elof{A_{2}}}}}{
-      \elfam{\parens{\arrof{A_{1}}{A_{2}}}}} \\
+      \piclass{\tpsort}{A_{1}}{
+      \piclass{\arrclass{\elof{A_{1}}}{\tpsort}}{A_{2}}{
+      \arrclass{\parens{\piclass{\elof{A_{1}}}{x}{\elof{\parens{\appobj{A_{2}}{x}}}}}}{
+      \elfam{\parens{\piof{A_{1}}{A_{2}}}}}}} \\
     \appcon
     & :
-      \arrclass{\elof{\parens{\arrof{A_{1}}{A_{2}}}}}{
-      \arrclass{\elof{A_{1}}}{\elof{A_{2}}}} \\[1ex]
+      \piclass{\tpsort}{A_{1}}{
+      \piclass{\arrclass{\elof{A_{1}}}{\tpsort}}{A_{2}}{
+      \arrclass{\elof{\parens{\piof{A_{1}}{A_{2}}}}}{
+      \piclass{\elof{A_{1}}}{x}{\elof{\parens{\appobj{A_{2}}{x}}}}}}} \\[1ex]
 %
     \reczcon
     & :
