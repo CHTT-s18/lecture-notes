@@ -428,7 +428,10 @@ theories, or other logical systems, as a signature.
 
 The signature $\Sigma_{T}$ defining G\"{o}del's System T is given in Figure~\ref{fig:t-sig}.
 The specifications are verbose, but an implementation would eliminate much of the
-redundancy.  In particular the outermost quantifiers on the classes of constants can be
+redundancy.
+
+\begin{comment}
+In particular the outermost quantifiers on the classes of constants can be
 safely omitted when their class is evident.  For example, it would be sensible to drop the
 quantification over objects of sort $\tpsort$ in Figure~\ref{fig:t-sig}.  For example, the
 declaration of $\lamcon$ could be abbreviated to
@@ -440,6 +443,7 @@ understood.  Correspondinly, it would be sensible to write $\lamof{\_{}}{\_{}}{F
 the class of $F$ is given as $\arrclass{\elof{A_{1}}}{\elof{A_{2}}}$, the omitted
 arguments being inferrable from context.  An abbreviated form of $\Sigma_{T}$ is given in
 Figure~\ref{fig:t-sig-abbr} for comparison.
+\end{comment}
 
 \begin{figure}
   
@@ -464,19 +468,6 @@ Figure~\ref{fig:t-sig-abbr} for comparison.
       \arrclass{\parens{\arrclass{\elof{\nattp}}{\arrclass{\elof{A}}{\elof{A}}}}}{
       \elof{A}}}} \\[1ex] 
 %
-    \lamcon
-    & :
-      \piclass{\tpsort}{A_{1}}{
-      \piclass{\tpsort}{A_{2}}{
-      \arrclass{\parens{\arrclass{\elof{A_{1}}}{\elof{A_{2}}}}}{
-      \elfam{\parens{\arrof{A_{1}}{A_{2}}}}}}} \\
-    \appcon
-    & :
-      \piclass{\tpsort}{A_{1}}{
-      \piclass{\tpsort}{A_{2}}{
-      \arrclass{\elof{\parens{\arrof{A_{1}}{A_{2}}}}}{
-      \arrclass{\elof{A_{1}}}{\elof{A_{2}}}}}} \\[1ex]
-%
     \reczcon
     & :
       \piclass{\tpsort}{A}{
@@ -491,6 +482,19 @@ Figure~\ref{fig:t-sig-abbr} for comparison.
       \piclass{\elof{\nattp}}{n}{
       \eqclass{\elof{A}}
       {\recof{A}{b}{s}{\parens{\succof{n}}}}{\appobj{\appobj{s}{n}}{\parens{\recof{A}{b}{s}{n}}}}}}}} \\[1ex]
+%
+    \lamcon
+    & :
+      \piclass{\tpsort}{A_{1}}{
+      \piclass{\tpsort}{A_{2}}{
+      \arrclass{\parens{\arrclass{\elof{A_{1}}}{\elof{A_{2}}}}}{
+      \elfam{\parens{\arrof{A_{1}}{A_{2}}}}}}} \\
+    \appcon
+    & :
+      \piclass{\tpsort}{A_{1}}{
+      \piclass{\tpsort}{A_{2}}{
+      \arrclass{\elof{\parens{\arrof{A_{1}}{A_{2}}}}}{
+      \arrclass{\elof{A_{1}}}{\elof{A_{2}}}}}} \\[1ex]
 %
     \betacon
     & :
@@ -515,6 +519,8 @@ Figure~\ref{fig:t-sig-abbr} for comparison.
   \label{fig:t-sig}
 \end{figure}
 
+\begin{comment}
+
 \begin{figure}
   
   \begin{align*}
@@ -537,15 +543,6 @@ Figure~\ref{fig:t-sig-abbr} for comparison.
       \arrclass{\parens{\arrclass{\elof{\nattp}}{\arrclass{\elof{A}}{\elof{A}}}}}{
       \elof{A}}} \\[1ex] 
 %
-    \lamcon
-    & :
-      \arrclass{\parens{\arrclass{\elof{A_{1}}}{\elof{A_{2}}}}}{
-      \elfam{\parens{\arrof{A_{1}}{A_{2}}}}} \\
-    \appcon
-    & :
-      \arrclass{\elof{\parens{\arrof{A_{1}}{A_{2}}}}}{
-      \arrclass{\elof{A_{1}}}{\elof{A_{2}}}} \\[1ex]
-%
     \reczcon
     & :
       \piclass{\elof{A}}{b}{
@@ -558,6 +555,15 @@ Figure~\ref{fig:t-sig-abbr} for comparison.
       \piclass{\elof{\nattp}}{n}{
       \eqclass{\elof{A}}
       {\recof{\_{}}{b}{s}{\parens{\succof{n}}}}{\appobj{\appobj{s}{n}}{\parens{\recof{\_{}}{b}{s}{n}}}}}}} \\[1ex]
+%
+    \lamcon
+    & :
+      \arrclass{\parens{\arrclass{\elof{A_{1}}}{\elof{A_{2}}}}}{
+      \elfam{\parens{\arrof{A_{1}}{A_{2}}}}} \\
+    \appcon
+    & :
+      \arrclass{\elof{\parens{\arrof{A_{1}}{A_{2}}}}}{
+      \arrclass{\elof{A_{1}}}{\elof{A_{2}}}} \\[1ex]
 %
     \betacon
     & :
@@ -577,6 +583,8 @@ Figure~\ref{fig:t-sig-abbr} for comparison.
   \caption{Signature of G\"odel's T, Abbreviated}
   \label{fig:t-sig-abbr}
 \end{figure}
+
+\end{comment}
 
 \subsection{Dependent Types}
 
@@ -616,6 +624,29 @@ to eliminate into a $\nattp$-indexed family of result types.
         \arrclass{\elof{\parens{\appobj{A}{m}}}}{\elof{\parens{\appobj{A}{\parens{\succof{m}}}}}}}}}
       {\piclass{\elof{\nattp}}{n}{\elof{\parens{\appobj{A}{n}}}}}}} \\[1ex] 
 %
+    \reczcon
+    & :
+      \piclass{\arrclass{\elof{\nattp}}{\tpsort}}{A}{
+      \piclass{\elof{\parens{\appobj{A}{\zerocon}}}}{b}{
+      \piclass{\piclass{\elof{\nattp}}{m}{\arrclass{\elof{\parens{\appobj{A}{m}}}}{\elof{\parens{\appobj{A}{\parens{\succof{m}}}}}}}}{s}{
+      % next line
+      }}} \\
+    & \qquad
+      \eqclass{\elof{\parens{\appobj{A}{\zerocon}}}}{\recof{A}{b}{s}{\zerocon}}{b} \\
+%
+    \recscon
+    & :
+      \piclass{\arrclass{\elof{\nattp}}{\tpsort}}{A}{
+      \piclass{\elof{\parens{\appobj{A}{\zerocon}}}}{b}{
+      \piclass{\piclass{\elof{\nattp}}{m}{\arrclass{\elof{\parens{\appobj{A}{m}}}}{\elof{\parens{\appobj{A}{\parens{\succof{m}}}}}}}}{s}{
+      % next line
+      }}} \\
+    & \qquad
+      \piclass{\elof{\nattp}}{n}{
+      \eqclass{\elof{\parens{\appobj{A}{n}}}}
+      {\recof{A}{b}{s}{\parens{\succof{n}}}}
+      {\appobj{\appobj{s}{n}}{\parens{\recof{A}{b}{s}{n}}}}} \\[1ex]
+%
     \lamcon
     & :
       \piclass{\tpsort}{A_{1}}{
@@ -629,19 +660,6 @@ to eliminate into a $\nattp$-indexed family of result types.
       \arrclass{\elof{\parens{\piof{A_{1}}{A_{2}}}}}{
       \piclass{\elof{A_{1}}}{x}{\elof{\parens{\appobj{A_{2}}{x}}}}}}} \\[1ex]
 %
-    \reczcon
-    & :
-      \piclass{\elof{A}}{b}{
-      \piclass{\arrclass{\elof{\nattp}}{\arrclass{\elof{A}}{\elof{A}}}}{s}{
-      \eqclass{\elof{A}}{\recof{\_{}}{b}{s}{\zerocon}}{b}}} \\
-    \recscon
-    & :
-      \piclass{\elof{A}}{b}{
-      \piclass{\arrclass{\elof{\nattp}}{\arrclass{\elof{A}}{\elof{A}}}}{s}{
-      \piclass{\elof{\nattp}}{n}{
-      \eqclass{\elof{A}}
-      {\recof{\_{}}{b}{s}{\parens{\succof{n}}}}{\appobj{\appobj{s}{n}}{\parens{\recof{\_{}}{b}{s}{n}}}}}}} \\[1ex]
-%
     \betacon
     & :
       \piclass{\tpsort}{A_{1}}{
@@ -652,7 +670,7 @@ to eliminate into a $\nattp$-indexed family of result types.
       }}}} \\
     & \qquad
       \eqclass{\elof{\parens{\appobj{A_{2}}{M_{1}}}}}
-      {\appof{\_{}}{\_{}}{\parens{\lamof{\_{}}{\_{}}{F}}}{M_{1}}}
+      {\appof{A_{1}}{A_{2}}{\parens{\lamof{A_{1}}{A_{2}}{F}}}{M_{1}}}
       {\appobj{F}{M_{1}}} \\
     \etacon
     & :
@@ -664,7 +682,7 @@ to eliminate into a $\nattp$-indexed family of result types.
     & \qquad
       \eqclass{\elof{\parens{\piof{A_{1}}{A_{2}}}}}
       {M}
-      {\lamof{\_{}}{\_{}}{\parens{\lamobj{\elof{A_{1}}}{x}{\appof{\_{}}{\_{}}{M}{x}}}}}
+      {\lamof{A_{1}}{A_{2}}{\parens{\lamobj{\elof{A_{1}}}{x}{\appof{A_{1}}{A_{2}}{M}{x}}}}}
   \end{align*}
 
   \caption{Signature of Dependent G\"odel's T}
