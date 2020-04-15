@@ -577,6 +577,82 @@ Figure~\ref{fig:t-sig-abbr} for comparison.
 
 \subsection{Dependent Types}
 
+The essence of dependent typing is to generalize from types to type-indexed families of
+types.  If $A:\tpsort$, then the class $\arrclass{\elof{A}}{\tpsort}$ is an $A$-indexed
+family of types.  These arise in various ways, principally equality and identity types,
+which represent binaries relations.  As a starting point, a reformulation of G\"odel's T
+in the dependent setting is given in Figure~\ref{fig:t-sig-dep}.  The main changes are to
+extend simple function types to dependent function types, and to generalize the recursor
+to eliminate into a $\nattp$-indexed family of result types.
+
+\newcommand{\pitp}{\const{pi}}
+
+\begin{figure}
+  
+  \begin{align*}
+    \tpsort
+    & : \sortclass \\
+    \nattp
+    & : \tpsort \\
+    \pitp
+    & : \piclass{\tpsort}{A}{\arrclass{\parens{\arrclass{\elof{A}}{\tpsort}}}{\tpsort}} \\[1ex]
+%
+    \elfam 
+    & : \arrclass{\tpsort}{\sortclass} \\
+    \zerocon
+    & : \elof{\nattp} \\
+    \succcon
+    & : \arrclass {\elof{\nattp}}{\elof{\nattp}} \\
+    \reccon
+    &  :
+      \piclass{\arrclass{\elof{\nattp}}{\tpsort}}{A}{
+      \arrclass{\elof{\parens{\appobj{A}{\zerocon}}}}{
+      \arrclass{\parens{
+      \piclass{\elof{\nattp}}{m}{
+        \arrclass{\elof{\parens{\appobj{A}{m}}}}{\elof{\parens{\appobj{A}{\parens{\succof{m}}}}}}}}}
+      {\piclass{\elof{\nattp}}{n}{\elof{\parens{\appobj{A}{n}}}}}}} \\[1ex] 
+%
+    \lamcon
+    & :
+      \arrclass{\parens{\arrclass{\elof{A_{1}}}{\elof{A_{2}}}}}{
+      \elfam{\parens{\arrof{A_{1}}{A_{2}}}}} \\
+    \appcon
+    & :
+      \arrclass{\elof{\parens{\arrof{A_{1}}{A_{2}}}}}{
+      \arrclass{\elof{A_{1}}}{\elof{A_{2}}}} \\[1ex]
+%
+    \reczcon
+    & :
+      \piclass{\elof{A}}{b}{
+      \piclass{\arrclass{\elof{\nattp}}{\arrclass{\elof{A}}{\elof{A}}}}{s}{
+      \eqclass{\elof{A}}{\recof{\_{}}{b}{s}{\zerocon}}{b}}} \\
+    \recscon
+    & :
+      \piclass{\elof{A}}{b}{
+      \piclass{\arrclass{\elof{\nattp}}{\arrclass{\elof{A}}{\elof{A}}}}{s}{
+      \piclass{\elof{\nattp}}{n}{
+      \eqclass{\elof{A}}
+      {\recof{\_{}}{b}{s}{\parens{\succof{n}}}}{\appobj{\appobj{s}{n}}{\parens{\recof{\_{}}{b}{s}{n}}}}}}} \\[1ex]
+%
+    \betacon
+    & :
+      \piclass{\arrclass{\elof{A_{1}}}{\elof{A_{2}}}}{F}{
+      \piclass{\elof{A_{1}}}{M}{
+      \eqclass{\elof{A_{2}}}
+      {\appof{\_{}}{\_{}}{\parens{\lamof{\_{}}{\_{}}{F}}}{M}}
+      {\appobj{F}{M}}}} \\
+    \etacon
+    & :
+      \piclass{\elof{\parens{\arrof{A_{1}}{A_{2}}}}}{M}{
+      \eqclass{\elof{\parens{\arrof{A_{1}}{A_{2}}}}}
+      {M}
+      {\lamof{\_{}}{\_{}}{\parens{\lamobj{\elof{A_{1}}}{x}{\appof{\_{}}{\_{}}{M}{x}}}}}}
+  \end{align*}
+
+  \caption{Signature of Dependent G\"odel's T}
+  \label{fig:t-sig-dep}
+\end{figure}
+
 \bibliographystyle{plainnat}
 \bibliography{notes}
 
