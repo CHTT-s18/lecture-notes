@@ -836,21 +836,50 @@ each of the type codes is defined by equations suggested by the notation.
   \begin{align*}
     \unitp  & : \arrclass{\natclass}{\tpsort} \\
     \exttp    & : \piclass{\natclass}{i}{\arrclass{\elofp{\unisub{i}}}{\tpsort}} \\
-    \cumcon & : \piclass{\natclass}{i}{\arrclass{\elofp{\unisub{i}}}{\elofp{\unisub{\parens{\succobj{i}}}}}} \\
-    \natcon  & : \elofp{\unisub{\zeroobj}} \\
+    \cumcon & : \piclass{\natclass}{i}{\arrclass{\elofp{\unisub{i}}}{\elofp{\unisub{\parens{\succobj{i}}}}}} \\[1ex]
     \unicon & : \piclass{\natclass}{i}{\elofp{\unisub{\parens{\succobj{i}}}}} \\
+    \natcon  & : \elofp{\unisub{\zeroobj}} \\
     \picon    & :
-       \piclass{\natclass}{i}{\piclass{\elofp{\unisub{i}}}{a_{1}}{\piclass{\arrclass{\extsub{i}{a_{1}}}{\unisub{i}}}{a_{2}}{\elofp{\unisub{i}}}}} \\
+                \piclass{\natclass}{i}{
+                \piclass{\elofp{\unisub{i}}}{a_{1}}{
+                \piclass{\arrclass{\elofp{\extsub{i}{a_{1}}}}{\elofp{\unisub{i}}}}{a_{2}}{\elofp{\unisub{i}}}}} \\
     \eqcon  & :
-        \piclass{\natclass}{i}{\piclass{\elofp{\unisub{i}}}{a}{\arrclass{\extsub{i}{a}}{\arrclass{\extsub{i}{a}}{\elofp{\unisub{i}}}}}} \\
-    \extnat & : \piclass{\natclass}{i}{\eqclass{\tpsort}{\extsub{\zeroobj}{\natcon}}{\nattp}} \\
-    \extcum & : \piclass{\natclass}{i}{\eqclass{\tpsort}{\extsub{\parens{\succobj{i}}}{\parens{\cumsub{i}{a}}}}{\extsub{i}{a}}} \\
+              \piclass{\natclass}{i}{
+              \piclass{\elofp{\unisub{i}}}{a}{
+              \arrclass{\elofp{\extsub{i}{a}}}{\arrclass{\elofp{\extsub{i}{a}}}{\elofp{\unisub{i}}}}}} \\[1ex]
     \extuni & :
-              \piclass{\natclass}{i}{\eqclass{\tpsort}{\extsub{\parens{\succobj{i}}}{\parens{\uniconsub{i}}}}{\unisub{i}}}
-    \\
+              \piclass{\natclass}{i}{
+              \eqclass{\tpsort}{\extsub{\parens{\succobj{i}}}{\parens{\uniconsub{i}}}}{\unisub{i}}} \\
+    \extnat & :
+              \piclass{\natclass}{i}{
+              \eqclass{\tpsort}{\extsub{\zeroobj}{\natcon}}{\nattp}} \\
+    \extcum & :
+              \piclass{\natclass}{i}{
+              \piclass{\elofp{\unisub{i}}}{a}{
+              \eqclass{\tpsort}{\extsub{\parens{\succobj{i}}}{\parens{\cumsub{i}{a}}}}{\extsub{i}{a}}}} \\
     \extpi & :
-             \piclass{\natclass}{i}{\eqclass{\tpsort}{\extsub{i}{\parens{\piconof{a_{1}}{a_{2}}}}}{\piof{\parens{\extsub{i}{a_{1}}}}{\lamobj{}{x}{\dots}}}} \\
-    \exteq & : \dots
+             \piclass{\natclass}{i}{
+             \piclass{\elofp{\unisub{i}}}{a_{1}}{
+             \piclass{\arrclass{\elofp{\extsub{i}{a_{1}}}}{\elofp{\unisub{i}}}}{a_{2}}{
+               % next line
+             }}} \\
+            & \quad
+              \eqclass
+              {\tpsort}
+              {\extsub{i}{\parens{\piconof{a_{1}}{a_{2}}}}}
+              {\piof{\parens{\extsub{i}{a_{1}}}}{\parens{\lamobj{\elofp{\extsub{i}{a_{1}}}}{x}{\extsub{i}{\parens{\appobj{a_{2}}{x}}}}}}} \\
+    \exteq & :
+             \piclass{\natclass}{i}{
+             \piclass{\elofp{\unisub{i}}}{a}{
+             \piclass{\elofp{\extsub{i}{a}}}{m_{1}}{
+             \piclass{\elofp{\extsub{i}{a}}}{m_{2}}{
+             % next line
+             }}}} \\
+            & \quad
+              \eqclass
+              {\tpsort}
+              {\extsub{i}{\parens{\eqconof{a}{m_{1}}{m_{2}}}}}
+              {\eqof{\parens{\extsub{i}{a}}}{m_{1}}{m_{2}}}
   \end{align*}
 
   \caption{Tarskian Universes}
