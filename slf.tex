@@ -47,7 +47,7 @@
 \newcommand{\lamobj}[3]{\bracks{{#2}\mathbin{:}{#1}}\,{#3}}
 \newcommand{\ulamobj}[3]{\bracks{#2}\,{#3}}
 \newcommand{\appobj}[2]{{#1}\,{#2}}
-\newcommand{\reflobj}{\star}
+\newcommand{\selfobj}{\star}
 \newcommand{\empctx}{\varepsilon}
 \newcommand{\snocctx}[3]{{#1}\mathbin{,}{#2}{:}{#3}}
 \newcommand{\appctx}[2]{{#1}\,{#2}}
@@ -128,7 +128,7 @@ variable within a class or kind is defined in the usual way up to such renamings
       \textit{Kinds} & K, S & \bnfdef{} & S \bnfalt \sortclass \bnfalt \piclass{K_{1}}{X}{K_{2}}
                                           \bnfalt \eqclass{S}{O_{1}}{O_{2}} \\
       \textit{Objects} & O, S & \bnfdef & X \bnfalt \lamobj{K_{1}}{X}{K_{2}} \bnfalt
-                                          \appobj{O_{1}}{O_{2}} \bnfalt \reflobj{} \\
+                                          \appobj{O_{1}}{O_{2}} \bnfalt \selfobj{} \\
       \textit{Contexts} & \Gamma & \bnfdef & \empctx{} \bnfalt \snocctx{\Gamma}{X}{K}
     \end{array}
   \end{displaymath}
@@ -278,7 +278,7 @@ objects witnessing its truth.
 
     \inferrule[self]
     {\isobj{\Gamma}{O}{S}}
-    {\isobj{\Gamma}{\reflobj}{\eqclass{S}{O}{O}}}
+    {\isobj{\Gamma}{\selfobj}{\eqclass{S}{O}{O}}}
 
   \end{mathpar}
 
@@ -640,11 +640,12 @@ parameters and arguments.
     \reccon
     &  :
       \piclass{\arrclass{\elof{\nattp}}{\tpsort}}{A}{
-      \arrclass{\elofp{\appobj{A}{\zerocon}}}{
-      \arrclass{\parens{
-      \piclass{\elof{\nattp}}{m}{
-        \arrclass{\elofp{\appobj{A}{m}}}{\elofp{\appobj{A}{\parens{\succof{m}}}}}}}}
-      {\piclass{\elof{\nattp}}{n}{\elofp{\appobj{A}{n}}}}}} \\[1ex] 
+      \piclass{\elofp{\appobj{A}{\zerocon}}}{b}{
+      \piclass{\piclass{\elof{\nattp}}{m}{\arrclass{\elofp{\appobj{A}{m}}}{\elofp{\appobj{A}{\parens{\succof{m}}}}}}}{s}{
+      % next line
+      }}} \\
+    & \quad
+      \piclass{\elof{\nattp}}{n}{\elofp{\appobj{A}{n}}} \\[1ex] 
 %
     \reczcon
     & :
@@ -665,7 +666,7 @@ parameters and arguments.
       }}} \\
     & \quad
       \piclass{\elof{\nattp}}{n}{
-      \eqclass{\elofp{\appobj{A}{n}}}
+      \eqclass{\elofp{\appobj{A}{\parens{\succof{n}}}}}
       {\recof{A}{b}{s}{\parens{\succof{n}}}}
       {\appobj{\appobj{s}{n}}{\parens{\recof{A}{b}{s}{n}}}}} \\[1ex]
 %
@@ -728,7 +729,7 @@ because it does not validate function extensionality.
 
 \newcommand{\eqcon}{\const{eq}}
 \newcommand{\eqof}[3]{\appobj{\appobj{\appobj{\eqcon}{#1}}{#2}}{#3}}
-\newcommand{\selfcon}{\const{star}}
+\newcommand{\selfcon}{\const{self}}
 \newcommand{\selfof}[2]{\appobj{\appobj{\selfcon}{#1}}{#2}}
 \newcommand{\eqrefcon}{\const{eqref}}
 \newcommand{\equnicon}{\const{equni}}
@@ -737,7 +738,7 @@ because it does not validate function extensionality.
   
   \begin{align*}
     \eqcon & : \piclass{\tpsort}{A}{\arrclass{\elof{A}}{\arrclass{\elof{A}}{\tpsort}}} \\
-    \selfcon & : \piclass{\tpsort}{A}{\piclass{\elof{A}}{M}{\eqof{A}{M}{M}}} \\
+    \selfcon & : \piclass{\tpsort}{A}{\piclass{\elof{A}}{M}{\elofp{\eqof{A}{M}{M}}}} \\
     \eqrefcon  & :
          \piclass{\tpsort}{A}{\piclass{\elof{A}}{M_{1},M_{2}}{\arrclass{\elofp{\eqof{A}{M_{1}}{M_{2}}}}{\eqclass{\elof{A}}{M_{1}}{M_{2}}}}}  \\
     \equnicon & :
@@ -760,10 +761,10 @@ because it does not validate function extensionality.
   
   \begin{align*}
     \idcon & : \piclass{\tpsort}{A}{\arrclass{\elof{A}}{\arrclass{\elof{A}}{\tpsort}}} \\
-    \reflcon & : \piclass{\tpsort}{A}{\piclass{\elof{A}}{M}{\idof{A}{M}{M}}} \\
+    \reflcon & : \piclass{\tpsort}{A}{\piclass{\elof{A}}{M}{\elofp{\idof{A}{M}{M}}}} \\
     \jcon & :
             \piclass{\tpsort}{A}{
-            \piclass{\piclass{\elof{A}}{x_{1}}{\piclass{\elof{A}}{x_{2}}{\arrclass{\idof{A}{x_{1}}{x_{2}}}{\tpsort}}}}{B}{
+            \piclass{\piclass{\elof{A}}{m_{1}}{\piclass{\elof{A}}{m_{2}}{\arrclass{\elofp{\idof{A}{m_{1}}{m_{2}}}}{\tpsort}}}}{B}{
             % next line
             }} \\
            & \quad
@@ -775,7 +776,7 @@ because it does not validate function extensionality.
                \piclass{\elofp{\idof{A}{m}{m'}}}{p}{\elofp{\appobj{\appobj{\appobj{B}{m}}{m'}}{p}}} \\
     \idbetacon & :
             \piclass{\tpsort}{A}{
-            \piclass{\piclass{\elof{A}}{x_{1}}{\piclass{\elof{A}}{x_{2}}{\arrclass{\idof{A}{x_{1}}{x_{2}}}{\tpsort}}}}{B}{
+            \piclass{\piclass{\elof{A}}{m_{1}}{\piclass{\elof{A}}{m_{2}}{\arrclass{\elofp{\idof{A}{m_{1}}{m_{2}}}}{\tpsort}}}}{B}{
             % next line
             }} \\
            & \quad
@@ -785,7 +786,7 @@ because it does not validate function extensionality.
              }} \\
            & \quad
              \eqclass
-             {\elof{\appobj{\appobj{\appobj{B}{m}}{m}}{\parens{\reflof{A}{m}}}}}
+             {\elofp{\appobj{\appobj{\appobj{B}{m}}{m}}{\parens{\reflof{A}{m}}}}}
              {\jof{A}{B}{r}{m}{m}{\parens{\reflof{A}{m}}}}
              {\appobj{r}{m}}
   \end{align*}
