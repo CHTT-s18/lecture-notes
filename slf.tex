@@ -29,6 +29,8 @@
 \newcommand{\eqdef}{\mathrel{\triangleq}}
 \newcommand{\isdef}{\eqdef}
 
+\newcommand{\braces}[1]{\{#1\}}
+\newcommand{\bracks}[1]{[#1]}
 \newcommand{\parens}[1]{(#1)}
 \newcommand{\noparens}[1]{}
 
@@ -38,11 +40,12 @@
 \newcommand{\bnfdef}{\mathrel{{:}{:}{=}}}
 \newcommand{\bnfalt}{\mathrel{\mid}}
 
-\newcommand{\sortclass}{\ensuremath{\textbf{sort}}}
+\newcommand{\sortclass}{\ensuremath{\textbf{\textsf{sort}}}}
 \newcommand{\eqclass}[3]{{#2}=_{#1}{#3}}
-\newcommand{\piclass}[3]{({#2}\mathbin{:}{#1})\,{#3}}
+\newcommand{\piclass}[3]{\braces{{#2}\mathbin{:}{#1}}\,{#3}}
 \newcommand{\arrclass}[2]{{#1}\to{#2}}
-\newcommand{\lamobj}[3]{[{#2}\mathbin{:}{#1}]\,{#3}}
+\newcommand{\lamobj}[3]{\bracks{{#2}\mathbin{:}{#1}}\,{#3}}
+\newcommand{\ulamobj}[3]{\bracks{#2}\,{#3}}
 \newcommand{\appobj}[2]{{#1}\,{#2}}
 \newcommand{\reflobj}{\star}
 \newcommand{\empctx}{\varepsilon}
@@ -112,7 +115,7 @@ dependently typed $\lambda$-calculus with the structure specified in the introdu
 types of \LF{} are called \emph{classes}, or \emph{kinds}, $K$ or $S$, and their elements
 are called \emph{objects}, $O$ or $S$.\footnote{The double role of the meta-variable $S$
   will be explained shortly.}  The notation is inspired by \textsf{AUTOMATH}, using square
-brackets for $\lambda$-abstraction, round brackets for $\Pi$-types, and juxtaposition for
+brackets for $\lambda$-abstraction, curly braces for $\Pi$-types, and juxtaposition for
 application.  The binding and scopes of identifiers are understood; all classes and
 objects are identified up to renaming of bound variables.  Substitution of an object for a
 variable within a class or kind is defined in the usual way up to such renamings.
