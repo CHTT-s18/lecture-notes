@@ -40,10 +40,11 @@
 \newcommand{\bnfdef}{\mathrel{{:}{:}{=}}}
 \newcommand{\bnfalt}{\mathrel{\mid}}
 
-\newcommand{\sortclass}{\ensuremath{\textbf{\textsf{sort}}}}
+\newcommand{\sortclass}{\ensuremath{\textsf{sort}}}
 \newcommand{\eqclass}[3]{{#2}=_{#1}{#3}}
 \newcommand{\piclass}[3]{\braces{{#2}\mathbin{:}{#1}}\,{#3}}
 \newcommand{\arrclass}[2]{{#1}\to{#2}}
+\newcommand{\natclass}{\ensuremath{\mathbb{N}}}
 \newcommand{\lamobj}[3]{\bracks{{#2}\mathbin{:}{#1}}\,{#3}}
 \newcommand{\ulamobj}[3]{\bracks{#2}\,{#3}}
 \newcommand{\appobj}[2]{{#1}\,{#2}}
@@ -800,6 +801,10 @@ because it does not validate function extensionality.
 \end{figure}
 
 \subsection{Tarskian Universes}
+
+To add a cumulative hierarchy of universes requires that \LF{} be extended with a class of
+natural numbers, written $\natclass$.
+
 
 \begin{quote}
   \textit{(to come)}
