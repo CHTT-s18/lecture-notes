@@ -182,14 +182,17 @@ The rules defining the \LF{} judgment forms are given in Figures~\ref{fig:lf-is}
 simultaneous inductive definition.  Rule~\textsc{incl} specifies that every sort is itself
 a class; the class $\sortclass$ is thus formulated as a Russellian universe of ``small''
 classes.  Rule~\textsc{pi}, and associated rules~\textsc{lam} and~\textsf{app}, could be
-restricted without loss to require that $K_{1}$ be a small class.  Rule~\textsc{eq}
-defines the class of equations between objects of a sort; rule~\textsc{self} specifies
-that every object is equal to itself.  Rules~\textsc{obj-cls} and~\textsc{obj-eq-cls}
-specifies that equal classes classify the same objects.  Rules~\textsc{app-lam}
-and~\textsc{lam-app} specify the inversion principles governing abstraction and
-application.  Rule~\textsc{reflection} specifies that the equality class internalizes
-equality, and rule~\textsc{unicity} specifies that an equation is ``at most true,'' there
-being no distinction between two objects witnessing its truth.
+restricted without loss to require that $K_{1}$ be a sort,\footnote{But variables cannot
+  be restricted to range only over sorts, at least insofar as signatures are considered to
+  be contexts.} provided that \sortclass{} is required to be closed under dependent
+functions, and equality classes are regarded as sorts.  Rule~\textsc{eq} defines the class
+of equations between objects of a sort; rule~\textsc{self} specifies that every object is
+equal to itself.  Rules~\textsc{obj-cls} and~\textsc{obj-eq-cls} specifies that equal
+classes classify the same objects.  Rules~\textsc{app-lam} and~\textsc{lam-app} specify
+the inversion principles governing abstraction and application.  Rule~\textsc{reflection}
+specifies that the equality class internalizes equality, and rule~\textsc{unicity}
+specifies that an equation is ``at most true,'' there being no distinction between two
+objects witnessing its truth.
 
 \begin{lemma}[Presuppositions]
   \label{lemma:presup}
@@ -477,7 +480,7 @@ Figure~\ref{fig:t-sig-abbr} for comparison.
       \piclass{\arrclass{\elof{\nattp}}{\arrclass{\elof{A}}{\elof{A}}}}{s}{
       % next line
       }}} \\
-    & \qquad
+    & \quad
       \eqclass{\elof{A}}{\recof{A}{b}{s}{\zerocon}}{b} \\
     \recscon
     & :
@@ -486,7 +489,7 @@ Figure~\ref{fig:t-sig-abbr} for comparison.
       \piclass{\arrclass{\elof{\nattp}}{\arrclass{\elof{A}}{\elof{A}}}}{s}{
       % next line
       }}} \\
-    & \qquad
+    & \quad
       \piclass{\elof{\nattp}}{n}{
       \eqclass{\elof{A}}
       {\recof{A}{b}{s}{\parens{\succof{n}}}}
@@ -513,7 +516,7 @@ Figure~\ref{fig:t-sig-abbr} for comparison.
       \piclass{\elof{A_{1}}}{M_1}{
       % next line
       }}}} \\
-    & \qquad
+    & \quad
       \eqclass{\elof{A_{2}}}
       {\appof{A_{1}}{A_{2}}{\parens{\lamof{A_{1}}{A_{2}}{F}}}{M_1}}
       {\appobj{F}{M_1}} \\
@@ -524,7 +527,7 @@ Figure~\ref{fig:t-sig-abbr} for comparison.
       \piclass{\elofp{\arrof{A_{1}}{A_{2}}}}{M}{
       % next line
       }}} \\
-    & \qquad
+    & \quad
       \eqclass{\elofp{\arrof{A_{1}}{A_{2}}}}
       {M}
       {\lamof{A_{1}}{A_{2}}{\parens{\lamobj{\elof{A_{1}}}{x}{\appof{A_{1}}{A_{2}}{M}{x}}}}}
@@ -603,13 +606,14 @@ Figure~\ref{fig:t-sig-abbr} for comparison.
 
 \subsection{Dependent Types}
 
-The essence of dependent typing is to generalize from types to type-indexed families of
-types.  If $A:\tpsort$, then the class $\arrclass{\elof{A}}{\tpsort}$ is an $A$-indexed
-family of types.  These arise in various ways, principally equality and identity types,
-which represent binaries relations.  As a starting point, a reformulation of G\"odel's T
-in the dependent setting is given in Figure~\ref{fig:t-sig-dep}.  The main changes are to
-extend simple function types to dependent function types, and to generalize the recursor
-to eliminate into a $\nattp$-indexed family of result types.
+The essence of dependent typing is to generalize from types to families of types indexed
+by types: if $A:\tpsort$, then $\arrclass{\elofp{A}}{\tpsort}$ is the class of $A$-indexed
+families of types.  As a starting point, a reformulation of G\"odel's T in the dependent
+setting is given in Figure~\ref{fig:t-sig-dep}.  The main changes are to extend simple
+function types to dependent function types, and to generalize the recursor to eliminate
+into a $\nattp$-indexed family of result types.  The fully explicit notation remains
+burdensome, but can be abbreviated in an implementation to permit inference of omitted
+parameters and arguments.
 
 \newcommand{\pitp}{\const{pi}}
 \newcommand{\piof}[2]{\appobj{\appobj{\pitp}{#1}}{#2}}
@@ -646,7 +650,7 @@ to eliminate into a $\nattp$-indexed family of result types.
       \piclass{\piclass{\elof{\nattp}}{m}{\arrclass{\elofp{\appobj{A}{m}}}{\elofp{\appobj{A}{\parens{\succof{m}}}}}}}{s}{
       % next line
       }}} \\
-    & \qquad
+    & \quad
       \eqclass{\elofp{\appobj{A}{\zerocon}}}{\recof{A}{b}{s}{\zerocon}}{b} \\
 %
     \recscon
@@ -656,7 +660,7 @@ to eliminate into a $\nattp$-indexed family of result types.
       \piclass{\piclass{\elof{\nattp}}{m}{\arrclass{\elofp{\appobj{A}{m}}}{\elofp{\appobj{A}{\parens{\succof{m}}}}}}}{s}{
       % next line
       }}} \\
-    & \qquad
+    & \quad
       \piclass{\elof{\nattp}}{n}{
       \eqclass{\elofp{\appobj{A}{n}}}
       {\recof{A}{b}{s}{\parens{\succof{n}}}}
@@ -683,7 +687,7 @@ to eliminate into a $\nattp$-indexed family of result types.
       \piclass{\elof{A_{1}}}{M_{1}}{
       % equation on next line
       }}}} \\
-    & \qquad
+    & \quad
       \eqclass{\elofp{\appobj{A_{2}}{M_{1}}}}
       {\appof{A_{1}}{A_{2}}{\parens{\lamof{A_{1}}{A_{2}}{F}}}{M_{1}}}
       {\appobj{F}{M_{1}}} \\
@@ -694,7 +698,7 @@ to eliminate into a $\nattp$-indexed family of result types.
       \piclass{\elofp{\piof{A_{1}}{A_{2}}}}{M}{
       % equation on next line
       }}} \\
-    & \qquad
+    & \quad
       \eqclass{\elofp{\piof{A_{1}}{A_{2}}}}
       {M}
       {\lamof{A_{1}}{A_{2}}{\parens{\lamobj{\elof{A_{1}}}{x}{\appof{A_{1}}{A_{2}}{M}{x}}}}}
@@ -706,7 +710,18 @@ to eliminate into a $\nattp$-indexed family of result types.
 
 Dependent types become interesting only when there are families of types, the principal
 examples of which are the extensional and intensional equality types.  Their formulations
-are given in Figures~\ref{fig:dep-eq} and~\ref{fig:dep-id}.
+are given in Figures~\ref{fig:dep-eq} and~\ref{fig:dep-id}.  The elimination rule for the
+extensional equality type is the corresponding equality class whose elimination principle
+derives the corresponding equality judgment.\footnote{It is sometimes said that equality
+  reflection cannot be formulated in a logical framework, and is therefore suspect.  But
+  whether this is so depends on the choice of framework; it is certainly not problematic
+  here.}  It follows from this that equality at function type is extensional.  The unicity
+rule for equality types states that any two objects of the same equality class are
+judgmentally equal; that is, equality classes are ``at most true'' in that the evidence is
+immaterial beyond its existence.  The intensional identity type has the same formation and
+introduction rules, but has a different elimination rule expressing that the identity type
+is the least reflexive relation on the elements of a type.  It is said to be intensional
+because it does not validate function extensionality.
 
 \newcommand{\eqcon}{\const{eq}}
 \newcommand{\eqof}[3]{\appobj{\appobj{\appobj{\eqcon}{#1}}{#2}}{#3}}
@@ -748,24 +763,24 @@ are given in Figures~\ref{fig:dep-eq} and~\ref{fig:dep-id}.
             \piclass{\piclass{\elof{A}}{x_{1}}{\piclass{\elof{A}}{x_{2}}{\arrclass{\idof{A}{x_{1}}{x_{2}}}{\tpsort}}}}{B}{
             % next line
             }} \\
-           & \qquad
+           & \quad
              \piclass{\piclass{\elof{A}}{x}{\elofp{\appobj{\appobj{\appobj{B}{x}}{x}}{\parens{\reflof{A}{x}}}}}}{r}{
              \piclass{\elof{A}}{m}{\piclass{\elof{A}}{m'}{
              % next line
              }}} \\
-             & \qquad
+             & \quad
                \piclass{\elofp{\idof{A}{m}{m'}}}{p}{\elofp{\appobj{\appobj{\appobj{B}{m}}{m'}}{p}}} \\
     \idbetacon & :
             \piclass{\tpsort}{A}{
             \piclass{\piclass{\elof{A}}{x_{1}}{\piclass{\elof{A}}{x_{2}}{\arrclass{\idof{A}{x_{1}}{x_{2}}}{\tpsort}}}}{B}{
             % next line
             }} \\
-           & \qquad
+           & \quad
              \piclass{\piclass{\elof{A}}{x}{\elofp{\appobj{\appobj{\appobj{B}{x}}{x}}{\parens{\reflof{A}{x}}}}}}{r}{
              \piclass{\elof{A}}{m}{
              % next line
              }} \\
-           & \qquad
+           & \quad
              \eqclass
              {\elof{\appobj{\appobj{\appobj{B}{m}}{m}}{\parens{\reflof{A}{m}}}}}
              {\jof{A}{B}{r}{m}{m}{\parens{\reflof{A}{m}}}}
