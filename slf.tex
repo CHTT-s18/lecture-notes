@@ -429,10 +429,12 @@ theories, or other logical systems, as a signature.
 \newcommand{\appcon}{\const{app}}
 \newcommand{\appof}[4]{\appobj{\appobj{\appobj{\appobj{\appcon}{#1}}{#2}}{#3}}{#4}}
 
-\newcommand{\reczcon}{\const{nat-$\beta$-z}}
-\newcommand{\recscon}{\const{nat-$\beta$-s}}
-\newcommand{\betacon}{\const{arr-$\beta$}}
-\newcommand{\etacon}{\const{arr-$\eta$}}
+\newcommand{\natbetaz}{\const{nat-$\beta$-z}}
+\newcommand{\natbetas}{\const{nat-$\beta$-s}}
+\newcommand{\arrbeta}{\const{arr-$\beta$}}
+\newcommand{\arreta}{\const{arr-$\eta$}}
+\newcommand{\pibeta}{\const{pi-$\beta$}}
+\newcommand{\pieta}{\const{pi-$\eta$}}
 
 The signature $\Sigma_{T}$ defining G\"{o}del's System T is given in Figure~\ref{fig:t-sig}.
 The specifications are verbose, but an implementation would eliminate much of the
@@ -476,7 +478,7 @@ Figure~\ref{fig:t-sig-abbr} for comparison.
       \arrclass{\parens{\arrclass{\elof{\nattp}}{\arrclass{\elof{A}}{\elof{A}}}}}{
       \elof{A}}}} \\[1ex] 
 %
-    \reczcon
+    \natbetaz
     & :
       \piclass{\tpsort}{A}{
       \piclass{\elof{A}}{b}{
@@ -485,7 +487,7 @@ Figure~\ref{fig:t-sig-abbr} for comparison.
       }}} \\
     & \quad
       \eqclass{\elof{A}}{\recof{A}{b}{s}{\zerocon}}{b} \\
-    \recscon
+    \natbetas
     & :
       \piclass{\tpsort}{A}{
       \piclass{\elof{A}}{b}{
@@ -511,7 +513,7 @@ Figure~\ref{fig:t-sig-abbr} for comparison.
       \arrclass{\elofp{\arrof{A_{1}}{A_{2}}}}{
       \arrclass{\elof{A_{1}}}{\elof{A_{2}}}}}} \\[1ex]
 %
-    \betacon
+    \arrbeta
     & :
       \piclass{\tpsort}{A_{1}}{
       \piclass{\tpsort}{A_{2}}{
@@ -523,7 +525,7 @@ Figure~\ref{fig:t-sig-abbr} for comparison.
       \eqclass{\elof{A_{2}}}
       {\appof{A_{1}}{A_{2}}{\parens{\lamof{A_{1}}{A_{2}}{F}}}{M_1}}
       {\appobj{F}{M_1}} \\
-    \etacon
+    \arreta
     & :
       \piclass{\tpsort}{A_{1}}{
       \piclass{\tpsort}{A_{2}}{
@@ -564,12 +566,12 @@ Figure~\ref{fig:t-sig-abbr} for comparison.
       \arrclass{\parens{\arrclass{\elof{\nattp}}{\arrclass{\elof{A}}{\elof{A}}}}}{
       \elof{A}}} \\[1ex] 
 %
-    \reczcon
+    \natbetaz
     & :
       \piclass{\elof{A}}{b}{
       \piclass{\arrclass{\elof{\nattp}}{\arrclass{\elof{A}}{\elof{A}}}}{s}{
       \eqclass{\elof{A}}{\recof{\_{}}{b}{s}{\zerocon}}{b}}} \\
-    \recscon
+    \natbetas
     & :
       \piclass{\elof{A}}{b}{
       \piclass{\arrclass{\elof{\nattp}}{\arrclass{\elof{A}}{\elof{A}}}}{s}{
@@ -586,14 +588,14 @@ Figure~\ref{fig:t-sig-abbr} for comparison.
       \arrclass{\elofp{\arrof{A_{1}}{A_{2}}}}{
       \arrclass{\elof{A_{1}}}{\elof{A_{2}}}} \\[1ex]
 %
-    \betacon
+    \arrbeta
     & :
       \piclass{\arrclass{\elof{A_{1}}}{\elof{A_{2}}}}{F}{
       \piclass{\elof{A_{1}}}{M_{1}}{
       \eqclass{\elof{A_{2}}}
       {\appof{\_{}}{\_{}}{\parens{\lamof{\_{}}{\_{}}{F}}}{M_1}}
       {\appobj{F}{M_1}}}} \\
-    \etacon
+    \arreta
     & :
       \piclass{\elofp{\arrof{A_{1}}{A_{2}}}}{M}{
       \eqclass{\elofp{\arrof{A_{1}}{A_{2}}}}
@@ -647,7 +649,7 @@ parameters and arguments.
     & \quad
       \piclass{\elof{\nattp}}{n}{\elofp{\appobj{A}{n}}} \\[1ex] 
 %
-    \reczcon
+    \natbetaz
     & :
       \piclass{\arrclass{\elof{\nattp}}{\tpsort}}{A}{
       \piclass{\elofp{\appobj{A}{\zerocon}}}{b}{
@@ -657,7 +659,7 @@ parameters and arguments.
     & \quad
       \eqclass{\elofp{\appobj{A}{\zerocon}}}{\recof{A}{b}{s}{\zerocon}}{b} \\
 %
-    \recscon
+    \natbetas
     & :
       \piclass{\arrclass{\elof{\nattp}}{\tpsort}}{A}{
       \piclass{\elofp{\appobj{A}{\zerocon}}}{b}{
@@ -683,7 +685,7 @@ parameters and arguments.
       \arrclass{\elofp{\piof{A_{1}}{A_{2}}}}{
       \piclass{\elof{A_{1}}}{x}{\elofp{\appobj{A_{2}}{x}}}}}} \\[1ex]
 %
-    \betacon
+    \pibeta
     & :
       \piclass{\tpsort}{A_{1}}{
       \piclass{\arrclass{\elof{A_{1}}}{\tpsort}}{A_{2}}{
@@ -695,7 +697,7 @@ parameters and arguments.
       \eqclass{\elofp{\appobj{A_{2}}{M_{1}}}}
       {\appof{A_{1}}{A_{2}}{\parens{\lamof{A_{1}}{A_{2}}{F}}}{M_{1}}}
       {\appobj{F}{M_{1}}} \\
-    \etacon
+    \pieta
     & :
       \piclass{\tpsort}{A_{1}}{
       \piclass{\arrclass{\elof{A_{1}}}{\tpsort}}{A_{2}}{
