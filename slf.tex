@@ -49,6 +49,8 @@
 \newcommand{\ulamobj}[3]{\bracks{#2}\,{#3}}
 \newcommand{\appobj}[2]{{#1}\,{#2}}
 \newcommand{\selfobj}{\star}
+\newcommand{\zeroobj}{\mathbf{0}}
+\newcommand{\succobj}[1]{{#1}\mathbin{\mathbf{+}}\mathbf{1}}
 \newcommand{\empctx}{\varepsilon}
 \newcommand{\snocctx}[3]{{#1}\mathbin{,}{#2}{:}{#3}}
 \newcommand{\appctx}[2]{{#1}\,{#2}}
@@ -732,8 +734,8 @@ introduction rules, but has a different elimination rule expressing that the ide
 is the least reflexive relation on the elements of a type.  It is said to be intensional
 because it does not validate function extensionality.
 
-\newcommand{\eqcon}{\const{eq}}
-\newcommand{\eqof}[3]{\appobj{\appobj{\appobj{\eqcon}{#1}}{#2}}{#3}}
+\newcommand{\eqtp}{\const{eq}}
+\newcommand{\eqof}[3]{\appobj{\appobj{\appobj{\eqtp}{#1}}{#2}}{#3}}
 \newcommand{\selfcon}{\const{self}}
 \newcommand{\selfof}[2]{\appobj{\appobj{\selfcon}{#1}}{#2}}
 \newcommand{\eqrefcon}{\const{eqref}}
@@ -742,7 +744,7 @@ because it does not validate function extensionality.
 \begin{figure}
   
   \begin{align*}
-    \eqcon & : \piclass{\tpsort}{A}{\arrclass{\elof{A}}{\arrclass{\elof{A}}{\tpsort}}} \\
+    \eqtp & : \piclass{\tpsort}{A}{\arrclass{\elof{A}}{\arrclass{\elof{A}}{\tpsort}}} \\
     \selfcon & : \piclass{\tpsort}{A}{\piclass{\elof{A}}{M}{\elofp{\eqof{A}{M}{M}}}} \\
     \eqrefcon  & :
          \piclass{\tpsort}{A}{\piclass{\elof{A}}{M_{1},M_{2}}{\arrclass{\elofp{\eqof{A}{M_{1}}{M_{2}}}}{\eqclass{\elof{A}}{M_{1}}{M_{2}}}}}  \\
@@ -754,8 +756,8 @@ because it does not validate function extensionality.
   \label{fig:dep-eq}
 \end{figure}
 
-\newcommand{\idcon}{\const{id}}
-\newcommand{\idof}[3]{\appobj{\appobj{\appobj{\idcon}{#1}}{#2}}{#3}}
+\newcommand{\idtp}{\const{id}}
+\newcommand{\idof}[3]{\appobj{\appobj{\appobj{\idtp}{#1}}{#2}}{#3}}
 \newcommand{\reflcon}{\const{refl}}
 \newcommand{\reflof}[2]{\appobj{\appobj{\reflcon}{#1}}{#2}}
 \newcommand{\jcon}{\const{j}}
@@ -765,7 +767,7 @@ because it does not validate function extensionality.
 \begin{figure}
   
   \begin{align*}
-    \idcon & : \piclass{\tpsort}{A}{\arrclass{\elof{A}}{\arrclass{\elof{A}}{\tpsort}}} \\
+    \idtp & : \piclass{\tpsort}{A}{\arrclass{\elof{A}}{\arrclass{\elof{A}}{\tpsort}}} \\
     \reflcon & : \piclass{\tpsort}{A}{\piclass{\elof{A}}{M}{\elofp{\idof{A}{M}{M}}}} \\
     \jcon & :
             \piclass{\tpsort}{A}{
@@ -802,12 +804,58 @@ because it does not validate function extensionality.
 
 \subsection{Tarskian Universes}
 
-To add a cumulative hierarchy of universes requires that \LF{} be extended with a class of
-natural numbers, written $\natclass$.
+\newcommand{\unitp}{\const{u}}
+\newcommand{\unisub}[1]{\appobj{\unitp}{#1}}
+\newcommand{\exttp}{\const{ext}}
+\newcommand{\extsub}[2]{\appobj{\appobj{\exttp}{#1}}{#2}}
+\newcommand{\cumcon}{\const{$\uparrow$}}
+\newcommand{\cumsub}[2]{\appobj{\appobj{\cumcon}{#1}}{#2}}
+\newcommand{\natcon}{\overline{\const{nat}}}
+\newcommand{\picon}{\overline{\const{pi}}}
+\newcommand{\piconof}[2]{\appobj{\appobj{\picon}{#1}}{#2}}
+\newcommand{\eqcon}{\overline{\const{eq}}}
+\newcommand{\eqconof}[3]{\appobj{\appobj{\appobj{\eqcon}{#1}}{#2}}{#3}}
+\newcommand{\unicon}{\overline{\const{u}}}
+\newcommand{\uniconsub}[1]{\appobj{\unicon}{#1}}
+\newcommand{\extnat}{\const{ext-nat}}
+\newcommand{\extcum}{\const{ext-cum}}
+\newcommand{\extuni}{\const{ext-uni}}
+\newcommand{\extpi}{\const{ext-pi}}
+\newcommand{\exteq}{\const{ext-eq}}
 
-\begin{quote}
-  \textit{(to come)}
-\end{quote}
+To add a cumulative hierarchy of universes requires that \LF{} be extended with a class of
+natural numbers, written $\natclass$, with elements $\zeroobj$ and $\succobj{i}$ for
+$i:\natclass$.  A Tarskian formulation of universes is given in Figure~\ref{fig:univ}.
+Each $\unisub{i}$ is a \emph{universe} whose elements $a$ are \emph{type codes} whose
+\emph{extension} as a type is $\extsub{i}{a}$.  Cumulativity is expressed by sending $a$
+in $\unisub{i}$ to $\cumsub{i}{a}$ in $\unisub{\parens{\succobj{i}}}$.  The extension of
+each of the type codes is defined by equations suggested by the notation.
+
+\begin{figure}[tp]
+
+  \begin{align*}
+    \unitp  & : \arrclass{\natclass}{\tpsort} \\
+    \exttp    & : \piclass{\natclass}{i}{\arrclass{\elofp{\unisub{i}}}{\tpsort}} \\
+    \cumcon & : \piclass{\natclass}{i}{\arrclass{\elofp{\unisub{i}}}{\elofp{\unisub{\parens{\succobj{i}}}}}} \\
+    \natcon  & : \elofp{\unisub{\zeroobj}} \\
+    \unicon & : \piclass{\natclass}{i}{\elofp{\unisub{\parens{\succobj{i}}}}} \\
+    \picon    & :
+       \piclass{\natclass}{i}{\piclass{\elofp{\unisub{i}}}{a_{1}}{\piclass{\arrclass{\extsub{i}{a_{1}}}{\unisub{i}}}{a_{2}}{\elofp{\unisub{i}}}}} \\
+    \eqcon  & :
+        \piclass{\natclass}{i}{\piclass{\elofp{\unisub{i}}}{a}{\arrclass{\extsub{i}{a}}{\arrclass{\extsub{i}{a}}{\elofp{\unisub{i}}}}}} \\
+    \extnat & : \piclass{\natclass}{i}{\eqclass{\tpsort}{\extsub{\zeroobj}{\natcon}}{\nattp}} \\
+    \extcum & : \piclass{\natclass}{i}{\eqclass{\tpsort}{\extsub{\parens{\succobj{i}}}{\parens{\cumsub{i}{a}}}}{\extsub{i}{a}}} \\
+    \extuni & :
+              \piclass{\natclass}{i}{\eqclass{\tpsort}{\extsub{\parens{\succobj{i}}}{\parens{\uniconsub{i}}}}{\unisub{i}}}
+    \\
+    \extpi & :
+             \piclass{\natclass}{i}{\eqclass{\tpsort}{\extsub{i}{\parens{\piconof{a_{1}}{a_{2}}}}}{\piof{\parens{\extsub{i}{a_{1}}}}{\lamobj{}{x}{\dots}}}} \\
+    \exteq & : \dots
+  \end{align*}
+
+  \caption{Tarskian Universes}
+  \label{fig:univ}
+\end{figure}
 
 \bibliographystyle{plainnat}
 \bibliography{notes}
