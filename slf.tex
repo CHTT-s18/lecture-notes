@@ -850,6 +850,14 @@ each of the type codes is defined by equations suggested by the notation.
     \extuni & :
               \piclass{\natclass}{i}{
               \eqclass{\tpsort}{\extsub{\parens{\succobj{i}}}{\parens{\uniconsub{i}}}}{\unisub{i}}} \\
+    \extcum & :
+              \piclass{\natclass}{i}{
+              \piclass{\elofp{\unisub{i}}}{a}{
+              \eqclass
+              {\tpsort}
+              {\extsub{\parens{\succobj{i}}}{\parens{\cumsub{i}{a}}}}
+              {\extsub{i}{a}}
+              }}  \\
     \extnat & :
               \piclass{\natclass}{i}{
               \eqclass{\tpsort}{\extsub{\zeroobj}{\natcon}}{\nattp}} \\
