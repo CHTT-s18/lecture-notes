@@ -43,6 +43,7 @@
 \newcommand{\sortclass}{\ensuremath{\textsf{Sort}}}
 \newcommand{\eqclass}[3]{{#2}=_{#1}{#3}}
 \newcommand{\piclass}[3]{\braces{{#2}\mathbin{:}{#1}}\,{#3}}
+\newcommand{\pisort}[3]{\piclass{#1}{#2}{#3}}
 \newcommand{\arrclass}[2]{{#1}\to{#2}}
 \newcommand{\natclass}{\ensuremath{\mathsf{Nat}}}
 \newcommand{\lamobj}[3]{\bracks{{#2}\mathbin{:}{#1}}\,{#3}}
@@ -128,9 +129,9 @@ variable within a class or kind is defined in the usual way up to such renamings
   \begin{displaymath}
     \begin{array}{lrcl}
       \textit{Variables} & X,x \\
-      \textit{Kinds} & K, S & \bnfdef{} & S \bnfalt \sortclass \bnfalt \piclass{K_{1}}{X}{K_{2}}
+      \textit{Kinds} & K, S & \bnfdef{} & S \bnfalt \sortclass \bnfalt \piclass{S_{1}}{X}{K_{2}}
                                           \bnfalt \eqclass{S}{O_{1}}{O_{2}} \\
-      \textit{Objects} & O, S & \bnfdef & X \bnfalt \lamobj{K_{1}}{X}{K_{2}} \bnfalt
+      \textit{Objects} & O, S & \bnfdef & X \bnfalt \pisort{S_{1}}{X}{S_{2}} \bnfalt \lamobj{S_{1}}{X}{K_{2}} \bnfalt
                                           \appobj{O_{1}}{O_{2}} \bnfalt \selfobj{} \\
       \textit{Contexts} & \Gamma & \bnfdef & \empctx{} \bnfalt \snocctx{\Gamma}{X}{K}
     \end{array}
@@ -187,11 +188,11 @@ The rules defining the \LF{} judgment forms are given in Figures~\ref{fig:lf-is}
 \ref{fig:lf-str}, and~\ref{fig:lf-eq} which are to be understood as constituting one
 simultaneous inductive definition.  Rule~\textsc{incl} specifies that every sort is itself
 a class; the class $\sortclass$ is thus formulated as a Russellian universe of ``small''
-classes.  Rule~\textsc{pi}, and associated rules~\textsc{lam} and~\textsf{app}, could be
-restricted without loss to require that $K_{1}$ be a sort,\footnote{But variables cannot
-  be restricted to range only over sorts, at least insofar as signatures are considered to
-  be contexts.} provided that \sortclass{} is required to be closed under dependent
-functions, and equality classes are regarded as sorts.  Rule~\textsc{eq} defines the class
+classes.  Rule~\textsc{pi}, and associated rules~\textsc{lam} and~\textsf{app}, are
+restricted to require that $S_{1}$ be a sort, rather than a general class,\footnote{But
+  variables are nevertheless permitted to range over classes.}  and, similarly, equality
+classes are limited to equations between objects of a sort.  The class \sortclass{} is
+required to be closed under dependent function sorts.  Rule~\textsc{eq} defines the class
 of equations between objects of a sort; rule~\textsc{self} specifies that every object is
 equal to itself.  Rules~\textsc{obj-cls} and~\textsc{obj-eq-cls} specifies that equal
 classes classify the same objects.  Rules~\textsc{app-lam} and~\textsc{lam-app} specify
@@ -259,11 +260,11 @@ objects witnessing its truth.
     {\isobj{\Gamma}{S}{\sortclass}}
     {\iscls{\Gamma}{S}}
 
-    \inferrule[pi]
-    {\iscls{\Gamma}{K_{1}} \\ \iscls{\snocctx{\Gamma}{X}{K_{1}}}{K_{2}}}
-    {\iscls{\Gamma}{\piclass{K_{1}}{X}{K_{2}}}}
+    \inferrule[pi-cls]
+    {\isobj{\Gamma}{S_{1}}{\sortclass} \\ \iscls{\snocctx{\Gamma}{X}{S_{1}}}{K_{2}}}
+    {\iscls{\Gamma}{\piclass{S_{1}}{X}{K_{2}}}}
 
-    \inferrule[eq]
+    \inferrule[eq-cls]
     {\isobj{\Gamma}{S}{\sortclass} \\ \isobj{\Gamma}{O_{1}}{S} \\ \isobj{\Gamma}{O_{2}}{S}}
     {\iscls{\Gamma}{\eqclass{S}{O_{1}}{O_{2}}}}
 
@@ -271,12 +272,16 @@ objects witnessing its truth.
 
   \begin{mathpar}
 
+    \inferrule[pi-sort]
+    {\isobj{\Gamma}{S_{1}}{\sortclass} \\ \isobj{\snocctx{\Gamma}{X}{S_{1}}}{S_{2}}{\sortclass}}
+    {\isobj{\Gamma}{\pisort{S_{1}}{X}{S_{2}}}{\sortclass}}
+
     \inferrule[lam]
-    {\iscls{\Gamma}{K_{1}} \\ \isobj{\snocctx{\Gamma}{X}{K_{1}}}{O_{2}}{K_{2}}}
-    {\isobj{\Gamma}{\lamobj{K_{1}}{X}{O_{2}}}{\piclass{K_{1}}{X}{K_{2}}}}
+    {\isobj{\Gamma}{S_{1}}{\sortclass} \\ \isobj{\snocctx{\Gamma}{X}{S_{1}}}{O_{2}}{K_{2}}}
+    {\isobj{\Gamma}{\lamobj{S_{1}}{X}{O_{2}}}{\piclass{S_{1}}{X}{K_{2}}}}
 
     \inferrule[app]
-    {\isobj{\Gamma}{O}{\piclass{K_{1}}{X}{K_{2}}} \\ \isobj{\Gamma}{O_{1}}{K_{1}}}
+    {\isobj{\Gamma}{O}{\piclass{S_{1}}{X}{K_{2}}} \\ \isobj{\Gamma}{O_{1}}{S_{1}}}
     {\isobj{\Gamma}{\appobj{O}{O_{1}}}{\subst{O_{1}}{X}{K_{2}}}}
 
     \inferrule[self]
@@ -355,11 +360,11 @@ objects witnessing its truth.
     {\eqobj{\Gamma}{S}{S'}{\sortclass}}
     {\eqcls{\Gamma}{S}{S'}}
 
-    \inferrule[pi-eq]
-    {\eqcls{\Gamma}{K_{1}}{K_{1}'} \\ \eqcls{\snocctx{\Gamma}{X}{K_{1}}}{K_{2}}{K_{2}'}}
-    {\eqcls{\Gamma}{\piclass{K_{1}}{X}{K_{2}}}{\piclass{K_{1}'}{X}{K_{2}'}}}
+    \inferrule[pi-class-eq]
+    {\eqobj{\Gamma}{S_{1}}{S_{1}'}{\sortclass} \\ \eqcls{\snocctx{\Gamma}{X}{S_{1}}}{K_{2}}{K_{2}'}}
+    {\eqcls{\Gamma}{\piclass{S_{1}}{X}{K_{2}}}{\piclass{S_{1}'}{X}{K_{2}'}}}
 
-    \inferrule[eq-eq]
+    \inferrule[eq-class-eq]
     {\eqobj{\Gamma}{S}{S'}{\sortclass} \\ \eqobj{\Gamma}{O_{1}}{O_{1}'}{S} \\ \eqobj{\Gamma}{O_{2}}{O_{2}'}{S}}
     {\eqcls{\Gamma}{\eqclass{S}{O_{1}}{O_{2}}}{\eqclass{S'}{O_{1}'}{O_{2}'}}}
 
@@ -367,12 +372,16 @@ objects witnessing its truth.
 
   \begin{mathpar}
     
+    \inferrule[pi-sort-eq]
+    {\eqobj{\Gamma}{S_1}{S_1'}{\sortclass} \\ \eqobj{\snocctx{\Gamma}{X}{S_1}}{S_2}{S_2'}{\sortclass}}
+    {\eqobj{\Gamma}{\pisort{S_1}{X}{S_2}}{\pisort{S_1'}{X}{S_2'}}{\sortclass}}
+
     \inferrule[lam-eq]
-    {\eqcls{\Gamma}{K_{1}}{K_{1}'} \\ \eqobj{\snocctx{\Gamma}{X}{K_{1}}}{O_{2}}{O_{2}'}{K_{2}}}
-    {\eqobj{\Gamma}{\lamobj{K_{1}}{X}{O_{2}}}{\lamobj{K_{1}'}{X}{O_{2}'}}{\piclass{K_{1}}{X}{K_{2}}}}
+    {\eqcls{\Gamma}{S_{1}}{S_{1}'} \\ \eqobj{\snocctx{\Gamma}{X}{S_{1}}}{O_{2}}{O_{2}'}{K_{2}}}
+    {\eqobj{\Gamma}{\lamobj{S_{1}}{X}{O_{2}}}{\lamobj{S_{1}'}{X}{O_{2}'}}{\piclass{S_{1}}{X}{K_{2}}}}
 
     \inferrule[app-eq]
-    {\eqobj{\Gamma}{O}{O'}{\piclass{K_{1}}{X}{K_{2}}} \\ \eqobj{\Gamma}{O_{1}}{O_{1}'}{K_{1}}}
+    {\eqobj{\Gamma}{O}{O'}{\piclass{S_{1}}{X}{K_{2}}} \\ \eqobj{\Gamma}{O_{1}}{O_{1}'}{S_{1}}}
     {\eqobj{\Gamma}{\appobj{O}{O_{1}}}{\appobj{O'}{O_{1}'}}{\subst{O_{1}}{X}{K_{2}}}}
 
   \end{mathpar}
@@ -380,12 +389,12 @@ objects witnessing its truth.
   \begin{mathpar}
     
     \inferrule[app-lam]
-    {\isobj{\snocctx{\Gamma}{X}{K_{1}}}{O_{2}}{K_{2}} \\ \isobj{\Gamma}{O_{1}}{K_{1}}}
-    {\eqobj{\Gamma}{\appobj{(\lamobj{K_{1}}{X}{O_{2}})}{O_{1}}}{\subst{O_{1}}{X}{O_{2}}}{\subst{O_{1}}{X}{K_{2}}}}
+    {\isobj{\snocctx{\Gamma}{X}{S_{1}}}{O_{2}}{K_{2}} \\ \isobj{\Gamma}{O_{1}}{S_{1}}}
+    {\eqobj{\Gamma}{\appobj{(\lamobj{S_{1}}{X}{O_{2}})}{O_{1}}}{\subst{O_{1}}{X}{O_{2}}}{\subst{O_{1}}{X}{K_{2}}}}
 
     \inferrule[lam-app]
-    {\isobj{\Gamma}{O}{\piclass{K_{1}}{X}{K_{2}}}}
-    {\eqobj{\Gamma}{O}{\lamobj{K_{1}}{X}{(\appobj{O}{X})}}{\piclass{K_{1}}{X}{K_{2}}}}
+    {\isobj{\Gamma}{O}{\piclass{S_{1}}{X}{K_{2}}}}
+    {\eqobj{\Gamma}{O}{\lamobj{S_{1}}{X}{(\appobj{O}{X})}}{\piclass{S_{1}}{X}{K_{2}}}}
 
   \end{mathpar}
 
