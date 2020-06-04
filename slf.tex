@@ -115,21 +115,21 @@ counterpart objects in the logical framework.
 \section{A Logical Framework}
 
 The syntax of the logical framework \LF{} is given in Figure~\ref{fig:lf-syntax}.  It is a
-dependently typed $\lambda$-calculus with the structure specified in the introduction.  The
-types of \LF{} are called \emph{classes}, or \emph{kinds}, $K$ or $S$, and their elements
-are called \emph{objects}, $O$ or $S$.\footnote{The double role of the meta-variable $S$
-  will be explained shortly.}  The notation is inspired by \textsf{AUTOMATH}, using square
+dependently typed $\lambda$-calculus with the structure specified in the introduction.
+The types of \LF{} are called \emph{classes}, $K$ or $S$, and their elements are called
+\emph{objects}, $O$ or $S$.\footnote{The double role of the meta-variable $S$ will be
+  explained shortly.}  The notation is inspired by \textsf{AUTOMATH}, using square
 brackets for $\lambda$-abstraction, curly braces for $\Pi$-types, and juxtaposition for
 application.  The binding and scopes of identifiers are understood; all classes and
 objects are identified up to renaming of bound variables.  Substitution of an object for a
-variable within a class or kind is defined in the usual way up to such renamings.
+variable within a class is defined in the usual way up to such renamings.
 
 \begin{figure}[tp]
   
   \begin{displaymath}
     \begin{array}{lrcl}
       \textit{Variables} & X,x \\
-      \textit{Kinds} & K, S & \bnfdef{} & S \bnfalt \sortclass \bnfalt \piclass{S_{1}}{X}{K_{2}}
+      \textit{Classes} & K, S & \bnfdef{} & S \bnfalt \sortclass \bnfalt \piclass{S_{1}}{X}{K_{2}}
                                           \bnfalt \eqclass{S}{O_{1}}{O_{2}} \\
       \textit{Objects} & O, S & \bnfdef & X \bnfalt \pisort{S_{1}}{X}{S_{2}} \bnfalt \lamobj{S_{1}}{X}{K_{2}} \bnfalt
                                           \appobj{O_{1}}{O_{2}} \bnfalt \selfobj{} \\
